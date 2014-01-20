@@ -13,6 +13,7 @@ import com.anb.flag.engine.constants.Constants;
 import com.anb.flag.engine.models.Flag;
 import com.anb.flag.engine.models.FlagCollection;
 import com.anb.flag.engine.models.PMF;
+import com.anb.flag.engine.utils.LocationUtils;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 
@@ -44,10 +45,10 @@ public class Flags {
 		Query query = pm.newQuery(Flag.class);
 		query.setFilter("lon > minLon && lon < maxLon");
 		query.declareParameters("double minLon, double maxLon");
-		List<Flag> flags = (List<Flag>) pm.newQuery(query).execute(lon - Flag.RADIUS, lon + Flag.RADIUS);
+		List<Flag> flags = (List<Flag>) pm.newQuery(query).execute(lon - LocationUtils.NEAR_DISTANCE_DEGREE, lon + LocationUtils.NEAR_DISTANCE_DEGREE);
 		
 		FlagCollection response = new FlagCollection(flags);
-		response.filtLat(lat - Flag.RADIUS, lat + Flag.RADIUS);
+		response.filtLat(lat - LocationUtils.NEAR_DISTANCE_DEGREE, lat + LocationUtils.NEAR_DISTANCE_DEGREE);
 
 		return response;
 	}

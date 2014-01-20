@@ -9,8 +9,6 @@ import javax.jdo.annotations.PrimaryKey;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class Flag {
-	public static final double RADIUS = 0.0044762327;
-	
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	private Long id;
@@ -29,7 +27,14 @@ public class Flag {
 	@Persistent
 	private Long shopId;
 
-	private ShopHint shopHint;
+	@Persistent
+	private String shopName;
+
+	@Persistent
+	private int reward1;
+
+	@Persistent
+	private int reward2;
 
 	public Long getId() {
 		return id;
@@ -67,12 +72,28 @@ public class Flag {
 		this.shopId = shopId;
 	}
 
-	public ShopHint getShopHint() {
-		return shopHint;
+	public String getShopName() {
+		return shopName;
 	}
 
-	public void setShopHint(ShopHint shopHint) {
-		this.shopHint = shopHint;
+	public void setShopName(String shopName) {
+		this.shopName = shopName;
+	}
+
+	public int getReward1() {
+		return reward1;
+	}
+
+	public void setReward1(int reward1) {
+		this.reward1 = reward1;
+	}
+
+	public int getReward2() {
+		return reward2;
+	}
+
+	public void setReward2(int reward2) {
+		this.reward2 = reward2;
 	}
 
 	@Override
