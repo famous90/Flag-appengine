@@ -14,6 +14,9 @@ public class Shop {
 
 	@Persistent
 	private String name;
+	
+	@Persistent
+	private String imageUrl;
 
 	@Persistent
 	private int type;
@@ -26,6 +29,9 @@ public class Shop {
 
 	@Persistent
 	private int reward2;
+	
+	@Persistent
+	private int sign;
 
 	public Long getId() {
 		return id;
@@ -37,6 +43,14 @@ public class Shop {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
 	}
 
 	public int getType() {
@@ -69,5 +83,13 @@ public class Shop {
 
 	public void setReward2(int reward2) {
 		this.reward2 = reward2;
+	}
+
+	public int getSign() {
+		return sign;
+	}
+
+	public void setSign(int sign) {
+		this.sign = sign;
 	}
 }

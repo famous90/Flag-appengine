@@ -183,6 +183,9 @@
           "name" : {
             "type" : "string"
           },
+          "imageUrl" : {
+            "type" : "string"
+          },
           "type" : {
             "type" : "integer"
           },
@@ -193,6 +196,9 @@
             "type" : "integer"
           },
           "reward2" : {
+            "type" : "integer"
+          },
+          "sign" : {
             "type" : "integer"
           }
         }
