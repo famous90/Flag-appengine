@@ -4,7 +4,7 @@
     <servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>
     <init-param>
       <param-name>services</param-name>
-      <param-value>com.anb.flag.engine.apis.Flags,com.anb.flag.engine.apis.Images,com.anb.flag.engine.apis.Shops,com.anb.flag.engine.apis.Users</param-value>
+      <param-value>com.anb.flag.engine.apis.Flags,com.anb.flag.engine.apis.Images,com.anb.flag.engine.apis.Items,com.anb.flag.engine.apis.Shops,com.anb.flag.engine.apis.Users</param-value>
     </init-param>
   </servlet>
   <servlet-mapping>

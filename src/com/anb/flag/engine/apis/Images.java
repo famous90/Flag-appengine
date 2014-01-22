@@ -27,10 +27,10 @@ public class Images {
 		pm.makePersistent(image);
 		pm.close();
 		
-		Image response = new Image();
-		response.setId(image.getId());
+		Image responseImage = new Image();
+		responseImage.setId(image.getId());
 		
-		return response;
+		return responseImage;
 	}
 
 	@SuppressWarnings("unchecked")

@@ -36,7 +36,7 @@ public class Flags {
 	}
 
 	@SuppressWarnings("unchecked")
-	@ApiMethod(name = "flags.list")
+	@ApiMethod(name = "flags.list", path = "flag_list")
 	public FlagCollection list(@Nullable @Named("lat") double lat, @Nullable @Named("lon") double lon) {
 		log.warning("list flag: lat=" + lat + " lon=" + lon);
 		
@@ -47,10 +47,10 @@ public class Flags {
 		query.declareParameters("double minLon, double maxLon");
 		List<Flag> flags = (List<Flag>) pm.newQuery(query).execute(lon - LocationUtils.NEAR_DISTANCE_DEGREE, lon + LocationUtils.NEAR_DISTANCE_DEGREE);
 		
-		FlagCollection response = new FlagCollection(flags);
-		response.filtLat(lat - LocationUtils.NEAR_DISTANCE_DEGREE, lat + LocationUtils.NEAR_DISTANCE_DEGREE);
+		FlagCollection flagCol = new FlagCollection(flags);
+		flagCol.filtLat(lat - LocationUtils.NEAR_DISTANCE_DEGREE, lat + LocationUtils.NEAR_DISTANCE_DEGREE);
 
-		return response;
+		return flagCol;
 	}
 	
 	@ApiMethod(name = "flags.removeAll")

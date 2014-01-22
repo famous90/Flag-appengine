@@ -40,11 +40,11 @@ public class Users {
 		query.setFilter("id == idParam");
 		query.declareParameters("java.lang.Long idParam");
 
-		List<User> results = (List<User>) pm.newQuery(query).execute(id);
-		if (results.isEmpty())
+		List<User> users = (List<User>) pm.newQuery(query).execute(id);
+		if (users.isEmpty())
 			return null;
 		else
-			return results.get(0);
+			return users.get(0);
 	}
 
 	@ApiMethod(name = "users.removeAll")
