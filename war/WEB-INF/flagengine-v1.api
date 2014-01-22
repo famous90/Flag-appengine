@@ -24,6 +24,43 @@
     "maxAge" : 0
   },
   "methods" : {
+    "flagengine.images.insert" : {
+      "path" : "image",
+      "httpMethod" : "post",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.anb.flag.engine.apis.Images.insert",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "flagengine.images.get" : {
+      "path" : "image",
+      "httpMethod" : "GET",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.anb.flag.engine.apis.Images.get",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "type" : "int64",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
     "flagengine.shops.insert" : {
       "path" : "shop",
       "httpMethod" : "post",
@@ -172,6 +209,20 @@
   },
   "descriptor" : {
     "schemas" : {
+      "Image" : {
+        "id" : "Image",
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "bytes" : {
+            "type" : "string",
+            "format" : "byte"
+          }
+        }
+      },
       "Shop" : {
         "id" : "Shop",
         "type" : "object",
@@ -269,6 +320,19 @@
       }
     },
     "methods" : {
+      "com.anb.flag.engine.apis.Images.insert" : {
+        "request" : {
+          "$ref" : "Image"
+        },
+        "response" : {
+          "$ref" : "Image"
+        }
+      },
+      "com.anb.flag.engine.apis.Images.get" : {
+        "response" : {
+          "$ref" : "Image"
+        }
+      },
       "com.anb.flag.engine.apis.Shops.insert" : {
         "request" : {
           "$ref" : "Shop"
