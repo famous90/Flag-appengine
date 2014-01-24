@@ -3,14 +3,13 @@ package com.anb.flag.engine.apis;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.annotation.Nullable;
-import javax.inject.Named;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
 import com.anb.flag.engine.constants.Constants;
 import com.anb.flag.engine.models.PMF;
 import com.anb.flag.engine.models.User;
+import com.anb.flag.engine.models.UserForm;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 
@@ -19,32 +18,34 @@ import com.google.api.server.spi.config.ApiMethod;
 public class Users {
 	private static final Logger log = Logger.getLogger(Users.class.getName());
 
-	@ApiMethod(name = "users.insert", httpMethod = "post")
-	public User insert(User user) {
-		log.warning(user.toString());
+	@ApiMethod(name = "users.insert", path = "new_user", httpMethod = "post")
+	public User insert(UserForm userForm) {
+		log.warning("new user: " + userForm.toString());
+
+		User user = new User(userForm);
 
 		PersistenceManager pm = PMF.getPersistenceManager();
 		pm.makePersistent(user);
 		pm.close();
 
-		return user;
+		return new User(user);
 	}
 
 	@SuppressWarnings("unchecked")
-	@ApiMethod(name = "users.get")
-	public User get(@Nullable @Named("id") Long id) {
-		log.warning("get user: id=" + id);
+	@ApiMethod(name = "users.get", path = "old_user", httpMethod = "post")
+	public User get(UserForm userForm) {
+		log.warning("old user: " + userForm.toString());
 
 		PersistenceManager pm = PMF.getPersistenceManager();
 		Query query = pm.newQuery(User.class);
-		query.setFilter("id == idParam");
-		query.declareParameters("java.lang.Long idParam");
+		query.setFilter("email == theEmail && password == thePassword");
+		query.declareParameters("String theEmail, String thePassword");
 
-		List<User> users = (List<User>) pm.newQuery(query).execute(id);
+		List<User> users = (List<User>) pm.newQuery(query).execute(userForm.getEmail(), userForm.getPassword());
 		if (users.isEmpty())
 			return null;
 		else
-			return users.get(0);
+			return new User(users.get(0));
 	}
 
 	@ApiMethod(name = "users.removeAll")

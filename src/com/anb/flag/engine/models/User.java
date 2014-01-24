@@ -12,16 +12,31 @@ public class User {
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	private Long id;
-	
+
 	@Persistent
 	@Index
 	private String email;
-	
+
 	@Persistent
 	private String password;
-	
+
 	@Persistent
-	private String phone;
+	private int reward;
+
+	public User() {
+		super();
+	}
+
+	public User(UserForm userForm) {
+		this.email = userForm.getEmail();
+		this.password = userForm.getPassword();
+	}
+
+	public User(User user) {
+		this.id = user.getId();
+		this.email = user.getEmail();
+		this.reward = user.getReward();
+	}
 
 	public Long getId() {
 		return id;
@@ -43,11 +58,11 @@ public class User {
 		this.password = password;
 	}
 
-	public String getPhone() {
-		return phone;
+	public int getReward() {
+		return reward;
 	}
 
-	public void setPhone(String phone) {
-		this.phone = phone;
+	public void setReward(int reward) {
+		this.reward = reward;
 	}
 }

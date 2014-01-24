@@ -228,7 +228,7 @@
       }
     },
     "flagengine.users.insert" : {
-      "path" : "user",
+      "path" : "new_user",
       "httpMethod" : "post",
       "authLevel" : "NONE",
       "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
@@ -244,21 +244,16 @@
       }
     },
     "flagengine.users.get" : {
-      "path" : "user",
-      "httpMethod" : "GET",
+      "path" : "old_user",
+      "httpMethod" : "post",
       "authLevel" : "NONE",
       "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
       "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
       "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
       "rosyMethod" : "com.anb.flag.engine.apis.Users.get",
       "request" : {
-        "parameters" : {
-          "id" : {
-            "type" : "int64",
-            "required" : false
-          }
-        },
-        "body" : "empty"
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
       },
       "response" : {
         "body" : "autoTemplate(backendResponse)"
@@ -395,6 +390,18 @@
           }
         }
       },
+      "UserForm" : {
+        "id" : "UserForm",
+        "type" : "object",
+        "properties" : {
+          "email" : {
+            "type" : "string"
+          },
+          "password" : {
+            "type" : "string"
+          }
+        }
+      },
       "User" : {
         "id" : "User",
         "type" : "object",
@@ -409,8 +416,8 @@
           "password" : {
             "type" : "string"
           },
-          "phone" : {
-            "type" : "string"
+          "reward" : {
+            "type" : "integer"
           }
         }
       }
@@ -479,13 +486,16 @@
       },
       "com.anb.flag.engine.apis.Users.insert" : {
         "request" : {
-          "$ref" : "User"
+          "$ref" : "UserForm"
         },
         "response" : {
           "$ref" : "User"
         }
       },
       "com.anb.flag.engine.apis.Users.get" : {
+        "request" : {
+          "$ref" : "UserForm"
+        },
         "response" : {
           "$ref" : "User"
         }
