@@ -1,4 +1,4 @@
-package com.anb.flag.engine.apis;
+package com.flag.engine.apis;
 
 import java.util.Date;
 import java.util.List;
@@ -9,11 +9,11 @@ import javax.inject.Named;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
-import com.anb.flag.engine.constants.Constants;
-import com.anb.flag.engine.models.Flag;
-import com.anb.flag.engine.models.FlagCollection;
-import com.anb.flag.engine.models.PMF;
-import com.anb.flag.engine.utils.LocationUtils;
+import com.flag.engine.constants.Constants;
+import com.flag.engine.models.Flag;
+import com.flag.engine.models.FlagCollection;
+import com.flag.engine.models.PMF;
+import com.flag.engine.utils.LocationUtils;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 

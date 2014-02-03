@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.anb.flag.engine.models;
+package com.flag.engine.models;
 
 import javax.jdo.JDOHelper;
 import javax.jdo.PersistenceManager;

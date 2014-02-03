@@ -1,4 +1,4 @@
-package com.anb.flag.engine.utils;
+package com.flag.engine.utils;
 
 public class LocationUtils {
 	public static final double NEAR_DISTANCE_DEGREE = 0.0089524654;

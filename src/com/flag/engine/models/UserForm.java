@@ -1,4 +1,4 @@
-package com.anb.flag.engine.models;
+package com.flag.engine.models;
 
 public class UserForm {
 	private String email;

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.anb.flag.engine.constants;
+package com.flag.engine.constants;
 
 /**
  * Contains the client IDs for allowed clients consuming the tictactoe API.

@@ -1,4 +1,4 @@
-package com.anb.flag.engine.models;
+package com.flag.engine.models;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;

@@ -1,4 +1,4 @@
-package com.anb.flag.engine.models;
+package com.flag.engine.models;
 
 import java.util.ArrayList;
 import java.util.List;
