@@ -117,6 +117,22 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
+    "flagengine.users.retain" : {
+      "path" : "retain",
+      "httpMethod" : "post",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Users.retain",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
     "flagengine.users.insert" : {
       "path" : "new_user",
       "httpMethod" : "post",
@@ -321,15 +337,13 @@
           }
         }
       },
-      "UserForm" : {
-        "id" : "UserForm",
+      "RetainForm" : {
+        "id" : "RetainForm",
         "type" : "object",
         "properties" : {
-          "email" : {
-            "type" : "string"
-          },
-          "password" : {
-            "type" : "string"
+          "id" : {
+            "type" : "string",
+            "format" : "int64"
           }
         }
       },
@@ -349,6 +363,18 @@
           },
           "reward" : {
             "type" : "integer"
+          }
+        }
+      },
+      "UserForm" : {
+        "id" : "UserForm",
+        "type" : "object",
+        "properties" : {
+          "email" : {
+            "type" : "string"
+          },
+          "password" : {
+            "type" : "string"
           }
         }
       },
@@ -449,6 +475,14 @@
         },
         "response" : {
           "$ref" : "Flag"
+        }
+      },
+      "com.flag.engine.apis.Users.retain" : {
+        "request" : {
+          "$ref" : "RetainForm"
+        },
+        "response" : {
+          "$ref" : "User"
         }
       },
       "com.flag.engine.apis.Users.insert" : {

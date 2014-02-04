@@ -8,6 +8,7 @@ import javax.jdo.Query;
 
 import com.flag.engine.constants.Constants;
 import com.flag.engine.models.PMF;
+import com.flag.engine.models.RetainForm;
 import com.flag.engine.models.User;
 import com.flag.engine.models.UserForm;
 import com.google.api.server.spi.config.Api;
@@ -42,6 +43,23 @@ public class Users {
 		query.declareParameters("String theEmail, String thePassword");
 
 		List<User> users = (List<User>) pm.newQuery(query).execute(userForm.getEmail(), userForm.getPassword());
+		if (users.isEmpty())
+			return null;
+		else
+			return new User(users.get(0));
+	}
+	
+	@SuppressWarnings("unchecked")
+	@ApiMethod(name = "users.retain", httpMethod = "post")
+	public User retain(RetainForm retainForm) {
+		log.warning("retain user: " + retainForm.toString());
+		
+		PersistenceManager pm = PMF.getPersistenceManager();
+		Query query = pm.newQuery(User.class);
+		query.setFilter("id == theId");
+		query.declareParameters("long theId");
+		
+		List<User> users = (List<User>) pm.newQuery(query).execute(retainForm.getId());
 		if (users.isEmpty())
 			return null;
 		else
