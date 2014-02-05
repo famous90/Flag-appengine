@@ -32,7 +32,7 @@ public class Shop {
 	@Persistent
 	private int reward;
 
-	private boolean checkedIn;
+	private boolean rewarded;
 
 	public Long getId() {
 		return id;
@@ -78,15 +78,15 @@ public class Shop {
 		this.reward = reward;
 	}
 
-	public boolean isCheckedIn() {
-		return checkedIn;
+	public boolean isRewarded() {
+		return rewarded;
 	}
 
-	public void setCheckedIn(boolean checkedIn) {
-		this.checkedIn = checkedIn;
+	public void setRewarded(boolean rewarded) {
+		this.rewarded = rewarded;
 	}
 
-	public static boolean isCheckedIn(long userId, long id) {
+	public static boolean isRewarded(long userId, long id) {
 		PersistenceManager pm = PMF.getPersistenceManager();
 
 		Key key = KeyBuilder.makeRewardKey(userId, id, Reward.TYPE_SHOP);

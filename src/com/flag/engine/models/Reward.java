@@ -13,7 +13,7 @@ import com.google.appengine.api.datastore.Key;
 public class Reward {
 	public static final long TYPE_SHOP = 101;
 	public static final long TYPE_ITEM = 202;
-	
+
 	@PrimaryKey
 	@Persistent
 	private Key key;
@@ -27,6 +27,9 @@ public class Reward {
 
 	@Persistent
 	private Long type;
+
+	@Persistent
+	private int reward;
 
 	public Key getKey() {
 		return key;
@@ -59,7 +62,15 @@ public class Reward {
 	public void setType(Long type) {
 		this.type = type;
 	}
-	
+
+	public int getReward() {
+		return reward;
+	}
+
+	public void setReward(int reward) {
+		this.reward = reward;
+	}
+
 	public Key refreshKey() {
 		key = makeKey();
 		return key;

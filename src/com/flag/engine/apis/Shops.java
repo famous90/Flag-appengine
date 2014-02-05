@@ -37,7 +37,7 @@ public class Shops {
 
 		try {
 			shop = pm.getObjectById(Shop.class, id);
-			shop.setCheckedIn(Shop.isCheckedIn(userId, id));
+			shop.setRewarded(Shop.isRewarded(userId, id));
 		} catch (JDOObjectNotFoundException e) {
 			return null;
 		}
@@ -53,7 +53,7 @@ public class Shops {
 		try {
 			Beacon beacon = pm.getObjectById(Beacon.class, beaconId);
 			shop = pm.getObjectById(Shop.class, beacon.getShopId());
-			shop.setCheckedIn(Shop.isCheckedIn(userId, shop.getId()));
+			shop.setRewarded(Shop.isRewarded(userId, shop.getId()));
 		} catch (JDOObjectNotFoundException e) {
 			return null;
 		}

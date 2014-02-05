@@ -1,5 +1,7 @@
 package com.flag.engine.models;
 
+import javax.jdo.JDOObjectNotFoundException;
+import javax.jdo.PersistenceManager;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.Index;
@@ -7,12 +9,15 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
+import com.flag.engine.utils.KeyBuilder;
+import com.google.appengine.api.datastore.Key;
+
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class Item {
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	private Long id;
-	
+
 	@Persistent
 	@Index
 	private Long shopId;
@@ -28,6 +33,8 @@ public class Item {
 
 	@Persistent
 	private int reward;
+
+	private boolean rewarded;
 
 	public Long getId() {
 		return id;
@@ -75,5 +82,28 @@ public class Item {
 
 	public void setReward(int reward) {
 		this.reward = reward;
+	}
+
+	public boolean isRewarded() {
+		return rewarded;
+	}
+
+	public void setRewarded(boolean rewarded) {
+		this.rewarded = rewarded;
+	}
+
+	public static boolean isRewarded(long userId, long id) {
+		PersistenceManager pm = PMF.getPersistenceManager();
+
+		Key key = KeyBuilder.makeRewardKey(userId, id, Reward.TYPE_ITEM);
+		try {
+			Reward reward = pm.getObjectById(Reward.class, key);
+			if (reward != null)
+				return true;
+			else
+				return false;
+		} catch (JDOObjectNotFoundException e) {
+			return false;
+		}
 	}
 }
