@@ -24,6 +24,21 @@
     "maxAge" : 0
   },
   "methods" : {
+    "flagengine.redeems.insert" : {
+      "path" : "redeem",
+      "httpMethod" : "post",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Redeems.insert",
+      "request" : {
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "empty"
+      }
+    },
     "flagengine.rewards.insert" : {
       "path" : "reward",
       "httpMethod" : "post",
@@ -585,6 +600,8 @@
       }
     },
     "methods" : {
+      "com.flag.engine.apis.Redeems.insert" : {
+      },
       "com.flag.engine.apis.Rewards.insert" : {
         "request" : {
           "$ref" : "Reward"
