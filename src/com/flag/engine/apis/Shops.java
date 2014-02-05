@@ -1,14 +1,14 @@
 package com.flag.engine.apis;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 import javax.inject.Named;
+import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
-import javax.jdo.Query;
 
 import com.flag.engine.constants.Constants;
+import com.flag.engine.models.Beacon;
 import com.flag.engine.models.PMF;
 import com.flag.engine.models.Shop;
 import com.google.api.server.spi.config.Api;
@@ -22,27 +22,42 @@ public class Shops {
 	@ApiMethod(name = "shops.insert", httpMethod = "post")
 	public Shop insert(Shop shop) {
 		log.warning("insert shop: " + shop.toString());
-		
+
 		PersistenceManager pm = PMF.getPersistenceManager();
 		pm.makePersistent(shop);
 		pm.close();
-		
+
 		return shop;
 	}
-	
-	@SuppressWarnings("unchecked")
-	@ApiMethod(name = "shops.get")
-	public Shop get(@Nullable @Named("id") long id) {
-		PersistenceManager pm = PMF.getPersistenceManager();
 
-		Query query = pm.newQuery(Shop.class);
-		query.setFilter("id == shopId");
-		query.declareParameters("long shopId");
-		List<Shop> shops = (List<Shop>) pm.newQuery(query).execute(id);
-		
-		if (shops.size() < 1)
+	@ApiMethod(name = "shops.get")
+	public Shop get(@Nullable @Named("userId") long userId, @Nullable @Named("id") long id) {
+		PersistenceManager pm = PMF.getPersistenceManager();
+		Shop shop = null;
+
+		try {
+			shop = pm.getObjectById(Shop.class, id);
+			shop.setCheckedIn(Shop.isCheckedIn(userId, id));
+		} catch (JDOObjectNotFoundException e) {
 			return null;
-		else
-			return shops.get(0);
+		}
+
+		return shop;
+	}
+
+	@ApiMethod(name = "shops.beacon", path = "beacon")
+	public Shop beacon(@Nullable @Named("userId") long userId, @Nullable @Named("beaconId") String beaconId) {
+		PersistenceManager pm = PMF.getPersistenceManager();
+		Shop shop = null;
+		
+		try {
+			Beacon beacon = pm.getObjectById(Beacon.class, beaconId);
+			shop = pm.getObjectById(Shop.class, beacon.getShopId());
+			shop.setCheckedIn(Shop.isCheckedIn(userId, shop.getId()));
+		} catch (JDOObjectNotFoundException e) {
+			return null;
+		}
+		
+		return shop;
 	}
 }

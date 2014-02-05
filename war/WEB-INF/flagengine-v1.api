@@ -24,6 +24,54 @@
     "maxAge" : 0
   },
   "methods" : {
+    "flagengine.rewards.insert" : {
+      "path" : "reward",
+      "httpMethod" : "post",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Rewards.insert",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "flagengine.beacons.remove" : {
+      "path" : "remove",
+      "httpMethod" : "DELETE",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Beacons.remove",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "empty"
+      }
+    },
+    "flagengine.beacons.insert" : {
+      "path" : "void",
+      "httpMethod" : "POST",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Beacons.insert",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "empty"
+      }
+    },
     "flagengine.images.insert" : {
       "path" : "image",
       "httpMethod" : "post",
@@ -118,7 +166,7 @@
       }
     },
     "flagengine.users.retain" : {
-      "path" : "retain",
+      "path" : "user",
       "httpMethod" : "post",
       "authLevel" : "NONE",
       "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
@@ -190,8 +238,37 @@
       "rosyMethod" : "com.flag.engine.apis.Shops.get",
       "request" : {
         "parameters" : {
+          "userId" : {
+            "type" : "int64",
+            "required" : false
+          },
           "id" : {
             "type" : "int64",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "flagengine.shops.beacon" : {
+      "path" : "beacon",
+      "httpMethod" : "POST",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Shops.beacon",
+      "request" : {
+        "parameters" : {
+          "userId" : {
+            "type" : "int64",
+            "required" : false
+          },
+          "beaconId" : {
+            "type" : "string",
             "required" : false
           }
         },
@@ -278,6 +355,87 @@
   },
   "descriptor" : {
     "schemas" : {
+      "Reward" : {
+        "id" : "Reward",
+        "type" : "object",
+        "properties" : {
+          "key" : {
+            "$ref" : "Key"
+          },
+          "userId" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "targetId" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "type" : {
+            "type" : "string",
+            "format" : "int64"
+          }
+        }
+      },
+      "Key" : {
+        "id" : "Key",
+        "type" : "object",
+        "properties" : {
+          "kind" : {
+            "type" : "string"
+          },
+          "appId" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "complete" : {
+            "type" : "boolean"
+          },
+          "namespace" : {
+            "type" : "string"
+          },
+          "parent" : {
+            "$ref" : "Key"
+          }
+        }
+      },
+      "User" : {
+        "id" : "User",
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "email" : {
+            "type" : "string"
+          },
+          "password" : {
+            "type" : "string"
+          },
+          "reward" : {
+            "type" : "integer"
+          }
+        }
+      },
+      "Beacon" : {
+        "id" : "Beacon",
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "shopId" : {
+            "type" : "string",
+            "format" : "int64"
+          }
+        }
+      },
       "Image" : {
         "id" : "Image",
         "type" : "object",
@@ -347,25 +505,6 @@
           }
         }
       },
-      "User" : {
-        "id" : "User",
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "format" : "int64"
-          },
-          "email" : {
-            "type" : "string"
-          },
-          "password" : {
-            "type" : "string"
-          },
-          "reward" : {
-            "type" : "integer"
-          }
-        }
-      },
       "UserForm" : {
         "id" : "UserForm",
         "type" : "object",
@@ -398,14 +537,11 @@
           "description" : {
             "type" : "string"
           },
-          "reward1" : {
+          "reward" : {
             "type" : "integer"
           },
-          "reward2" : {
-            "type" : "integer"
-          },
-          "sign" : {
-            "type" : "integer"
+          "checkedIn" : {
+            "type" : "boolean"
           }
         }
       },
@@ -449,6 +585,24 @@
       }
     },
     "methods" : {
+      "com.flag.engine.apis.Rewards.insert" : {
+        "request" : {
+          "$ref" : "Reward"
+        },
+        "response" : {
+          "$ref" : "User"
+        }
+      },
+      "com.flag.engine.apis.Beacons.remove" : {
+        "request" : {
+          "$ref" : "Beacon"
+        }
+      },
+      "com.flag.engine.apis.Beacons.insert" : {
+        "request" : {
+          "$ref" : "Beacon"
+        }
+      },
       "com.flag.engine.apis.Images.insert" : {
         "request" : {
           "$ref" : "Image"
@@ -504,6 +658,11 @@
         }
       },
       "com.flag.engine.apis.Shops.get" : {
+        "response" : {
+          "$ref" : "Shop"
+        }
+      },
+      "com.flag.engine.apis.Shops.beacon" : {
         "response" : {
           "$ref" : "Shop"
         }

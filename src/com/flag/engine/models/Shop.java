@@ -1,10 +1,15 @@
 package com.flag.engine.models;
 
+import javax.jdo.JDOObjectNotFoundException;
+import javax.jdo.PersistenceManager;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
+
+import com.flag.engine.utils.KeyBuilder;
+import com.google.appengine.api.datastore.Key;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class Shop {
@@ -14,7 +19,7 @@ public class Shop {
 
 	@Persistent
 	private String name;
-	
+
 	@Persistent
 	private String imageUrl;
 
@@ -25,13 +30,9 @@ public class Shop {
 	private String description;
 
 	@Persistent
-	private int reward1;
+	private int reward;
 
-	@Persistent
-	private int reward2;
-	
-	@Persistent
-	private int sign;
+	private boolean checkedIn;
 
 	public Long getId() {
 		return id;
@@ -69,27 +70,34 @@ public class Shop {
 		this.description = description;
 	}
 
-	public int getReward1() {
-		return reward1;
+	public int getReward() {
+		return reward;
 	}
 
-	public void setReward1(int reward1) {
-		this.reward1 = reward1;
+	public void setReward(int reward) {
+		this.reward = reward;
 	}
 
-	public int getReward2() {
-		return reward2;
+	public boolean isCheckedIn() {
+		return checkedIn;
 	}
 
-	public void setReward2(int reward2) {
-		this.reward2 = reward2;
+	public void setCheckedIn(boolean checkedIn) {
+		this.checkedIn = checkedIn;
 	}
 
-	public int getSign() {
-		return sign;
-	}
+	public static boolean isCheckedIn(long userId, long id) {
+		PersistenceManager pm = PMF.getPersistenceManager();
 
-	public void setSign(int sign) {
-		this.sign = sign;
+		Key key = KeyBuilder.makeRewardKey(userId, id, Reward.TYPE_SHOP);
+		try {
+			Reward reward = pm.getObjectById(Reward.class, key);
+			if (reward != null)
+				return true;
+			else
+				return false;
+		} catch (JDOObjectNotFoundException e) {
+			return false;
+		}
 	}
 }
