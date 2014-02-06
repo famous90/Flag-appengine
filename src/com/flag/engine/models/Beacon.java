@@ -19,7 +19,7 @@ public class Beacon {
 	}
 
 	public void setId(String id) {
-		this.id = id;
+		this.id = id.toLowerCase();
 	}
 
 	public Long getShopId() {
@@ -28,5 +28,12 @@ public class Beacon {
 
 	public void setShopId(Long shopId) {
 		this.shopId = shopId;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("id: " + id).append("shopId: " + shopId);
+		return sb.toString();
 	}
 }
