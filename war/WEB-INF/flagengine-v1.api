@@ -24,9 +24,34 @@
     "maxAge" : 0
   },
   "methods" : {
+    "flagengine.barcodes.item" : {
+      "path" : "barcode",
+      "httpMethod" : "get",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Barcodes.item",
+      "request" : {
+        "parameters" : {
+          "userId" : {
+            "type" : "int64",
+            "required" : false
+          },
+          "barcodeId" : {
+            "type" : "int64",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
     "flagengine.barcodes.remove" : {
-      "path" : "remove",
-      "httpMethod" : "DELETE",
+      "path" : "barcode",
+      "httpMethod" : "delete",
       "authLevel" : "NONE",
       "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
       "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
@@ -41,7 +66,7 @@
       }
     },
     "flagengine.barcodes.insert" : {
-      "path" : "void",
+      "path" : "barcode",
       "httpMethod" : "post",
       "authLevel" : "NONE",
       "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
@@ -87,9 +112,34 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
+    "flagengine.beacons.shop" : {
+      "path" : "beacon",
+      "httpMethod" : "get",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Beacons.shop",
+      "request" : {
+        "parameters" : {
+          "userId" : {
+            "type" : "int64",
+            "required" : false
+          },
+          "beaconId" : {
+            "type" : "string",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
     "flagengine.beacons.remove" : {
-      "path" : "remove",
-      "httpMethod" : "DELETE",
+      "path" : "beacon",
+      "httpMethod" : "delete",
       "authLevel" : "NONE",
       "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
       "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
@@ -104,7 +154,7 @@
       }
     },
     "flagengine.beacons.insert" : {
-      "path" : "void",
+      "path" : "beacon",
       "httpMethod" : "post",
       "authLevel" : "NONE",
       "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
@@ -137,7 +187,7 @@
     },
     "flagengine.images.get" : {
       "path" : "image",
-      "httpMethod" : "GET",
+      "httpMethod" : "get",
       "authLevel" : "NONE",
       "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
       "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
@@ -157,8 +207,8 @@
       }
     },
     "flagengine.flags.list" : {
-      "path" : "flag_list",
-      "httpMethod" : "GET",
+      "path" : "flag",
+      "httpMethod" : "get",
       "authLevel" : "NONE",
       "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
       "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
@@ -166,6 +216,10 @@
       "rosyMethod" : "com.flag.engine.apis.Flags.list",
       "request" : {
         "parameters" : {
+          "userId" : {
+            "type" : "int64",
+            "required" : false
+          },
           "lat" : {
             "type" : "double",
             "required" : false
@@ -181,21 +235,6 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
-    "flagengine.flags.removeAll" : {
-      "path" : "allflags",
-      "httpMethod" : "DELETE",
-      "authLevel" : "NONE",
-      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
-      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
-      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.flag.engine.apis.Flags.removeAllFlags",
-      "request" : {
-        "body" : "empty"
-      },
-      "response" : {
-        "body" : "empty"
-      }
-    },
     "flagengine.flags.insert" : {
       "path" : "flag",
       "httpMethod" : "post",
@@ -209,11 +248,11 @@
         "bodyName" : "resource"
       },
       "response" : {
-        "body" : "autoTemplate(backendResponse)"
+        "body" : "empty"
       }
     },
     "flagengine.users.retain" : {
-      "path" : "user",
+      "path" : "retain_user",
       "httpMethod" : "post",
       "authLevel" : "NONE",
       "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
@@ -244,21 +283,6 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
-    "flagengine.users.removeAll" : {
-      "path" : "allusers",
-      "httpMethod" : "DELETE",
-      "authLevel" : "NONE",
-      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
-      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
-      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.flag.engine.apis.Users.removeAllUsers",
-      "request" : {
-        "body" : "empty"
-      },
-      "response" : {
-        "body" : "empty"
-      }
-    },
     "flagengine.users.get" : {
       "path" : "old_user",
       "httpMethod" : "post",
@@ -277,7 +301,7 @@
     },
     "flagengine.shops.get" : {
       "path" : "shop",
-      "httpMethod" : "GET",
+      "httpMethod" : "get",
       "authLevel" : "NONE",
       "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
       "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
@@ -291,31 +315,6 @@
           },
           "id" : {
             "type" : "int64",
-            "required" : false
-          }
-        },
-        "body" : "empty"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
-    "flagengine.shops.beacon" : {
-      "path" : "beacon",
-      "httpMethod" : "POST",
-      "authLevel" : "NONE",
-      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
-      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
-      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.flag.engine.apis.Shops.beacon",
-      "request" : {
-        "parameters" : {
-          "userId" : {
-            "type" : "int64",
-            "required" : false
-          },
-          "beaconId" : {
-            "type" : "string",
             "required" : false
           }
         },
@@ -357,34 +356,9 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
-    "flagengine.items.get" : {
-      "path" : "barcode",
-      "httpMethod" : "POST",
-      "authLevel" : "NONE",
-      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
-      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
-      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.flag.engine.apis.Items.barcode",
-      "request" : {
-        "parameters" : {
-          "userId" : {
-            "type" : "int64",
-            "required" : false
-          },
-          "barcodeId" : {
-            "type" : "int64",
-            "required" : false
-          }
-        },
-        "body" : "empty"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
     "flagengine.items.list" : {
-      "path" : "item_list",
-      "httpMethod" : "GET",
+      "path" : "item",
+      "httpMethod" : "get",
       "authLevel" : "NONE",
       "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
       "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
@@ -410,6 +384,39 @@
   },
   "descriptor" : {
     "schemas" : {
+      "Item" : {
+        "id" : "Item",
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "shopId" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "imageUrl" : {
+            "type" : "string"
+          },
+          "reward" : {
+            "type" : "integer"
+          },
+          "rewarded" : {
+            "type" : "boolean"
+          },
+          "rewardedForUser" : {
+            "type" : "string",
+            "format" : "int64"
+          }
+        }
+      },
       "Barcode" : {
         "id" : "Barcode",
         "type" : "object",
@@ -444,6 +451,10 @@
           },
           "reward" : {
             "type" : "integer"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "int64"
           }
         }
       },
@@ -464,14 +475,14 @@
           "name" : {
             "type" : "string"
           },
-          "complete" : {
-            "type" : "boolean"
-          },
           "namespace" : {
             "type" : "string"
           },
           "parent" : {
             "$ref" : "Key"
+          },
+          "complete" : {
+            "type" : "boolean"
           }
         }
       },
@@ -491,6 +502,38 @@
           },
           "reward" : {
             "type" : "integer"
+          }
+        }
+      },
+      "Shop" : {
+        "id" : "Shop",
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "imageUrl" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "integer"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "reward" : {
+            "type" : "integer"
+          },
+          "rewarded" : {
+            "type" : "boolean"
+          },
+          "rewardedForUser" : {
+            "type" : "string",
+            "format" : "int64"
           }
         }
       },
@@ -530,6 +573,10 @@
             "items" : {
               "$ref" : "Flag"
             }
+          },
+          "shopInfosOnFlags" : {
+            "type" : "string",
+            "format" : "int64"
           }
         }
       },
@@ -558,11 +605,17 @@
           "shopName" : {
             "type" : "string"
           },
-          "reward1" : {
+          "shopDescription" : {
+            "type" : "string"
+          },
+          "reward" : {
             "type" : "integer"
           },
-          "reward2" : {
-            "type" : "integer"
+          "rewarded" : {
+            "type" : "boolean"
+          },
+          "shopInfo" : {
+            "$ref" : "Shop"
           }
         }
       },
@@ -588,63 +641,6 @@
           }
         }
       },
-      "Shop" : {
-        "id" : "Shop",
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "format" : "int64"
-          },
-          "name" : {
-            "type" : "string"
-          },
-          "imageUrl" : {
-            "type" : "string"
-          },
-          "type" : {
-            "type" : "integer"
-          },
-          "description" : {
-            "type" : "string"
-          },
-          "reward" : {
-            "type" : "integer"
-          },
-          "rewarded" : {
-            "type" : "boolean"
-          }
-        }
-      },
-      "Item" : {
-        "id" : "Item",
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "format" : "int64"
-          },
-          "shopId" : {
-            "type" : "string",
-            "format" : "int64"
-          },
-          "name" : {
-            "type" : "string"
-          },
-          "description" : {
-            "type" : "string"
-          },
-          "imageUrl" : {
-            "type" : "string"
-          },
-          "reward" : {
-            "type" : "integer"
-          },
-          "rewarded" : {
-            "type" : "boolean"
-          }
-        }
-      },
       "ItemCollection" : {
         "id" : "ItemCollection",
         "type" : "object",
@@ -659,6 +655,11 @@
       }
     },
     "methods" : {
+      "com.flag.engine.apis.Barcodes.item" : {
+        "response" : {
+          "$ref" : "Item"
+        }
+      },
       "com.flag.engine.apis.Barcodes.remove" : {
         "request" : {
           "$ref" : "Barcode"
@@ -677,6 +678,11 @@
         },
         "response" : {
           "$ref" : "User"
+        }
+      },
+      "com.flag.engine.apis.Beacons.shop" : {
+        "response" : {
+          "$ref" : "Shop"
         }
       },
       "com.flag.engine.apis.Beacons.remove" : {
@@ -707,13 +713,8 @@
           "$ref" : "FlagCollection"
         }
       },
-      "com.flag.engine.apis.Flags.removeAllFlags" : {
-      },
       "com.flag.engine.apis.Flags.insert" : {
         "request" : {
-          "$ref" : "Flag"
-        },
-        "response" : {
           "$ref" : "Flag"
         }
       },
@@ -733,8 +734,6 @@
           "$ref" : "User"
         }
       },
-      "com.flag.engine.apis.Users.removeAllUsers" : {
-      },
       "com.flag.engine.apis.Users.get" : {
         "request" : {
           "$ref" : "UserForm"
@@ -744,11 +743,6 @@
         }
       },
       "com.flag.engine.apis.Shops.get" : {
-        "response" : {
-          "$ref" : "Shop"
-        }
-      },
-      "com.flag.engine.apis.Shops.beacon" : {
         "response" : {
           "$ref" : "Shop"
         }
@@ -765,11 +759,6 @@
         "request" : {
           "$ref" : "Item"
         },
-        "response" : {
-          "$ref" : "Item"
-        }
-      },
-      "com.flag.engine.apis.Items.barcode" : {
         "response" : {
           "$ref" : "Item"
         }

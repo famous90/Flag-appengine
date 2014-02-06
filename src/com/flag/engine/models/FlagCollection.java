@@ -3,6 +3,8 @@ package com.flag.engine.models;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.jdo.PersistenceManager;
+
 public class FlagCollection {
 	private List<Flag> flags;
 
@@ -25,14 +27,24 @@ public class FlagCollection {
 
 	public void filtLat(double min, double max) {
 		List<Flag> targets = new ArrayList<Flag>();
-		
+
 		for (Flag flag : flags)
 			if (flag.getLat() < min || flag.getLat() > max)
 				targets.add(flag);
-		
+
 		flags.removeAll(targets);
 	}
 
+	public void setShopInfosOnFlags(long userId) {
+		PersistenceManager pm = PMF.getPersistenceManager();
+		
+		for (Flag flag : flags) {
+			Shop shop = pm.getObjectById(Shop.class, flag.getShopId());
+			shop.setRewardedForUser(userId);
+			flag.setShopInfo(shop);
+		}
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

@@ -50,7 +50,7 @@ public class Users {
 	}
 	
 	@SuppressWarnings("unchecked")
-	@ApiMethod(name = "users.retain", path = "user", httpMethod = "post")
+	@ApiMethod(name = "users.retain", path = "retain_user", httpMethod = "post")
 	public User retain(RetainForm retainForm) {
 		log.warning("retain user: " + retainForm.toString());
 		
@@ -64,13 +64,5 @@ public class Users {
 			return null;
 		else
 			return new User(users.get(0));
-	}
-
-	@ApiMethod(name = "users.removeAll")
-	public void removeAllUsers() {
-		PersistenceManager pm = PMF.getPersistenceManager();
-		Query query = pm.newQuery(User.class);
-		query.deletePersistentAll();
-		pm.close();
 	}
 }

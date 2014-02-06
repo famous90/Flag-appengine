@@ -19,7 +19,7 @@ import com.google.api.server.spi.config.ApiMethod;
 public class Images {
 	private static final Logger log = Logger.getLogger(Flags.class.getName());
 	
-	@ApiMethod(name = "images.insert", httpMethod = "post")
+	@ApiMethod(name = "images.insert", path = "image", httpMethod = "post")
 	public Image insert(Image image) {
 		log.warning("insert image: " + image.toString());
 		
@@ -34,7 +34,7 @@ public class Images {
 	}
 
 	@SuppressWarnings("unchecked")
-	@ApiMethod(name = "images.get")
+	@ApiMethod(name = "images.get", path = "image", httpMethod = "get")
 	public Image get(@Nullable @Named("id") long id) {
 		PersistenceManager pm = PMF.getPersistenceManager();
 		

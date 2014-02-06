@@ -86,18 +86,18 @@ public class Shop {
 		this.rewarded = rewarded;
 	}
 
-	public static boolean isRewarded(long userId, long id) {
+	public void setRewardedForUser(long userId) {
 		PersistenceManager pm = PMF.getPersistenceManager();
 
 		Key key = KeyBuilder.makeRewardKey(userId, id, Reward.TYPE_SHOP);
 		try {
 			Reward reward = pm.getObjectById(Reward.class, key);
 			if (reward != null)
-				return true;
+				rewarded = true;
 			else
-				return false;
+				rewarded = false;
 		} catch (JDOObjectNotFoundException e) {
-			return false;
+			rewarded = false;
 		}
 	}
 }

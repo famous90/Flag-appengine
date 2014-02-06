@@ -27,14 +27,10 @@ public class Flag {
 	@Persistent
 	private Long shopId;
 
-	@Persistent
 	private String shopName;
-
-	@Persistent
-	private int reward1;
-
-	@Persistent
-	private int reward2;
+	private String shopDescription;
+	private int reward;
+	private boolean rewarded;
 
 	public Long getId() {
 		return id;
@@ -80,20 +76,35 @@ public class Flag {
 		this.shopName = shopName;
 	}
 
-	public int getReward1() {
-		return reward1;
+	public String getShopDescription() {
+		return shopDescription;
 	}
 
-	public void setReward1(int reward1) {
-		this.reward1 = reward1;
+	public void setShopDescription(String shopDescription) {
+		this.shopDescription = shopDescription;
 	}
 
-	public int getReward2() {
-		return reward2;
+	public int getReward() {
+		return reward;
 	}
 
-	public void setReward2(int reward2) {
-		this.reward2 = reward2;
+	public void setReward(int reward) {
+		this.reward = reward;
+	}
+
+	public boolean isRewarded() {
+		return rewarded;
+	}
+
+	public void setRewarded(boolean rewarded) {
+		this.rewarded = rewarded;
+	}
+
+	public void setShopInfo(Shop shop) {
+		shopName = shop.getName();
+		shopDescription = shop.getDescription();
+		reward = shop.getReward();
+		rewarded = shop.isRewarded();
 	}
 
 	@Override

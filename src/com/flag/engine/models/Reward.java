@@ -31,6 +31,9 @@ public class Reward {
 	@Persistent
 	private int reward;
 
+	@Persistent
+	private long createdAt;
+
 	public Key getKey() {
 		return key;
 	}
@@ -69,6 +72,14 @@ public class Reward {
 
 	public void setReward(int reward) {
 		this.reward = reward;
+	}
+
+	public long getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(long createdAt) {
+		this.createdAt = createdAt;
 	}
 
 	public Key refreshKey() {

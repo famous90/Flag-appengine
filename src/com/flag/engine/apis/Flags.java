@@ -22,8 +22,8 @@ import com.google.api.server.spi.config.ApiMethod;
 public class Flags {
 	private static final Logger log = Logger.getLogger(Flags.class.getName());
 
-	@ApiMethod(name = "flags.insert", httpMethod = "post")
-	public Flag insert(Flag flag) {
+	@ApiMethod(name = "flags.insert", path = "flag", httpMethod = "post")
+	public void insert(Flag flag) {
 		log.warning("insert flag: " + flag.toString());
 
 		flag.setCreatedAt(new Date().getTime());
@@ -31,13 +31,11 @@ public class Flags {
 		PersistenceManager pm = PMF.getPersistenceManager();
 		pm.makePersistent(flag);
 		pm.close();
-
-		return flag;
 	}
 
 	@SuppressWarnings("unchecked")
-	@ApiMethod(name = "flags.list", path = "flag_list")
-	public FlagCollection list(@Nullable @Named("lat") double lat, @Nullable @Named("lon") double lon) {
+	@ApiMethod(name = "flags.list", path = "flag", httpMethod = "get")
+	public FlagCollection list(@Nullable @Named("userId") long userId, @Nullable @Named("lat") double lat, @Nullable @Named("lon") double lon) {
 		log.warning("list flag: lat=" + lat + " lon=" + lon);
 		
 		PersistenceManager pm = PMF.getPersistenceManager();
@@ -49,15 +47,8 @@ public class Flags {
 		
 		FlagCollection flagCol = new FlagCollection(flags);
 		flagCol.filtLat(lat - LocationUtils.NEAR_DISTANCE_DEGREE, lat + LocationUtils.NEAR_DISTANCE_DEGREE);
+		flagCol.setShopInfosOnFlags(userId);
 
 		return flagCol;
-	}
-	
-	@ApiMethod(name = "flags.removeAll")
-	public void removeAllFlags() {
-		PersistenceManager pm = PMF.getPersistenceManager();
-		Query query = pm.newQuery(Flag.class);
-		query.deletePersistentAll();
-		pm.close();
 	}
 }
