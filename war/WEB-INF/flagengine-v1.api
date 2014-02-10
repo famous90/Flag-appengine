@@ -112,6 +112,27 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
+    "flagengine.rewards.get" : {
+      "path" : "reward",
+      "httpMethod" : "get",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Rewards.list",
+      "request" : {
+        "parameters" : {
+          "userId" : {
+            "type" : "int64",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
     "flagengine.beacons.shop" : {
       "path" : "beacon",
       "httpMethod" : "get",
@@ -445,6 +466,9 @@
             "type" : "string",
             "format" : "int64"
           },
+          "targetName" : {
+            "type" : "string"
+          },
           "type" : {
             "type" : "string",
             "format" : "int64"
@@ -475,14 +499,14 @@
           "name" : {
             "type" : "string"
           },
-          "namespace" : {
-            "type" : "string"
-          },
           "parent" : {
             "$ref" : "Key"
           },
           "complete" : {
             "type" : "boolean"
+          },
+          "namespace" : {
+            "type" : "string"
           }
         }
       },
@@ -502,6 +526,18 @@
           },
           "reward" : {
             "type" : "integer"
+          }
+        }
+      },
+      "RewardCollection" : {
+        "id" : "RewardCollection",
+        "type" : "object",
+        "properties" : {
+          "rewards" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "Reward"
+            }
           }
         }
       },
@@ -678,6 +714,11 @@
         },
         "response" : {
           "$ref" : "User"
+        }
+      },
+      "com.flag.engine.apis.Rewards.list" : {
+        "response" : {
+          "$ref" : "RewardCollection"
         }
       },
       "com.flag.engine.apis.Beacons.shop" : {

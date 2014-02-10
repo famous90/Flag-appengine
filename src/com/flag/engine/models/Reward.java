@@ -26,6 +26,9 @@ public class Reward {
 	private Long targetId;
 
 	@Persistent
+	private String targetName;
+
+	@Persistent
 	private Long type;
 
 	@Persistent
@@ -56,6 +59,14 @@ public class Reward {
 
 	public void setTargetId(Long targetId) {
 		this.targetId = targetId;
+	}
+
+	public String getTargetName() {
+		return targetName;
+	}
+
+	public void setTargetName(String targetName) {
+		this.targetName = targetName;
 	}
 
 	public Long getType() {
