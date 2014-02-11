@@ -15,4 +15,5 @@ public class Redeems {
 	public void insert() {
 		log.warning("insert redeem: ");
 	}
+	
 }
