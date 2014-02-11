@@ -35,6 +35,7 @@ public class Reward {
 	private int reward;
 
 	@Persistent
+	@Index
 	private long createdAt;
 
 	public Key getKey() {
