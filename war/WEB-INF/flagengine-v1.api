@@ -112,7 +112,7 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
-    "flagengine.rewards.get" : {
+    "flagengine.rewards.list" : {
       "path" : "reward",
       "httpMethod" : "get",
       "authLevel" : "NONE",

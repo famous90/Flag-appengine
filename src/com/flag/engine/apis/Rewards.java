@@ -58,7 +58,7 @@ public class Rewards {
 	}
 	
 	@SuppressWarnings("unchecked")
-	@ApiMethod(name = "rewards.get", path = "reward", httpMethod = "get")
+	@ApiMethod(name = "rewards.list", path = "reward", httpMethod = "get")
 	public RewardCollection list(@Nullable @Named("userId") long userId) {
 		log.warning("list rewards: " + userId);
 		
