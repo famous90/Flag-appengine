@@ -27,6 +27,9 @@ public class Item {
 
 	@Persistent
 	private String description;
+	
+	@Persistent
+	private int price;
 
 	@Persistent
 	private String imageUrl;
@@ -66,6 +69,14 @@ public class Item {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public int getPrice() {
+		return price;
+	}
+
+	public void setPrice(int price) {
+		this.price = price;
 	}
 
 	public String getImageUrl() {
