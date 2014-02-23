@@ -26,13 +26,16 @@ public class Item {
 	private String name;
 
 	@Persistent
+	private String imageUrl;
+
+	@Persistent
 	private String description;
-	
+
 	@Persistent
 	private int price;
 
 	@Persistent
-	private String imageUrl;
+	private String barcodeId;
 
 	@Persistent
 	private int reward;
@@ -63,6 +66,14 @@ public class Item {
 		this.name = name;
 	}
 
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+
 	public String getDescription() {
 		return description;
 	}
@@ -79,12 +90,12 @@ public class Item {
 		this.price = price;
 	}
 
-	public String getImageUrl() {
-		return imageUrl;
+	public String getBarcodeId() {
+		return barcodeId;
 	}
 
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
+	public void setBarcodeId(String barcodeId) {
+		this.barcodeId = barcodeId;
 	}
 
 	public int getReward() {

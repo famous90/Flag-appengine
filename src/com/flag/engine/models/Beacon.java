@@ -1,6 +1,7 @@
 package com.flag.engine.models;
 
 import javax.jdo.annotations.IdentityType;
+import javax.jdo.annotations.Index;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
@@ -12,6 +13,7 @@ public class Beacon {
 	private String id;
 	
 	@Persistent
+	@Index
 	private Long shopId;
 
 	public String getId() {

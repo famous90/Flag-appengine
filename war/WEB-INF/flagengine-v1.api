@@ -133,31 +133,6 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
-    "flagengine.beacons.shop" : {
-      "path" : "beacon",
-      "httpMethod" : "get",
-      "authLevel" : "NONE",
-      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
-      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
-      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.flag.engine.apis.Beacons.shop",
-      "request" : {
-        "parameters" : {
-          "userId" : {
-            "type" : "int64",
-            "required" : false
-          },
-          "beaconId" : {
-            "type" : "string",
-            "required" : true
-          }
-        },
-        "body" : "empty"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
     "flagengine.beacons.remove" : {
       "path" : "beacon",
       "httpMethod" : "delete",
@@ -320,7 +295,7 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
-    "flagengine.shops.get" : {
+    "flagengine.shops.shop" : {
       "path" : "shop",
       "httpMethod" : "get",
       "authLevel" : "NONE",
@@ -334,9 +309,9 @@
             "type" : "int64",
             "required" : false
           },
-          "id" : {
-            "type" : "int64",
-            "required" : false
+          "beaconId" : {
+            "type" : "string",
+            "required" : true
           }
         },
         "body" : "empty"
@@ -420,13 +395,16 @@
           "name" : {
             "type" : "string"
           },
+          "imageUrl" : {
+            "type" : "string"
+          },
           "description" : {
             "type" : "string"
           },
           "price" : {
             "type" : "integer"
           },
-          "imageUrl" : {
+          "barcodeId" : {
             "type" : "string"
           },
           "reward" : {
@@ -502,11 +480,11 @@
           "name" : {
             "type" : "string"
           },
-          "complete" : {
-            "type" : "boolean"
-          },
           "namespace" : {
             "type" : "string"
+          },
+          "complete" : {
+            "type" : "boolean"
           },
           "parent" : {
             "$ref" : "Key"
@@ -541,38 +519,6 @@
             "items" : {
               "$ref" : "Reward"
             }
-          }
-        }
-      },
-      "Shop" : {
-        "id" : "Shop",
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "format" : "int64"
-          },
-          "name" : {
-            "type" : "string"
-          },
-          "imageUrl" : {
-            "type" : "string"
-          },
-          "type" : {
-            "type" : "integer"
-          },
-          "description" : {
-            "type" : "string"
-          },
-          "reward" : {
-            "type" : "integer"
-          },
-          "rewarded" : {
-            "type" : "boolean"
-          },
-          "rewardedForUser" : {
-            "type" : "string",
-            "format" : "int64"
           }
         }
       },
@@ -658,6 +604,42 @@
           }
         }
       },
+      "Shop" : {
+        "id" : "Shop",
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "parentId" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "imageUrl" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "integer"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "reward" : {
+            "type" : "integer"
+          },
+          "rewarded" : {
+            "type" : "boolean"
+          },
+          "rewardedForUser" : {
+            "type" : "string",
+            "format" : "int64"
+          }
+        }
+      },
       "RetainForm" : {
         "id" : "RetainForm",
         "type" : "object",
@@ -722,11 +704,6 @@
       "com.flag.engine.apis.Rewards.list" : {
         "response" : {
           "$ref" : "RewardCollection"
-        }
-      },
-      "com.flag.engine.apis.Beacons.shop" : {
-        "response" : {
-          "$ref" : "Shop"
         }
       },
       "com.flag.engine.apis.Beacons.remove" : {

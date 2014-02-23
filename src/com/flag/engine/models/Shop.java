@@ -18,6 +18,9 @@ public class Shop {
 	private Long id;
 
 	@Persistent
+	private Long parentId;
+
+	@Persistent
 	private String name;
 
 	@Persistent
@@ -36,6 +39,18 @@ public class Shop {
 
 	public Long getId() {
 		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Long getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(Long parentId) {
+		this.parentId = parentId;
 	}
 
 	public String getName() {
