@@ -54,7 +54,7 @@ public class Rewards {
 		
 		pm.close();
 		
-		return user;
+		return new User(user);
 	}
 	
 	@SuppressWarnings("unchecked")

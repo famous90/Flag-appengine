@@ -30,7 +30,7 @@ public class Shops {
 		return shop;
 	}
 
-	@ApiMethod(name = "shops.shop", path = "shop", httpMethod = "get")
+	@ApiMethod(name = "shops.get", path = "shop", httpMethod = "get")
 	public Shop get(@Nullable @Named("userId") long userId, @Named("beaconId") String beaconId) {
 		PersistenceManager pm = PMF.getPersistenceManager();
 		Shop shop = null;

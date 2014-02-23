@@ -295,7 +295,7 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
-    "flagengine.shops.shop" : {
+    "flagengine.shops.get" : {
       "path" : "shop",
       "httpMethod" : "get",
       "authLevel" : "NONE",
