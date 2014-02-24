@@ -32,7 +32,7 @@ public class Item {
 	private String description;
 
 	@Persistent
-	private int price;
+	private Integer price;
 
 	@Persistent
 	private String barcodeId;
@@ -83,7 +83,7 @@ public class Item {
 	}
 
 	public int getPrice() {
-		return price;
+		return (price == null)? 0 : price;
 	}
 
 	public void setPrice(int price) {
