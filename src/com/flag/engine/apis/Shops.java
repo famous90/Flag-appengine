@@ -34,9 +34,9 @@ public class Shops {
 	public Shop get(@Nullable @Named("userId") long userId, @Named("beaconId") String beaconId) {
 		PersistenceManager pm = PMF.getPersistenceManager();
 		Shop shop = null;
-
+		
 		try {
-			Beacon beacon = pm.getObjectById(Beacon.class, beaconId);
+			Beacon beacon = pm.getObjectById(Beacon.class, beaconId.toUpperCase());
 			shop = pm.getObjectById(Shop.class, beacon.getShopId());
 			shop.setRewardedForUser(userId);
 		} catch (JDOObjectNotFoundException e) {

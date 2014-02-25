@@ -21,7 +21,7 @@ public class Beacon {
 	}
 
 	public void setId(String id) {
-		this.id = id.toLowerCase();
+		this.id = id.toUpperCase();
 	}
 
 	public Long getShopId() {

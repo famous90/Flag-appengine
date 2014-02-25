@@ -162,7 +162,7 @@
         "bodyName" : "resource"
       },
       "response" : {
-        "body" : "empty"
+        "body" : "autoTemplate(backendResponse)"
       }
     },
     "flagengine.images.insert" : {
@@ -745,6 +745,9 @@
       },
       "com.flag.engine.apis.Beacons.insert" : {
         "request" : {
+          "$ref" : "Beacon"
+        },
+        "response" : {
           "$ref" : "Beacon"
         }
       },

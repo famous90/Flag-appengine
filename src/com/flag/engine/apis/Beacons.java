@@ -17,12 +17,14 @@ public class Beacons {
 	private static final Logger log = Logger.getLogger(Flags.class.getName());
 
 	@ApiMethod(name = "beacons.insert", path = "beacon", httpMethod = "post")
-	public void insert(Beacon beacon) {
+	public Beacon insert(Beacon beacon) {
 		log.warning("insert beacon: " + beacon.toString());
 
 		PersistenceManager pm = PMF.getPersistenceManager();
 		pm.makePersistent(beacon);
 		pm.close();
+		
+		return beacon;
 	}
 
 	// TODO beacon list
