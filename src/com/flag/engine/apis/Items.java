@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 import javax.inject.Named;
+import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
@@ -49,4 +50,23 @@ public class Items {
 		return new ItemCollection(items);
 	}
 
+	@ApiMethod(name = "items.update", path = "item", httpMethod = "put")
+	public Item update(Item item) {
+		log.warning("update item: " + item.toString());
+
+		PersistenceManager pm = PMF.getPersistenceManager();
+		Item target = null;
+
+		try {
+			target = pm.getObjectById(Item.class, item.getId());
+			target.update(item);
+			pm.makePersistent(target);
+		} catch (JDOObjectNotFoundException e) {
+			return null;
+		} finally {
+			pm.close();
+		}
+
+		return target;
+	}
 }

@@ -46,7 +46,7 @@ public class Shop {
 	}
 
 	public Long getParentId() {
-		return parentId;
+		return (parentId == null)? 0 : parentId;
 	}
 
 	public void setParentId(Long parentId) {
@@ -114,5 +114,15 @@ public class Shop {
 		} catch (JDOObjectNotFoundException e) {
 			rewarded = false;
 		}
+	}
+
+	public void update(Shop shop) {
+		if (shop.getName() != null && !shop.getName().isEmpty())
+			this.name = shop.getName();
+		if (shop.getImageUrl() != null && !shop.getImageUrl().isEmpty())
+			this.imageUrl = shop.getImageUrl();
+		if (shop.getDescription() != null && !shop.getDescription().isEmpty())
+			this.description = shop.getDescription();
+		this.reward = shop.getReward();
 	}
 }

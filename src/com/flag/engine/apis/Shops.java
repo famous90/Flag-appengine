@@ -45,6 +45,26 @@ public class Shops {
 
 		return shop;
 	}
+	
+	@ApiMethod(name = "shops.update", path = "shop", httpMethod = "put")
+	public Shop update(Shop shop) {
+		log.warning("update shop: " + shop.toString());
+		
+		PersistenceManager pm = PMF.getPersistenceManager();
+		Shop target = null;
+		
+		try {
+			target = pm.getObjectById(Shop.class, shop.getId());
+			target.update(shop);
+			pm.makePersistent(target);
+		} catch(JDOObjectNotFoundException e) {
+			return null;
+		} finally {
+			pm.close();
+		}
+		
+		return target;
+	}
 
 //	@ApiMethod(name = "shops.get", path = "shop", httpMethod = "get")
 //	public Shop get(@Nullable @Named("userId") long userId, @Nullable @Named("id") long id) {

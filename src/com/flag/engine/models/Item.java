@@ -83,7 +83,7 @@ public class Item {
 	}
 
 	public int getPrice() {
-		return (price == null)? 0 : price;
+		return (price == null) ? 0 : price;
 	}
 
 	public void setPrice(int price) {
@@ -127,5 +127,18 @@ public class Item {
 		} catch (JDOObjectNotFoundException e) {
 			rewarded = false;
 		}
+	}
+
+	public void update(Item item) {
+		if (item.getName() != null && !item.getName().isEmpty())
+			this.name = item.getName();
+		if (item.getImageUrl() != null && !item.getImageUrl().isEmpty())
+			this.imageUrl = item.getImageUrl();
+		if (item.getDescription() != null && !item.getDescription().isEmpty())
+			this.description = item.getDescription();
+		if (item.getBarcodeId() != null && !item.getBarcodeId().isEmpty())
+			this.barcodeId = item.getBarcodeId();
+		this.price = item.getPrice();
+		this.reward = item.getReward();
 	}
 }
