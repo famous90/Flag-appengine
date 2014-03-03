@@ -1,5 +1,6 @@
 package com.flag.engine.apis;
 
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -28,6 +29,9 @@ public class Rewards {
 
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 
+		// mark
+		reward.setCreatedAt(new Date().getTime());
+		
 		// redundancy check
 		if (Reward.exists(reward.getUserId(), reward.getTargetId(), reward.getType()))
 			return null;

@@ -3,6 +3,7 @@ package com.flag.engine.models;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 
 public class FlagCollection {
@@ -37,14 +38,18 @@ public class FlagCollection {
 
 	public void setShopInfosOnFlags(long userId) {
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
-		
+
 		for (Flag flag : flags) {
-			Shop shop = pm.getObjectById(Shop.class, flag.getShopId());
-			shop.setRewardedForUser(userId);
-			flag.setShopInfo(shop);
+			try {
+				Shop shop = pm.getObjectById(Shop.class, flag.getShopId());
+				shop.setRewardedForUser(userId);
+				flag.setShopInfo(shop);
+			} catch (JDOObjectNotFoundException e) {
+				continue;
+			}
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

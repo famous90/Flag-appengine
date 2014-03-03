@@ -31,7 +31,8 @@ public class Flag {
 	@Column(name = "shop_id")
 	private Long shopId;
 
-	@NotPersistent
+	@Persistent
+	@Column(name = "shop_name")
 	private String shopName;
 
 	@NotPersistent
@@ -112,7 +113,6 @@ public class Flag {
 	}
 
 	public void setShopInfo(Shop shop) {
-		shopName = shop.getName();
 		shopDescription = shop.getDescription();
 		reward = shop.getReward();
 		rewarded = shop.isRewarded();
