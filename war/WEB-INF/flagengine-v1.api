@@ -244,7 +244,7 @@
         "bodyName" : "resource"
       },
       "response" : {
-        "body" : "empty"
+        "body" : "autoTemplate(backendResponse)"
       }
     },
     "flagengine.users.retain" : {
@@ -512,11 +512,11 @@
           "name" : {
             "type" : "string"
           },
-          "complete" : {
-            "type" : "boolean"
-          },
           "parent" : {
             "$ref" : "Key"
+          },
+          "complete" : {
+            "type" : "boolean"
           },
           "namespace" : {
             "type" : "string"
@@ -771,6 +771,9 @@
       },
       "com.flag.engine.apis.Flags.insert" : {
         "request" : {
+          "$ref" : "Flag"
+        },
+        "response" : {
           "$ref" : "Flag"
         }
       },

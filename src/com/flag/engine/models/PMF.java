@@ -15,12 +15,26 @@
 
 package com.flag.engine.models;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.jdo.JDOHelper;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 
 public final class PMF {
+	private static Map<String, String> properties = new HashMap<String, String>();
+
+	static {
+		properties.put("javax.jdo.option.ConnectionDriverName", System.getProperty("cloudsql.driver"));
+		properties.put("javax.jdo.option.ConnectionURL", System.getProperty("cloudsql.url"));
+		properties.put("javax.jdo.option.ConnectionUserName", System.getProperty("cloudsql.user"));
+		properties.put("javax.jdo.option.ConnectionPassword", System.getProperty("cloudsql.password"));
+		properties.put("datanucleus.autoCreateTables", "true");
+	}
+
 	private static final PersistenceManagerFactory pmfInstance = JDOHelper.getPersistenceManagerFactory("transactions-optional");
+	private static final PersistenceManagerFactory pmfInstanceSQL = JDOHelper.getPersistenceManagerFactory(properties, "transactions-optional");
 
 	private PMF() {
 	}
@@ -28,8 +42,17 @@ public final class PMF {
 	public static PersistenceManagerFactory get() {
 		return pmfInstance;
 	}
-	
+
 	public static PersistenceManager getPersistenceManager() {
 		return pmfInstance.getPersistenceManager();
 	}
+
+	public static PersistenceManagerFactory getSQL() {
+		return pmfInstanceSQL;
+	}
+	
+	public static PersistenceManager getPersistenceManagerSQL() {
+		return pmfInstanceSQL.getPersistenceManager();
+	}
+	
 }

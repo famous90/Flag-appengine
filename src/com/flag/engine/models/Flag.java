@@ -1,35 +1,49 @@
 package com.flag.engine.models;
 
+import javax.jdo.annotations.Column;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.Index;
+import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
-@PersistenceCapable(identityType = IdentityType.APPLICATION)
+@PersistenceCapable(identityType = IdentityType.APPLICATION, table = "flags")
 public class Flag {
+	@Persistent(valueStrategy = IdGeneratorStrategy.INCREMENT)
 	@PrimaryKey
-	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	@Column(name = "id")
 	private Long id;
 
 	@Persistent
 	@Index
+	@Column(name = "lat")
 	private double lat;
 
 	@Persistent
 	@Index
+	@Column(name = "lon")
 	private double lon;
 
 	@Persistent
+	@Column(name = "created_at")
 	private long createdAt;
 
 	@Persistent
+	@Column(name = "shop_id")
 	private Long shopId;
 
+	@NotPersistent
 	private String shopName;
+
+	@NotPersistent
 	private String shopDescription;
+
+	@NotPersistent
 	private int reward;
+
+	@NotPersistent
 	private boolean rewarded;
 
 	public Long getId() {
