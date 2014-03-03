@@ -43,12 +43,13 @@ public class Flags {
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 
 		Query query = pm.newQuery(Flag.class);
-		query.setFilter("lon > minLon && lon < maxLon");
-		query.declareParameters("double minLon, double maxLon");
-		List<Flag> flags = (List<Flag>) pm.newQuery(query).execute(lon - LocationUtils.NEAR_DISTANCE_DEGREE, lon + LocationUtils.NEAR_DISTANCE_DEGREE);
+		query.setFilter("lon > minLon && lon < maxLon && lat > minLat && lat < maxLat");
+		query.declareParameters("double minLon, double maxLon, double minLat, double maxLat");
+		List<Flag> flags = (List<Flag>) pm.newQuery(query).executeWithArray(lon - LocationUtils.NEAR_DISTANCE_DEGREE, lon + LocationUtils.NEAR_DISTANCE_DEGREE,
+				lat - LocationUtils.NEAR_DISTANCE_DEGREE, lat + LocationUtils.NEAR_DISTANCE_DEGREE);
 
 		FlagCollection flagCol = new FlagCollection(flags);
-		flagCol.filtLat(lat - LocationUtils.NEAR_DISTANCE_DEGREE, lat + LocationUtils.NEAR_DISTANCE_DEGREE);
+//		flagCol.filtLat(lat - LocationUtils.NEAR_DISTANCE_DEGREE, lat + LocationUtils.NEAR_DISTANCE_DEGREE);
 		flagCol.setShopInfosOnFlags(userId);
 
 		return flagCol;

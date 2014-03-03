@@ -25,7 +25,7 @@ public class Items {
 	public Item insert(Item item) {
 		log.warning("insert item: " + item.toString());
 
-		PersistenceManager pm = PMF.getPersistenceManager();
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		pm.makePersistent(item);
 		pm.close();
 
@@ -37,7 +37,7 @@ public class Items {
 	public ItemCollection list(@Nullable @Named("userId") long userId, @Nullable @Named("shopId") long shopId) {
 		log.warning("list item: " + shopId);
 
-		PersistenceManager pm = PMF.getPersistenceManager();
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 
 		Query query = pm.newQuery(Item.class);
 		query.setFilter("shopId == theShopid");
@@ -54,7 +54,7 @@ public class Items {
 	public Item update(Item item) {
 		log.warning("update item: " + item.toString());
 
-		PersistenceManager pm = PMF.getPersistenceManager();
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		Item target = null;
 
 		try {

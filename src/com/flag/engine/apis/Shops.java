@@ -23,7 +23,7 @@ public class Shops {
 	public Shop insert(Shop shop) {
 		log.warning("insert shop: " + shop.toString());
 
-		PersistenceManager pm = PMF.getPersistenceManager();
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		pm.makePersistent(shop);
 		pm.close();
 
@@ -32,7 +32,7 @@ public class Shops {
 
 	@ApiMethod(name = "shops.get", path = "shop", httpMethod = "get")
 	public Shop get(@Nullable @Named("userId") long userId, @Named("beaconId") String beaconId) {
-		PersistenceManager pm = PMF.getPersistenceManager();
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		Shop shop = null;
 		
 		try {
@@ -50,7 +50,7 @@ public class Shops {
 	public Shop update(Shop shop) {
 		log.warning("update shop: " + shop.toString());
 		
-		PersistenceManager pm = PMF.getPersistenceManager();
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		Shop target = null;
 		
 		try {

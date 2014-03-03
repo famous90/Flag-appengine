@@ -36,7 +36,7 @@ public class FlagCollection {
 	}
 
 	public void setShopInfosOnFlags(long userId) {
-		PersistenceManager pm = PMF.getPersistenceManager();
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		
 		for (Flag flag : flags) {
 			Shop shop = pm.getObjectById(Shop.class, flag.getShopId());

@@ -25,7 +25,7 @@ public class Users {
 
 		User user = new User(userForm);
 
-		PersistenceManager pm = PMF.getPersistenceManager();
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		pm.makePersistent(user);
 		pm.close();
 
@@ -37,7 +37,7 @@ public class Users {
 	public User get(UserForm userForm) {
 		log.warning("old user: " + userForm.toString());
 
-		PersistenceManager pm = PMF.getPersistenceManager();
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		Query query = pm.newQuery(User.class);
 		query.setFilter("email == theEmail && password == thePassword");
 		query.declareParameters("String theEmail, String thePassword");
@@ -54,7 +54,7 @@ public class Users {
 	public User retain(RetainForm retainForm) {
 		log.warning("retain user: " + retainForm.toString());
 		
-		PersistenceManager pm = PMF.getPersistenceManager();
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		Query query = pm.newQuery(User.class);
 		query.setFilter("id == theId");
 		query.declareParameters("long theId");

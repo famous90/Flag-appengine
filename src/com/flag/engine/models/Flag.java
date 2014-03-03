@@ -13,17 +13,14 @@ import javax.jdo.annotations.PrimaryKey;
 public class Flag {
 	@Persistent(valueStrategy = IdGeneratorStrategy.INCREMENT)
 	@PrimaryKey
-	@Column(name = "id")
 	private Long id;
 
 	@Persistent
 	@Index
-	@Column(name = "lat")
 	private double lat;
 
 	@Persistent
 	@Index
-	@Column(name = "lon")
 	private double lon;
 
 	@Persistent

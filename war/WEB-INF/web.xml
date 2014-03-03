@@ -4,7 +4,7 @@
     <servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>
     <init-param>
       <param-name>services</param-name>
-      <param-value>com.flag.engine.apis.Barcodes,com.flag.engine.apis.Beacons,com.flag.engine.apis.Flags,com.flag.engine.apis.Images,com.flag.engine.apis.Items,com.flag.engine.apis.Redeems,com.flag.engine.apis.Rewards,com.flag.engine.apis.Shops,com.flag.engine.apis.Users</param-value>
+      <param-value>com.flag.engine.apis.Beacons,com.flag.engine.apis.Flags,com.flag.engine.apis.Items,com.flag.engine.apis.Rewards,com.flag.engine.apis.Shops,com.flag.engine.apis.Users</param-value>
     </init-param>
   </servlet>
   <servlet-mapping>

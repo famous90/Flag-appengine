@@ -7,10 +7,10 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
-@PersistenceCapable(identityType = IdentityType.APPLICATION)
+@PersistenceCapable(identityType = IdentityType.APPLICATION, table = "users")
 public class User {
 	@PrimaryKey
-	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	@Persistent(valueStrategy = IdGeneratorStrategy.INCREMENT)
 	private Long id;
 
 	@Persistent
@@ -65,11 +65,11 @@ public class User {
 	public void setReward(int reward) {
 		this.reward = reward;
 	}
-	
+
 	public void rewarded(int reward) {
 		this.reward += reward;
 	}
-	
+
 	public void redeemed(int redeem) {
 		reward -= redeem;
 	}

@@ -1,29 +1,28 @@
 package com.flag.engine.models;
 
-import javax.jdo.JDOObjectNotFoundException;
-import javax.jdo.PersistenceManager;
+import javax.jdo.annotations.Column;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
+import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
-import com.flag.engine.utils.KeyBuilder;
-import com.google.appengine.api.datastore.Key;
-
-@PersistenceCapable(identityType = IdentityType.APPLICATION)
+@PersistenceCapable(identityType = IdentityType.APPLICATION, table = "shops")
 public class Shop {
 	@PrimaryKey
-	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	@Persistent(valueStrategy = IdGeneratorStrategy.INCREMENT)
 	private Long id;
 
 	@Persistent
+	@Column(name = "parent_id")
 	private Long parentId;
 
 	@Persistent
 	private String name;
 
 	@Persistent
+	@Column(name = "image_url")
 	private String imageUrl;
 
 	@Persistent
@@ -35,6 +34,7 @@ public class Shop {
 	@Persistent
 	private int reward;
 
+	@NotPersistent
 	private boolean rewarded;
 
 	public Long getId() {
@@ -46,7 +46,7 @@ public class Shop {
 	}
 
 	public Long getParentId() {
-		return (parentId == null)? 0 : parentId;
+		return (parentId == null) ? 0 : parentId;
 	}
 
 	public void setParentId(Long parentId) {
@@ -102,18 +102,7 @@ public class Shop {
 	}
 
 	public void setRewardedForUser(long userId) {
-		PersistenceManager pm = PMF.getPersistenceManager();
-
-		Key key = KeyBuilder.makeRewardKey(userId, id, Reward.TYPE_SHOP);
-		try {
-			Reward reward = pm.getObjectById(Reward.class, key);
-			if (reward != null)
-				rewarded = true;
-			else
-				rewarded = false;
-		} catch (JDOObjectNotFoundException e) {
-			rewarded = false;
-		}
+		this.rewarded = Reward.exists(userId, id, Reward.TYPE_SHOP);
 	}
 
 	public void update(Shop shop) {
