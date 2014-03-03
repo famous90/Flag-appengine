@@ -32,12 +32,13 @@ public class Shops {
 
 	@ApiMethod(name = "shops.get", path = "shop", httpMethod = "get")
 	public Shop get(@Nullable @Named("userId") long userId, @Named("beaconId") String beaconId) {
-		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+		PersistenceManager pm = PMF.getPersistenceManager();
+		PersistenceManager pmSQL = PMF.getPersistenceManagerSQL();
 		Shop shop = null;
 		
 		try {
 			Beacon beacon = pm.getObjectById(Beacon.class, beaconId.toUpperCase());
-			shop = pm.getObjectById(Shop.class, beacon.getShopId());
+			shop = pmSQL.getObjectById(Shop.class, beacon.getShopId());
 			shop.setRewardedForUser(userId);
 		} catch (JDOObjectNotFoundException e) {
 			return null;
