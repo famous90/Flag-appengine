@@ -14,8 +14,8 @@ import javax.jdo.annotations.PrimaryKey;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION, table = "rewards")
 public class Reward {
-	public static final long TYPE_SHOP = 101;
-	public static final long TYPE_ITEM = 202;
+	public static final long TYPE_SHOP = 1;
+	public static final long TYPE_ITEM = 2;
 
 	@Persistent(valueStrategy = IdGeneratorStrategy.INCREMENT)
 	@PrimaryKey

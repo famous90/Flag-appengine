@@ -31,7 +31,7 @@ public class Item {
 	private String description;
 
 	@Persistent
-	private Integer price;
+	private String price;
 
 	@Persistent
 	@Column(name = "barcode_id")
@@ -83,11 +83,11 @@ public class Item {
 		this.description = description;
 	}
 
-	public int getPrice() {
-		return (price == null) ? 0 : price;
+	public String getPrice() {
+		return price;
 	}
 
-	public void setPrice(int price) {
+	public void setPrice(String price) {
 		this.price = price;
 	}
 
@@ -128,7 +128,8 @@ public class Item {
 			this.description = item.getDescription();
 		if (item.getBarcodeId() != null && !item.getBarcodeId().isEmpty())
 			this.barcodeId = item.getBarcodeId();
-		this.price = item.getPrice();
+		if (item.getPrice() != null && !item.getPrice().isEmpty())
+			this.price = item.getPrice();
 		this.reward = item.getReward();
 	}
 }

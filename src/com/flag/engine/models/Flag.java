@@ -36,6 +36,9 @@ public class Flag {
 	private String shopName;
 
 	@NotPersistent
+	private String shopLogo;
+
+	@NotPersistent
 	private String shopDescription;
 
 	@NotPersistent
@@ -46,6 +49,10 @@ public class Flag {
 
 	public Long getId() {
 		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public double getLat() {
@@ -88,6 +95,14 @@ public class Flag {
 		this.shopName = shopName;
 	}
 
+	public String getShopLogo() {
+		return shopLogo;
+	}
+
+	public void setShopLogo(String shopLogo) {
+		this.shopLogo = shopLogo;
+	}
+
 	public String getShopDescription() {
 		return shopDescription;
 	}
@@ -113,6 +128,7 @@ public class Flag {
 	}
 
 	public void setShopInfo(Shop shop) {
+		shopLogo = shop.getLogoUrl();
 		shopDescription = shop.getDescription();
 		reward = shop.getReward();
 		rewarded = shop.isRewarded();

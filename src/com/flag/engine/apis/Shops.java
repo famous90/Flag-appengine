@@ -8,7 +8,6 @@ import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 
 import com.flag.engine.constants.Constants;
-import com.flag.engine.models.Beacon;
 import com.flag.engine.models.PMF;
 import com.flag.engine.models.Shop;
 import com.google.api.server.spi.config.Api;
@@ -31,14 +30,12 @@ public class Shops {
 	}
 
 	@ApiMethod(name = "shops.get", path = "shop", httpMethod = "get")
-	public Shop get(@Nullable @Named("userId") long userId, @Named("beaconId") String beaconId) {
-		PersistenceManager pm = PMF.getPersistenceManager();
-		PersistenceManager pmSQL = PMF.getPersistenceManagerSQL();
+	public Shop get(@Nullable @Named("userId") long userId, @Nullable @Named("id") long id) {
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		Shop shop = null;
-		
+
 		try {
-			Beacon beacon = pm.getObjectById(Beacon.class, beaconId.toUpperCase());
-			shop = pmSQL.getObjectById(Shop.class, beacon.getShopId());
+			shop = pm.getObjectById(Shop.class, id);
 			shop.setRewardedForUser(userId);
 		} catch (JDOObjectNotFoundException e) {
 			return null;
@@ -66,19 +63,4 @@ public class Shops {
 		
 		return target;
 	}
-
-//	@ApiMethod(name = "shops.get", path = "shop", httpMethod = "get")
-//	public Shop get(@Nullable @Named("userId") long userId, @Nullable @Named("id") long id) {
-//		PersistenceManager pm = PMF.getPersistenceManager();
-//		Shop shop = null;
-//
-//		try {
-//			shop = pm.getObjectById(Shop.class, id);
-//			shop.setRewardedForUser(userId);
-//		} catch (JDOObjectNotFoundException e) {
-//			return null;
-//		}
-//
-//		return shop;
-//	}
 }

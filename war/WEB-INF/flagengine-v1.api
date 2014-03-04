@@ -93,6 +93,31 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
+    "flagengine.beacons.get" : {
+      "path" : "beacon",
+      "httpMethod" : "get",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Beacons.get",
+      "request" : {
+        "parameters" : {
+          "userId" : {
+            "type" : "int64",
+            "required" : false
+          },
+          "beaconId" : {
+            "type" : "string",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
     "flagengine.flags.list" : {
       "path" : "flag",
       "httpMethod" : "get",
@@ -200,9 +225,9 @@
             "type" : "int64",
             "required" : false
           },
-          "beaconId" : {
-            "type" : "string",
-            "required" : true
+          "id" : {
+            "type" : "int64",
+            "required" : false
           }
         },
         "body" : "empty"
@@ -379,6 +404,45 @@
           }
         }
       },
+      "Shop" : {
+        "id" : "Shop",
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "parentId" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "logoUrl" : {
+            "type" : "string"
+          },
+          "imageUrl" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "integer"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "reward" : {
+            "type" : "integer"
+          },
+          "rewarded" : {
+            "type" : "boolean"
+          },
+          "rewardedForUser" : {
+            "type" : "string",
+            "format" : "int64"
+          }
+        }
+      },
       "FlagCollection" : {
         "id" : "FlagCollection",
         "type" : "object",
@@ -420,6 +484,9 @@
           "shopName" : {
             "type" : "string"
           },
+          "shopLogo" : {
+            "type" : "string"
+          },
           "shopDescription" : {
             "type" : "string"
           },
@@ -431,42 +498,6 @@
           },
           "shopInfo" : {
             "$ref" : "Shop"
-          }
-        }
-      },
-      "Shop" : {
-        "id" : "Shop",
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "format" : "int64"
-          },
-          "parentId" : {
-            "type" : "string",
-            "format" : "int64"
-          },
-          "name" : {
-            "type" : "string"
-          },
-          "imageUrl" : {
-            "type" : "string"
-          },
-          "type" : {
-            "type" : "integer"
-          },
-          "description" : {
-            "type" : "string"
-          },
-          "reward" : {
-            "type" : "integer"
-          },
-          "rewarded" : {
-            "type" : "boolean"
-          },
-          "rewardedForUser" : {
-            "type" : "string",
-            "format" : "int64"
           }
         }
       },
@@ -514,7 +545,7 @@
             "type" : "string"
           },
           "price" : {
-            "type" : "integer"
+            "type" : "string"
           },
           "barcodeId" : {
             "type" : "string"
@@ -569,6 +600,11 @@
         },
         "response" : {
           "$ref" : "Beacon"
+        }
+      },
+      "com.flag.engine.apis.Beacons.get" : {
+        "response" : {
+          "$ref" : "Shop"
         }
       },
       "com.flag.engine.apis.Flags.list" : {
