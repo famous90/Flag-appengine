@@ -49,7 +49,6 @@ public class Flags {
 				lat - LocationUtils.NEAR_DISTANCE_DEGREE, lat + LocationUtils.NEAR_DISTANCE_DEGREE);
 
 		FlagCollection flagCol = new FlagCollection(flags);
-		flagCol.setShopInfosOnFlags(userId);
 
 		return flagCol;
 	}

@@ -452,10 +452,6 @@
             "items" : {
               "$ref" : "Flag"
             }
-          },
-          "shopInfosOnFlags" : {
-            "type" : "string",
-            "format" : "int64"
           }
         }
       },
