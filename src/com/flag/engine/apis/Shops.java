@@ -1,5 +1,7 @@
 package com.flag.engine.apis;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
@@ -10,6 +12,7 @@ import javax.jdo.PersistenceManager;
 import com.flag.engine.constants.Constants;
 import com.flag.engine.models.PMF;
 import com.flag.engine.models.Shop;
+import com.flag.engine.models.ShopCollection;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 
@@ -38,29 +41,45 @@ public class Shops {
 			shop = pm.getObjectById(Shop.class, id);
 			shop.setRewardedForUser(userId);
 		} catch (JDOObjectNotFoundException e) {
-			return null;
 		}
 
 		return shop;
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	@ApiMethod(name = "shops.list", path = "shop_list", httpMethod = "get")
+	public ShopCollection list(@Nullable @Named("ids") List<Long> ids) {
+		log.warning("list shop: " + ids);
+
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+		List<Object> keys = new ArrayList<Object>();
+		List<Shop> shops = null;
+
+		for (Long id : ids)
+			keys.add(pm.newObjectIdInstance(Shop.class, id));
+
+		shops = (List<Shop>) pm.getObjectsById(keys);
+
+		return new ShopCollection(shops);
+	}
+
 	@ApiMethod(name = "shops.update", path = "shop", httpMethod = "put")
 	public Shop update(Shop shop) {
 		log.warning("update shop: " + shop.toString());
-		
+
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		Shop target = null;
-		
+
 		try {
 			target = pm.getObjectById(Shop.class, shop.getId());
 			target.update(shop);
 			pm.makePersistent(target);
-		} catch(JDOObjectNotFoundException e) {
+		} catch (JDOObjectNotFoundException e) {
 			return null;
 		} finally {
 			pm.close();
 		}
-		
+
 		return target;
 	}
 }

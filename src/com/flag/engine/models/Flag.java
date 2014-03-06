@@ -4,7 +4,6 @@ import javax.jdo.annotations.Column;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.Index;
-import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
@@ -34,18 +33,6 @@ public class Flag {
 	@Persistent
 	@Column(name = "shop_name")
 	private String shopName;
-
-	@NotPersistent
-	private String shopLogo;
-
-	@NotPersistent
-	private String shopDescription;
-
-	@NotPersistent
-	private int reward;
-
-	@NotPersistent
-	private boolean rewarded;
 
 	public Long getId() {
 		return id;
@@ -95,50 +82,12 @@ public class Flag {
 		this.shopName = shopName;
 	}
 
-	public String getShopLogo() {
-		return shopLogo;
-	}
-
-	public void setShopLogo(String shopLogo) {
-		this.shopLogo = shopLogo;
-	}
-
-	public String getShopDescription() {
-		return shopDescription;
-	}
-
-	public void setShopDescription(String shopDescription) {
-		this.shopDescription = shopDescription;
-	}
-
-	public int getReward() {
-		return reward;
-	}
-
-	public void setReward(int reward) {
-		this.reward = reward;
-	}
-
-	public boolean isRewarded() {
-		return rewarded;
-	}
-
-	public void setRewarded(boolean rewarded) {
-		this.rewarded = rewarded;
-	}
-
-	public void setShopInfo(Shop shop) {
-		shopLogo = shop.getLogoUrl();
-		shopDescription = shop.getDescription();
-		reward = shop.getReward();
-		rewarded = shop.isRewarded();
-	}
-
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("id=" + id).append(", lat=" + lat).append(", lon=" + lon).append(", createdAt=" + createdAt).append(", shopId=" + shopId);
+		sb.append("id=" + id).append(", lat=" + lat).append(", lon=" + lon).append(", createdAt=" + createdAt).append(", shopId=" + shopId)
+				.append(", shopName=" + shopName);
 
 		return sb.toString();
 	}

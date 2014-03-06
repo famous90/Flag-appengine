@@ -48,8 +48,6 @@ public class Flags {
 		List<Flag> flags = (List<Flag>) pm.newQuery(query).executeWithArray(lon - LocationUtils.NEAR_DISTANCE_DEGREE, lon + LocationUtils.NEAR_DISTANCE_DEGREE,
 				lat - LocationUtils.NEAR_DISTANCE_DEGREE, lat + LocationUtils.NEAR_DISTANCE_DEGREE);
 
-		FlagCollection flagCol = new FlagCollection(flags);
-
-		return flagCol;
+		return new FlagCollection(flags);
 	}
 }

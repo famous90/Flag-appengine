@@ -268,6 +268,28 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
+    "flagengine.shops.list" : {
+      "path" : "shop_list",
+      "httpMethod" : "get",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Shops.list",
+      "request" : {
+        "parameters" : {
+          "ids" : {
+            "repeated" : true,
+            "type" : "int64",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
     "flagengine.items.update" : {
       "path" : "item",
       "httpMethod" : "put",
@@ -479,21 +501,6 @@
           },
           "shopName" : {
             "type" : "string"
-          },
-          "shopLogo" : {
-            "type" : "string"
-          },
-          "shopDescription" : {
-            "type" : "string"
-          },
-          "reward" : {
-            "type" : "integer"
-          },
-          "rewarded" : {
-            "type" : "boolean"
-          },
-          "shopInfo" : {
-            "$ref" : "Shop"
           }
         }
       },
@@ -516,6 +523,18 @@
           },
           "password" : {
             "type" : "string"
+          }
+        }
+      },
+      "ShopCollection" : {
+        "id" : "ShopCollection",
+        "type" : "object",
+        "properties" : {
+          "shops" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "Shop"
+            }
           }
         }
       },
@@ -659,6 +678,11 @@
         },
         "response" : {
           "$ref" : "Shop"
+        }
+      },
+      "com.flag.engine.apis.Shops.list" : {
+        "response" : {
+          "$ref" : "ShopCollection"
         }
       },
       "com.flag.engine.apis.Items.update" : {
