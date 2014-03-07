@@ -18,7 +18,7 @@ import com.google.api.server.spi.config.ApiMethod;
 @Api(name = "flagengine", version = "v1", clientIds = { Constants.WEB_CLIENT_ID, Constants.ANDROID_CLIENT_ID, Constants.IOS_CLIENT_ID,
 		Constants.API_EXPLORER_CLIENT_ID }, audiences = { Constants.ANDROID_AUDIENCE })
 public class Beacons {
-	private static final Logger log = Logger.getLogger(Flags.class.getName());
+	private static final Logger log = Logger.getLogger(Beacons.class.getName());
 
 	@ApiMethod(name = "beacons.insert", path = "beacon", httpMethod = "post")
 	public Beacon insert(Beacon beacon) {

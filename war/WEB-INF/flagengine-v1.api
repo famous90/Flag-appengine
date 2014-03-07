@@ -290,6 +290,68 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
+    "flagengine.apps.notice.get" : {
+      "path" : "notice",
+      "httpMethod" : "get",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Apps.getNotice",
+      "request" : {
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "flagengine.apps.versions.insert" : {
+      "path" : "version",
+      "httpMethod" : "post",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Apps.insertVersion",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "flagengine.apps.notice.insert" : {
+      "path" : "notice",
+      "httpMethod" : "post",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Apps.insertNotice",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "flagengine.apps.version.get" : {
+      "path" : "version",
+      "httpMethod" : "get",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Apps.getVersion",
+      "request" : {
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
     "flagengine.items.update" : {
       "path" : "item",
       "httpMethod" : "put",
@@ -538,6 +600,32 @@
           }
         }
       },
+      "Notice" : {
+        "id" : "Notice",
+        "type" : "object",
+        "properties" : {
+          "createdAt" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "message" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Version" : {
+        "id" : "Version",
+        "type" : "object",
+        "properties" : {
+          "version" : {
+            "type" : "string"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "int64"
+          }
+        }
+      },
       "Item" : {
         "id" : "Item",
         "type" : "object",
@@ -551,6 +639,9 @@
             "format" : "int64"
           },
           "name" : {
+            "type" : "string"
+          },
+          "thumbnailUrl" : {
             "type" : "string"
           },
           "imageUrl" : {
@@ -683,6 +774,32 @@
       "com.flag.engine.apis.Shops.list" : {
         "response" : {
           "$ref" : "ShopCollection"
+        }
+      },
+      "com.flag.engine.apis.Apps.getNotice" : {
+        "response" : {
+          "$ref" : "Notice"
+        }
+      },
+      "com.flag.engine.apis.Apps.insertVersion" : {
+        "request" : {
+          "$ref" : "Version"
+        },
+        "response" : {
+          "$ref" : "Version"
+        }
+      },
+      "com.flag.engine.apis.Apps.insertNotice" : {
+        "request" : {
+          "$ref" : "Notice"
+        },
+        "response" : {
+          "$ref" : "Notice"
+        }
+      },
+      "com.flag.engine.apis.Apps.getVersion" : {
+        "response" : {
+          "$ref" : "Version"
         }
       },
       "com.flag.engine.apis.Items.update" : {

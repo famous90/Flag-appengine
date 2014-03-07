@@ -24,6 +24,10 @@ public class Item {
 	private String name;
 
 	@Persistent
+	@Column(name = "thumbnail_url")
+	private String thumbnailUrl;
+
+	@Persistent
 	@Column(name = "image_url")
 	private String imageUrl;
 
@@ -65,6 +69,14 @@ public class Item {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getThumbnailUrl() {
+		return thumbnailUrl;
+	}
+
+	public void setThumbnailUrl(String thumbnailUrl) {
+		this.thumbnailUrl = thumbnailUrl;
 	}
 
 	public String getImageUrl() {
@@ -122,6 +134,8 @@ public class Item {
 	public void update(Item item) {
 		if (item.getName() != null && !item.getName().isEmpty())
 			this.name = item.getName();
+		if (item.getThumbnailUrl() != null && !item.getThumbnailUrl().isEmpty())
+			this.thumbnailUrl = item.getThumbnailUrl();
 		if (item.getImageUrl() != null && !item.getImageUrl().isEmpty())
 			this.imageUrl = item.getImageUrl();
 		if (item.getDescription() != null && !item.getDescription().isEmpty())
