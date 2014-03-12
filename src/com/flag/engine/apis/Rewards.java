@@ -40,7 +40,6 @@ public class Rewards {
 		try {
 			User user = pm.getObjectById(User.class, reward.getUserId());
 			user.rewarded(reward.getReward());
-			pm.makePersistent(user);
 			pm.makePersistent(reward);
 			return new User(user);
 		} catch (JDOObjectNotFoundException e) {

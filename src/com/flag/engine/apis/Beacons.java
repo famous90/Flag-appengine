@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 import javax.inject.Named;
 import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
-import javax.jdo.Query;
 
 import com.flag.engine.constants.Constants;
 import com.flag.engine.models.Beacon;
@@ -50,15 +49,16 @@ public class Beacons {
 
 	// TODO beacon list
 	
-	@ApiMethod(name = "beacons.remove", path = "beacon", httpMethod = "delete")
-	public void remove(Beacon beacon) {
+	@ApiMethod(name = "beacons.delete", path = "beacon", httpMethod = "delete")
+	public void delete(Beacon beacon) {
 		PersistenceManager pm = PMF.getPersistenceManager();
 
-		Query query = pm.newQuery(Beacon.class);
-		query.setFilter("id == beaconId");
-		query.declareParameters("String beaconId");
-		query.deletePersistentAll(beacon.getId());
-
-		pm.close();
+		try {
+			Beacon target = pm.getObjectById(Beacon.class, beacon.getId());
+			pm.deletePersistent(target);
+		} catch (JDOObjectNotFoundException e){
+		} finally {
+			pm.close();
+		}
 	}
 }

@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import javax.inject.Named;
 import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
+import javax.jdo.Query;
 
 import com.flag.engine.constants.Constants;
 import com.flag.engine.models.PMF;
@@ -63,6 +64,18 @@ public class Shops {
 		return new ShopCollection(shops);
 	}
 
+	@SuppressWarnings("unchecked")
+	@ApiMethod(name = "shops.all", path = "shop_all", httpMethod = "get")
+	public ShopCollection all() {
+		log.warning("all shop");
+
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+		Query query = pm.newQuery(Shop.class);
+		List<Shop> shops = (List<Shop>) pm.newQuery(query).execute();
+
+		return new ShopCollection(shops);
+	}
+
 	@ApiMethod(name = "shops.update", path = "shop", httpMethod = "put")
 	public Shop update(Shop shop) {
 		log.warning("update shop: " + shop.toString());
@@ -73,7 +86,6 @@ public class Shops {
 		try {
 			target = pm.getObjectById(Shop.class, shop.getId());
 			target.update(shop);
-			pm.makePersistent(target);
 		} catch (JDOObjectNotFoundException e) {
 			return null;
 		} finally {
@@ -81,5 +93,18 @@ public class Shops {
 		}
 
 		return target;
+	}
+
+	@ApiMethod(name = "shops.delete", path = "shop", httpMethod = "delete")
+	public void delete(@Named("shopId") Long shopId) {
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+
+		try {
+			Shop target = pm.getObjectById(Shop.class, shopId);
+			pm.deletePersistent(target);
+		} catch (JDOObjectNotFoundException e) {
+		} finally {
+			pm.close();
+		}
 	}
 }

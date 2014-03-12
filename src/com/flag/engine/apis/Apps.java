@@ -33,7 +33,7 @@ public class Apps {
 	}
 	
 	@SuppressWarnings("unchecked")
-	@ApiMethod(name = "apps.version.get", path = "version", httpMethod = "get")
+	@ApiMethod(name = "apps.versions.get", path = "version", httpMethod = "get")
 	public Version getVersion() {
 		PersistenceManager pm = PMF.getPersistenceManager();
 		
@@ -48,7 +48,7 @@ public class Apps {
 			return versions.get(0);
 	}
 	
-	@ApiMethod(name = "apps.notice.insert", path = "notice", httpMethod = "post")
+	@ApiMethod(name = "apps.notices.insert", path = "notice", httpMethod = "post")
 	public Notice insertNotice(Notice notice) {
 		log.warning("insert notice: " + notice.toString());
 		
@@ -62,7 +62,7 @@ public class Apps {
 	}
 	
 	@SuppressWarnings("unchecked")
-	@ApiMethod(name = "apps.notice.get", path = "notice", httpMethod = "get")
+	@ApiMethod(name = "apps.notices.get", path = "notice", httpMethod = "get")
 	public Notice getNotice() {
 		PersistenceManager pm = PMF.getPersistenceManager();
 		

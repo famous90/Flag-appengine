@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 import javax.inject.Named;
+import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
@@ -49,5 +50,18 @@ public class Flags {
 				lat - LocationUtils.NEAR_DISTANCE_DEGREE, lat + LocationUtils.NEAR_DISTANCE_DEGREE);
 
 		return new FlagCollection(flags);
+	}
+	
+	@ApiMethod(name = "flags.delete", path = "flag", httpMethod = "delete")
+	public void delete(@Named("flagId") Long flagId) {
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+		
+		try {
+			Flag target = pm.getObjectById(Flag.class, flagId);
+			pm.deletePersistent(target);
+		} catch (JDOObjectNotFoundException e) {
+		} finally {
+			pm.close();
+		}
 	}
 }

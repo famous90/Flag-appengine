@@ -60,7 +60,6 @@ public class Items {
 		try {
 			target = pm.getObjectById(Item.class, item.getId());
 			target.update(item);
-			pm.makePersistent(target);
 		} catch (JDOObjectNotFoundException e) {
 			return null;
 		} finally {
@@ -68,5 +67,18 @@ public class Items {
 		}
 
 		return target;
+	}
+	
+	@ApiMethod(name = "items.delete", path = "item", httpMethod = "delete")
+	public void delete(@Named("itemId") Long itemId) {
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+		
+		try {
+			Item target = pm.getObjectById(Item.class, itemId);
+			pm.deletePersistent(target);
+		} catch (JDOObjectNotFoundException e) {
+		} finally {
+			pm.close();
+		}
 	}
 }
