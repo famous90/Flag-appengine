@@ -29,7 +29,7 @@ function showShops(res) {
 };
 
 function getShopHtml(shops) {
-    $.get('shop.html', function(data) {
+    $.get('raw/shop.html', function(data) {
         for (var i = 0; i < shops.length; i++) {
             appendShop(data, i, shops[i]);
         }
@@ -48,13 +48,13 @@ function appendShop(data, i, shop) {
 };
 
 function showShopAdder() {
-    $.get('add_shop.html', function(data) {
+    $.get('raw/add_shop.html', function(data) {
        $('#shops').append(data); 
     });
 };
 
 function showShopEditor(i) {
-    $.get('edit_shop.html', function(data) {
+    $.get('raw/edit_shop.html', function(data) {
         makeShopEditor(i, data);
     });
 };
@@ -70,8 +70,7 @@ function makeShopEditor(i, data) {
 };
 
 function hideShopEditor(i) {
-    console.log('call');
-    $.get('desc_shop.html', function(data) {
+    $.get('raw/desc_shop.html', function(data) {
        makeShopDesc(i, data); 
     });
 };
