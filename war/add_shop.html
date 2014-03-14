@@ -1,0 +1,16 @@
+<div class="shop">
+    <input type="file" id="add_shop_logo" onchange="showLogoPreview(this)">
+    <div class="shop_name_box">
+        <img class="shop_logo" src="" id="shop_logo_preview">
+        <input class="shop_name" type="text" id="add_shop_name"/>
+    </div>
+    <ul class="nav nav-pills shop_menu">
+        <li class="dropdown"><a href="javascript:addShop()">add</a></li>
+    </ul>
+    
+    <input type="file" id="add_shop_image" onchange="showThumbnailPreview(this)">
+    <img class="shop_thumbnail" src="" id="shop_thumbnail_preview"/>
+    <div class="shop_desc">
+        <textarea id="add_shop_desc" />
+    </div>
+</div>

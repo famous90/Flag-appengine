@@ -27,35 +27,82 @@ span {
     display: block;
     margin: 2%;
     width: 250px;
-    height: 370px;
-    background: rgba(0, 0, 0, 0.05);
+    height: 350px;
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 2px;
 }
 
+div.shop:hover {
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
 .shop_thumbnail {
-    width: 230px;
-    height: 230px;
+    width: 95%;
+    height: 65%;
     display: block;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 10px;
 }
 
 .shop_name {
-    display: block;
-    width: 230px;
-    height: 30px;
-    margin-left: auto;
-    margin-right: auto;
+    float: left;
+    width: 75%;
+    height: 100%;
+    line-height: 150%;
     font-size: 18px;
-    line-height: 30px;
 }
 
 .shop_desc {
     display: block;
-    width: 230px;
-    height: 88px;
+    width: 95%;
+    height: 18%;
     margin-left: auto;
     margin-right: auto;
+    margin-top: 10px;
+    overflow: hidden;
+}
+
+.shop_menu {
+    float: right;
+}
+
+.shop_name_box {
+    float: left;
+    width: 65%;
+    height: 8%;
+    margin-left: 2.5%;
+    margin-top: 2%;
+    overflow: hidden;
+}
+
+#add_shop_desc {
+    width: 100%;
+    height: 100%;
+}
+
+#add_shop_image {
+    position: absolute;
+    width: 234px;
+    height: 224px;
+    margin-top: 41px;
+    margin-left: 7px;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.shop_logo {
+    float: left;
+    width: 19%;
+    height: 100%;
+    margin-right: 5px;
+}
+
+#add_shop_logo {
+    position: absolute;
+    width: 27px;
+    height: 26px;
+    margin-left: 7px;
+    margin-top: 6px;
+    opacity: 0;
+    cursor: pointer;
 }

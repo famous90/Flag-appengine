@@ -1,5 +1,13 @@
 var ROOT = 'https://genuine-evening-455.appspot.com/_ah/api';
 
+function replaceAll(find, replace, str) {
+  return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+};
+
+function escapeRegExp(str) {
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+};
+
 function init() {
     gapi.client.load('flagengine', 'v1', function() {
         getShops();
@@ -10,24 +18,102 @@ function getShops() {
     gapi.client.flagengine.shops.all().execute(function(res) {
         showShops(res);
     });
-}
+};
+
+var shops;
 
 function showShops(res) {
-    res.shops = res.shops || [];
     $('#shops').html('');
-    for (var i = 0; i < res.shops.length; i++) {
-        var htmlStr = getShopHtml(res.shops[i]);
-        $('#shops').append(htmlStr);
-    }
-}
+    shops = res.shops || [];
+    getShopHtml(shops);
+};
 
-function getShopHtml(shop) {
-    var baseStr = '<div class="shop"><img class="shop_thumbnail" src="${img}"/><div class="shop_name_box">'
-                    + '<span class="shop_name">${name}</span></div><div class="shop_desc">${desc}</div></div>';
+function getShopHtml(shops) {
+    $.get('shop.html', function(data) {
+        for (var i = 0; i < shops.length; i++) {
+            appendShop(data, i, shops[i]);
+        }
+        
+        showShopAdder();
+    });
+};
+
+function appendShop(data, i, shop) {
+    data = replaceAll('${index}', i, data);
+    data = data.replace('${logo}', shop.logoUrl);
+    data = data.replace('${img}', shop.imageUrl);
+    data = data.replace('${name}', shop.name);
+    data = data.replace('${desc}', replaceAll('\n', '<br/>', shop.description));
+    $('#shops').append(data);
+};
+
+function showShopAdder() {
+    $.get('add_shop.html', function(data) {
+       $('#shops').append(data); 
+    });
+};
+
+function showShopEditor(i) {
+    $.get('edit_shop.html', function(data) {
+        makeShopEditor(i, data);
+    });
+};
+
+function makeShopEditor(i, data) {
+    var shop = shops[i];
+    data = data.replace('${index}', i);
+    data = data.replace('${logo}', shop.logoUrl);
+    data = data.replace('${name}', shop.name);
+    data = data.replace('${img}', shop.imageUrl);
+    data = data.replace('${desc}', shop.description);
+    $('#shop_index_' + i).html(data);
+};
+
+function hideShopEditor(i) {
+    console.log('call');
+    $.get('desc_shop.html', function(data) {
+       makeShopDesc(i, data); 
+    });
+};
+
+function makeShopDesc(i, data) {
+    var shop = shops[i];
+    data = replaceAll('${index}', i, data);
+    data = data.replace('${logo}', shop.logoUrl);
+    data = data.replace('${img}', shop.imageUrl);
+    data = data.replace('${name}', shop.name);
+    data = data.replace('${desc}', replaceAll('\n', '<br/>', shop.description));
+    $('#shop_index_' + i).html(data);
+};
+
+function showLogoPreview(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+            reader.onload = function (e) {
+            $('#shop_logo_preview').attr('src', e.target.result);
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+};
+
+function showThumnailPreview(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+            reader.onload = function (e) {
+            $('#shop_thumbnail_preview').attr('src', e.target.result);
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+};
+
+function addShop() {
     
-    baseStr = baseStr.replace('${img}', shop.imageUrl);
-    baseStr = baseStr.replace('${name}', shop.name);
-    baseStr = baseStr.replace('${desc}', shop.description);
+};
+
+function editShop() {
     
-    return baseStr;
-}
+};
+
+function deleteShop() {
+    
+};
