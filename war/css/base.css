@@ -36,6 +36,13 @@ div.shop:hover {
     box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
 }
 
+.shop_logo {
+    float: left;
+    width: 18%;
+    height: 100%;
+    margin-right: 5px;
+}
+
 .shop_thumbnail {
     width: 95%;
     height: 65%;
@@ -80,6 +87,11 @@ div.shop:hover {
     height: 100%;
 }
 
+.edit_shop_desc {
+    width: 100%;
+    height: 100%;
+}
+
 #add_shop_image {
     position: absolute;
     width: 234px;
@@ -90,18 +102,31 @@ div.shop:hover {
     cursor: pointer;
 }
 
-.shop_logo {
-    float: left;
-    width: 19%;
-    height: 100%;
-    margin-right: 5px;
+.edit_shop_image {
+    position: absolute;
+    width: 234px;
+    height: 224px;
+    margin-top: 41px;
+    margin-left: 7px;
+    opacity: 0;
+    cursor: pointer;
 }
 
 #add_shop_logo {
     position: absolute;
-    width: 27px;
+    width: 29px;
     height: 26px;
-    margin-left: 7px;
+    margin-left: 6px;
+    margin-top: 6px;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.edit_shop_logo {
+    position: absolute;
+    width: 28px;
+    height: 26px;
+    margin-left: 6px;
     margin-top: 6px;
     opacity: 0;
     cursor: pointer;

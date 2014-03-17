@@ -22,9 +22,11 @@
 		session data. For details, see http://code.google.com/appengine/docs/java/config/appconfig.html#Enabling_Sessions -->
 
 	<static-files>
+	    <include path="/**.ico" />
 		<include path="/js/**.js" />
 		<include path="/css/**.css" />
 		<include path="/images/**.gif" />
+		<include path="/raw/**.html" />
 	</static-files>
 
 </appengine-web-app>
