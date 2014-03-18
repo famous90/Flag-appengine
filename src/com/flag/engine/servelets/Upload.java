@@ -26,11 +26,12 @@ public class Upload extends HttpServlet {
 		Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(req);
 
 		List<BlobKey> blobKeys = blobs.get("image");
-
-		StringBuilder jsonStr = new StringBuilder("{\"url\": \"");
+		String blobKey = "";
 		if (blobKeys != null && !blobKeys.isEmpty())
-			jsonStr.append(blobKeys.get(0).getKeyString());
-		jsonStr.append("\"}");
+			blobKey = blobKeys.get(0).getKeyString();
+
+		StringBuilder jsonStr = new StringBuilder();
+		jsonStr.append("{\"url\": \"").append(blobKey).append("\"}");
 		
 		res.setContentType("application/json");
 		PrintWriter out = res.getWriter();
