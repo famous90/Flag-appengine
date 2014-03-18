@@ -746,10 +746,13 @@
           "thumbnailUrl" : {
             "type" : "string"
           },
-          "imageUrl" : {
+          "description" : {
             "type" : "string"
           },
-          "description" : {
+          "sale" : {
+            "type" : "integer"
+          },
+          "oldPrice" : {
             "type" : "string"
           },
           "price" : {

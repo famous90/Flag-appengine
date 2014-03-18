@@ -167,7 +167,6 @@ function sendEditShop(i) {
     var name = $('#edit_shop_name_' + i).val();
     var logoUrl = $('#edit_shop_logo_url_' + i).val();
     var imageUrl = $('#edit_shop_image_url_' + i).val();
-    var type = shops[i].type;
     var desc = $('#edit_shop_desc_' + i).val();
     var reward = shops[i].reward;
     gapi.client.flagengine.shops.update({
@@ -175,7 +174,6 @@ function sendEditShop(i) {
         'name': name,
         'logoUrl': logoUrl,
         'imageUrl': imageUrl,
-        'type': type,
         'description': desc,
         'reward': reward
     }).execute(function(res) {

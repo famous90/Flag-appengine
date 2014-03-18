@@ -28,11 +28,14 @@ public class Item {
 	private String thumbnailUrl;
 
 	@Persistent
-	@Column(name = "image_url")
-	private String imageUrl;
+	private String description;
 
 	@Persistent
-	private String description;
+	private int sale;
+
+	@Persistent
+	@Column(name = "old_price")
+	private String oldPrice;
 
 	@Persistent
 	private String price;
@@ -79,20 +82,28 @@ public class Item {
 		this.thumbnailUrl = thumbnailUrl;
 	}
 
-	public String getImageUrl() {
-		return imageUrl;
-	}
-
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
-	}
-
 	public String getDescription() {
 		return description;
 	}
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public int getSale() {
+		return sale;
+	}
+
+	public void setSale(int sale) {
+		this.sale = sale;
+	}
+
+	public String getOldPrice() {
+		return oldPrice;
+	}
+
+	public void setOldPrice(String oldPrice) {
+		this.oldPrice = oldPrice;
 	}
 
 	public String getPrice() {
@@ -136,8 +147,6 @@ public class Item {
 			this.name = item.getName();
 		if (item.getThumbnailUrl() != null && !item.getThumbnailUrl().isEmpty())
 			this.thumbnailUrl = item.getThumbnailUrl();
-		if (item.getImageUrl() != null && !item.getImageUrl().isEmpty())
-			this.imageUrl = item.getImageUrl();
 		if (item.getDescription() != null && !item.getDescription().isEmpty())
 			this.description = item.getDescription();
 		if (item.getBarcodeId() != null && !item.getBarcodeId().isEmpty())

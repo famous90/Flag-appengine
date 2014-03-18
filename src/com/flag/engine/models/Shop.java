@@ -123,6 +123,8 @@ public class Shop {
 	public void update(Shop shop) {
 		if (shop.getName() != null && !shop.getName().isEmpty())
 			this.name = shop.getName();
+		if (shop.getLogoUrl() != null && !shop.getLogoUrl().isEmpty())
+			this.logoUrl = shop.getLogoUrl();
 		if (shop.getImageUrl() != null && !shop.getImageUrl().isEmpty())
 			this.imageUrl = shop.getImageUrl();
 		if (shop.getDescription() != null && !shop.getDescription().isEmpty())
