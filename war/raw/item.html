@@ -1,0 +1,13 @@
+<div class="item" id="item_index_${index}">
+    <img class="item_img" src="${img}" />
+    <div class="item_name"><span class="span_align">${name}</span></div>
+    <div class="item_desc">${desc}</div>
+    <div class="item_sale"><span class="span_align">${sale}% discount</span></div>
+    <div class="item_price"><span class="span_align">${price}</span></div>
+    <div class="item_old_price"><span class="span_align" style="text-decoration: line-through;">${oldPrice}</span></div>
+    <div class="item_reward"><span class="span_align">scan reward: ${reward}</span></div>
+    <div class="item_barcode"><span class="span_align">barcode: ${barcodeId}</span></div>
+    <ul class="nav nav-pills item_menu">
+        <li><a href="javascript:deleteItem(${index})">delete</a></li>
+    </ul>
+</div>

@@ -26,6 +26,9 @@
 		<include path="/js/**.js" />
 		<include path="/css/**.css" />
 		<include path="/images/**.gif" />
+		<include path="/images/**.jpg" />
+		<include path="/images/**.jpeg" />
+		<include path="/images/**.png" />
 		<include path="/raw/**.html" />
 	</static-files>
 

@@ -19,13 +19,29 @@ span {
     line-height: normal;
 }
 
+.adder {
+    cursor: pointer;
+    background-image: url('/images/add.png');
+    background-size:auto;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.adder:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.adder:active {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
 #shops {
     width: 100%;
 }
 .shop {
     float: left;
     display: block;
-    margin: 2%;
+    margin: 10px;
     width: 250px;
     height: 350px;
     border: 1px solid rgba(0, 0, 0, 0.2);
@@ -51,9 +67,8 @@ div.shop:hover {
     margin-right: auto;
 }
 
-.shop_name {
+.span_name {
     float: left;
-    width: 75%;
     height: 100%;
     line-height: 150%;
     font-size: 18px;
@@ -131,3 +146,159 @@ div.shop:hover {
     opacity: 0;
     cursor: pointer;
 }
+#items {
+    width: 100%;
+}
+
+.item {
+    float: left;
+    display: block;
+    width: 300px;
+    height: 520px;
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+}
+
+.item_img {
+    display: block;
+    width: 100%;
+    height: 280px;
+}
+
+.item_name {
+    display: block;
+    width: 100%;
+    height: 25px;
+}
+
+.item_desc {
+    display: block;
+    width: 100%;
+    height: 60px;
+    overflow: hidden;
+}
+
+.item_sale {
+    display: block;
+    width: 100%;
+    height: 25px;
+}
+
+.item_old_price {
+    float: left;
+    height: 25px;
+}
+
+.item_price {
+    float: left;
+    height: 25px;
+}
+
+.span_align {
+    height: 100%;
+    line-height: 180%;
+}
+
+.item_reward {
+    float: left;
+    width: 100%;
+    height: 25px;
+}
+
+.item_barcode {
+    float: left;
+    width: 100%;
+    height: 25px;
+}
+
+.item_menu {
+    float: right;
+}
+
+.add_item_thumbnail {
+    position: absolute;
+    width: 240px;
+    height: 240px;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.add_item_name {
+    width: 100%;
+    margin-bottom: 3px;
+}
+
+.add_item_desc {
+    width: 100%;
+    height: 66px;
+    margin-bottom: -2px;
+}
+
+.add_item_sale {
+    width: 10%;
+    margin-bottom: 3px;
+}
+
+.add_item_price {
+    width: 139px;
+    margin-bottom: 3px;
+}
+
+.add_item_old_price {
+    width: 139px;
+    margin-bottom: 3px;
+}
+
+.add_item_reward {
+    width: 100%;
+    margin-bottom: 3px;
+}
+
+.add_item_barcode {
+    width: 100%;
+}
+
+.add_item {
+    width: 100%;
+    height: 280px;
+}
+
+.add_item_img {
+    float: left;
+    width: 240px;
+    height: 240px;
+    margin-right: 10px;
+    border : 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.add_item_fields {
+    width: calc(100% - 250px);
+    float: left;
+}
+
+.shop_name {
+    float: left;
+    width: 75%;
+}
+
+.up_indicator_header {
+    position: absolute;
+    width: 100%;
+    height: 60px;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.span_icon {
+    vertical-align: text-top;
+}
+
+#up_indicator {
+    display: none;
+}
+
+
+
+

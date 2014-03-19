@@ -1,5 +1,5 @@
 <form id="edit_shop_logo_form_${index}" action="" method="post" enctype="multipart/form-data">
-    <input type="file" class="edit_shop_logo" name="image" onchange="showLogoPreview(this, ${index})">
+    <input type="file" class="edit_shop_logo" name="image" onchange="showPreview(this, 'shop_logo', ${index})">
 </form>
 
 <div class="shop_name_box">
@@ -19,7 +19,7 @@
 </ul>
 
 <form id="edit_shop_image_form_${index}" action="" method="post" enctype="multipart/form-data">
-    <input type="file" class="edit_shop_image" name="image" onchange="showThumbnailPreview(this, ${index})">
+    <input type="file" class="edit_shop_image" name="image" onchange="showPreview(this, 'shop_thumbnail', ${index})">
 </form>
 
 <img class="shop_thumbnail" src="${img}" id="shop_thumbnail_preview_${index}"/>

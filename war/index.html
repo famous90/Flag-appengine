@@ -15,8 +15,65 @@
     </head>
     
     <body>
+        <div id="waiting_dialog" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        Please Wait...
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="item_adder_screen" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Add Items</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div id="uploading_items_dialog" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-sm">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        Uploading Items...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <section id="items_to_be_added">
+                        </section>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" onclick="addItems();">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <header class="up_indicator_header">
+            <ul class="nav nav-pills navbar-left">
+                <li class="active">
+                    <a id="up_indicator" href="#"><span class="glyphicon glyphicon-chevron-left span_icon"></span> Back</a>
+                </li>
+            </ul>
+            <ul class="nav nav-pills navbar-right">
+                <li class="active">
+                    <a id="add_button" href="#"><span class="glyphicon glyphicon-plus span_icon"></span> Add</a>
+                </li>
+            </ul>
+        </header>
+        
+        <section style="width: 100%; height: 60px;"></section>
+        
         <section id="shops">
             <!-- goes all shops list -->
+        </section>
+        
+        <section id="items">
+            <!-- goes all items list -->
         </section>
     </body>
 </html>

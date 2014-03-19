@@ -1,0 +1,21 @@
+<div class="add_item" id="add_item_${index}">
+    <form id="add_item_thumbnail_form_${index}" action="" method="post" enctype="multipart/form-data">
+        <input type="file" class="add_item_thumbnail" name="image" onchange="showPreview(this, 'add_item_thumbnail', ${index})" />
+    </form>
+    <img class="add_item_img" src="" id="add_item_thumbnail_preview_${index}" />
+    <input type="hidden" id="add_item_thumbnail_url_${index}"/>
+    
+    <div class="add_item_fields">
+        <div><input type="text" class="add_item_name" id="add_item_name_${index}" placeholder="name"></div>
+        <div><textarea class="add_item_desc" id ="add_item_desc_${index}" placeholder="desciption"></textarea></div>
+        <div><input class="add_item_sale" id="add_item_sale_${index}" type="number" value="0" />% discount</div>
+        <div><input type="text" class="add_item_price" id="add_item_price_${index}" placeholder="price" /></div>
+        <div><input type="text" class="add_item_old_price" id="add_item_old_price_${index}" placeholder="old price" value="" /></div>
+        <div><input type="number" class="add_item_reward" id="add_item_reward_${index}" placeholder="scan reward" /></div>
+        <div><input type="text" class="add_item_barcode" id="add_item_barcode_${index}" placeholder="barcode" /></div>
+    </div>
+    
+    <ul class="nav nav-pills item_menu">
+        <li><a href="javascript:removeItemAdder(${index})">remove</a></li>
+    </ul>
+</div>

@@ -1,6 +1,6 @@
 <div class="shop">
     <form id="add_shop_logo_form" action="" method="post" enctype="multipart/form-data">
-        <input type="file" id="add_shop_logo" name="image" onchange="showLogoPreview(this, -1)">
+        <input type="file" id="add_shop_logo" name="image" onchange="showPreview(this, 'shop_logo', -1)">
     </form>
     
     <div class="shop_name_box">
@@ -14,7 +14,7 @@
     </ul>
     
     <form id="add_shop_image_form" action="" method="post" enctype="multipart/form-data" >
-        <input type="file" id="add_shop_image" name="image" onchange="showThumbnailPreview(this, -1)">
+        <input type="file" id="add_shop_image" name="image" onchange="showPreview(this, 'shop_thumbnail', -1)">
     </form>
     
     <img class="shop_thumbnail" src="" id="shop_thumbnail_preview_-1"/>
