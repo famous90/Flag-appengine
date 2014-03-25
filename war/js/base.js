@@ -262,6 +262,9 @@ function getItemHtml(items) {
         for (var i = 0; i < items.length; i++) {
             appendItem(data, i, items[i]);
         }
+        
+        alignItems();
+        $(window).resize(alignItems);
     });
 };
 
@@ -280,6 +283,16 @@ function appendItem(data, i, item) {
     data = data.replace('${barcodeId}', item.barcodeId);
     $('#items').append(data);
 };
+
+function alignItems() {
+    var width = $(window).width();
+    var num = parseInt(width / 300);
+    console.log(num);
+    var marginTotal = width - num * 300;
+    var margin = marginTotal / (num * 2);
+    console.log(margin);
+    $('.item').css('margin', margin + 'px');
+}
 
 function showItemAdderScreen() {
     $('#item_adder_screen').modal({
@@ -359,6 +372,8 @@ var itemUploadTotal = 0;
 var itemUploadCount = 0;
 
 function addItems() {
+    hideItemAdderButton();
+    $('#item_adder_screen').animate({scrollTop: 0}, 500);
     $('#uploading_items_dialog').modal({
         backdrop: 'static',
         keyboard: false
@@ -406,9 +421,17 @@ function sendAddItem(i) {
 }
 
 function finishItemUpload() {
+    refreshItemUploadIndexes();
     $('#uploading_items_dialog').modal('hide');
     hideItemAdderScreen();
     getItems(shopIdForItems);
+}
+
+function refreshItemUploadIndexes() {
+    ia_first = true;
+    indexArray = [0];
+    itemUploadTotal = 0;
+    itemUploadCount = 0;
 }
 
 function deleteItem(i) {

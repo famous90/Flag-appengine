@@ -33,6 +33,10 @@ public class Flag {
 	@Persistent
 	@Column(name = "shop_name")
 	private String shopName;
+	
+	@Persistent
+	@Column(name = "shop_type")
+	private int shopType;
 
 	public Long getId() {
 		return id;
@@ -80,6 +84,14 @@ public class Flag {
 
 	public void setShopName(String shopName) {
 		this.shopName = shopName;
+	}
+
+	public int getShopType() {
+		return shopType;
+	}
+
+	public void setShopType(int shopType) {
+		this.shopType = shopType;
 	}
 
 	@Override
