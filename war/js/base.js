@@ -65,7 +65,8 @@ function getShops() {
 
 function setShopMenus() {
     hideUpIndicator();
-    setAddButton('#');
+    setAddButton('javascript:showShopAdderScreen();');
+    $('#shop_adder_screen').on('shown.bs.modal', showShopAdder);
 }
 
 var shops;
@@ -81,7 +82,6 @@ function getShopHtml(shops) {
         for (var i = 0; i < shops.length; i++) {
             appendShop(data, i, shops[i]);
         }
-        showShopAdder();
     });
 };
 
@@ -94,17 +94,28 @@ function appendShop(data, i, shop) {
     $('#shops').append(data);
 };
 
+function showShopAdderScreen() {
+    $('#shop_adder_screen').modal({
+        backdrop: 'static',
+        keyboard: false
+    });
+};
+
+function hideShopAdderScreen() {
+    $('#shop_adder_screen').modal('hide');
+}
+
 function showShopAdder() {
     $.get('raw/add_shop.html', function(data) {
-        $('#shops').append(data);
+        $('#shop_to_be_added').html(data);
         gapi.client.flagengine.images.uploadUrl.get().execute(function(res) {
             $('#add_shop_logo_form').attr('action', res.url);
         });
         gapi.client.flagengine.images.uploadUrl.get().execute(function(res) {
             $('#add_shop_image_form').attr('action', res.url);
         });
-    });
-};
+    })
+}
 
 function showShopEditor(i) {
     $.get('raw/edit_shop.html', function(data) {
@@ -144,48 +155,77 @@ function makeShopDesc(i, data) {
     $('#shop_index_' + i).html(data);
 };
 
+var shopName;
+var shopDesc;
+var shopLogoUrl;
+var shopImageUrl;
+var shopType;
+var shopReward;
+
 function addShop() {
+    $('#uploading_shop_dialog').modal({
+        backdrop: 'static',
+        keyboard: false
+    });
+    
+    shopName = $('#add_shop_name').val();
+    shopDesc = $('#add_shop_desc').val();
+    shopType = 1;
+    shopReward = 0;
+    
+    var i = 0;
     $('#add_shop_logo_form').ajaxSubmit(function(resLogo) {
-        $('#add_shop_logo_url').val('https://genuine-evening-455.appspot.com/serve?blob-key=' + resLogo.url);
-        $('#add_shop_image_form').ajaxSubmit(function(resImage) {
-            $('#add_shop_image_url').val('https://genuine-evening-455.appspot.com/serve?blob-key=' + resImage.url);
+        shopLogoUrl = 'https://genuine-evening-455.appspot.com/serve?blob-key=' + resLogo.url;
+        if (++i == 2)
             sendAddShop();
-        });
+    });
+    $('#add_shop_image_form').ajaxSubmit(function(resImage) {
+        shopImageUrl = 'https://genuine-evening-455.appspot.com/serve?blob-key=' + resImage.url;
+        if (++i == 2)
+            sendAddShop();
     });
 };
 
 function sendAddShop() {
-    var name = $('#add_shop_name').val();
-    var logoUrl = $('#add_shop_logo_url').val();
-    var imageUrl = $('#add_shop_image_url').val();
-    var type = 1;
-    var desc = $('#add_shop_desc').val();
-    var reward = 0;
     gapi.client.flagengine.shops.insert({
-        'name': name,
-        'logoUrl': logoUrl,
-        'imageUrl': imageUrl,
-        'type': type,
-        'description': desc,
-        'reward': reward
+        'name': shopName,
+        'description': shopDesc,
+        'logoUrl': shopLogoUrl,
+        'imageUrl': shopImageUrl,
+        'type': shopType,
+        'reward': shopReward
     }).execute(function(res) {
-        getShops();
+        finishAddShop();
     });
 };
 
+function finishAddShop() {
+    $('#uploading_shop_dialog').modal('hide');
+    hideShopAdderScreen();
+    getShops();
+}
+
 function editShop(i) {
+    showWaitingDialog();
+    
+    var j = 0;
     $('#edit_shop_logo_form_' + i).ajaxSubmit(function(resLogo) {
         if (resLogo.url == '')
             $('#edit_shop_logo_url_' + i).val('');
         else
             $('#edit_shop_logo_url_' + i).val('https://genuine-evening-455.appspot.com/serve?blob-key=' + resLogo.url);
-        $('#edit_shop_image_form_' + i).ajaxSubmit(function(resImage) {
-            if (resImage.url == '')
-                $('#edit_shop_image_url_' + i).val('');
-            else
-                $('#edit_shop_image_url_' + i).val('https://genuine-evening-455.appspot.com/serve?blob-key=' + resImage.url);
+        
+        if (++j == 2)
             sendEditShop(i);
-        });
+    });
+    $('#edit_shop_image_form_' + i).ajaxSubmit(function(resImage) {
+        if (resImage.url == '')
+            $('#edit_shop_image_url_' + i).val('');
+        else
+            $('#edit_shop_image_url_' + i).val('https://genuine-evening-455.appspot.com/serve?blob-key=' + resImage.url);
+        
+        if (++j == 2)
+            sendEditShop(i);
     });
 };
 
@@ -206,14 +246,17 @@ function sendEditShop(i) {
     }).execute(function(res) {
         shops[i] = res;
         hideShopEditor(i);
+        hideWaitingDialog();
     });
 }
 
 function deleteShop(i) {
     if (confirm('Are you sure?')) {
-            var shop = shops[i];
-            gapi.client.flagengine.shops.delete({'shopId': shop.id}).execute(function(res) {
-               getShops(); 
+        $('#shop_index_' + i).remove();
+        
+        var shop = shops[i];
+        gapi.client.flagengine.shops.delete({'shopId': shop.id}).execute(function(res) {
+            // nothing to do
         });
     }
 };
@@ -226,7 +269,7 @@ function loadItems(i) {
 
 // functions for item managing
 
-var shopIdForItems = 0;
+var shopIdForItems;
 
 function getItems(shopId) {
     shopIdForItems = shopId;
@@ -285,12 +328,10 @@ function appendItem(data, i, item) {
 };
 
 function alignItems() {
-    var width = $(window).width();
+    var width = $('#items').width();
     var num = parseInt(width / 300);
-    console.log(num);
     var marginTotal = width - num * 300;
     var margin = marginTotal / (num * 2);
-    console.log(margin);
     $('.item').css('margin', margin + 'px');
 }
 

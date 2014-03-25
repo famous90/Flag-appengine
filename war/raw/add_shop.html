@@ -1,25 +1,22 @@
 <div class="shop">
+    <form id="add_shop_image_form" action="" method="post" enctype="multipart/form-data" >
+        <input type="file" id="add_shop_image" name="image" onchange="showPreview(this, 'shop_thumbnail', -1)"/>
+    </form>
+    
+    <img class="shop_thumbnail" src="" id="shop_thumbnail_preview_-1"/>
+    <input type="hidden" id="add_shop_image_url">
+    
     <form id="add_shop_logo_form" action="" method="post" enctype="multipart/form-data">
-        <input type="file" id="add_shop_logo" name="image" onchange="showPreview(this, 'shop_logo', -1)">
+        <input type="file" id="add_shop_logo" name="image" onchange="showPreview(this, 'shop_logo', -1)"/>
     </form>
     
     <div class="shop_name_box">
         <img class="shop_logo" src="" id="shop_logo_preview_-1" />
         <input type="hidden" id="add_shop_logo_url" />
-        <input class="shop_name" type="text" id="add_shop_name"/>
+        <input class="shop_name" type="text" id="add_shop_name" placeholder="name"/>
     </div>
     
-    <ul class="nav nav-pills shop_menu">
-        <li class="dropdown"><a href="javascript:addShop()">add</a></li>
-    </ul>
-    
-    <form id="add_shop_image_form" action="" method="post" enctype="multipart/form-data" >
-        <input type="file" id="add_shop_image" name="image" onchange="showPreview(this, 'shop_thumbnail', -1)">
-    </form>
-    
-    <img class="shop_thumbnail" src="" id="shop_thumbnail_preview_-1"/>
-    <input type="hidden" id="add_shop_image_url">
     <div class="shop_desc">
-        <textarea id="add_shop_desc" />
+        <textarea id="add_shop_desc" placeholder="description"/>
     </div>
 </div>
