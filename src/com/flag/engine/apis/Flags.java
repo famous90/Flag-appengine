@@ -51,6 +51,23 @@ public class Flags {
 
 		return new FlagCollection(flags);
 	}
+
+	// temporary
+	@SuppressWarnings("unchecked")
+	@ApiMethod(name = "flags.list.close", path = "flag_list", httpMethod = "get")
+	public FlagCollection listClose(@Nullable @Named("userId") long userId, @Nullable @Named("lat") double lat, @Nullable @Named("lon") double lon) {
+		log.warning("list flag: lat=" + lat + " lon=" + lon);
+
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+
+		Query query = pm.newQuery(Flag.class);
+		query.setFilter("lon > minLon && lon < maxLon && lat > minLat && lat < maxLat");
+		query.declareParameters("double minLon, double maxLon, double minLat, double maxLat");
+		List<Flag> flags = (List<Flag>) pm.newQuery(query).executeWithArray(lon - LocationUtils.CLOSE_DISTANCE_DEGREE, lon + LocationUtils.CLOSE_DISTANCE_DEGREE,
+				lat - LocationUtils.CLOSE_DISTANCE_DEGREE, lat + LocationUtils.CLOSE_DISTANCE_DEGREE);
+
+		return new FlagCollection(flags);
+	}
 	
 	@ApiMethod(name = "flags.delete", path = "flag", httpMethod = "delete")
 	public void delete(@Named("flagId") Long flagId) {

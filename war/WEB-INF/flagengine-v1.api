@@ -183,6 +183,35 @@
         "body" : "empty"
       }
     },
+    "flagengine.flags.list.close" : {
+      "path" : "flag_list",
+      "httpMethod" : "get",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Flags.listClose",
+      "request" : {
+        "parameters" : {
+          "userId" : {
+            "type" : "int64",
+            "required" : false
+          },
+          "lat" : {
+            "type" : "double",
+            "required" : false
+          },
+          "lon" : {
+            "type" : "double",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
     "flagengine.flags.insert" : {
       "path" : "flag",
       "httpMethod" : "post",
@@ -832,6 +861,11 @@
         }
       },
       "com.flag.engine.apis.Flags.delete" : {
+      },
+      "com.flag.engine.apis.Flags.listClose" : {
+        "response" : {
+          "$ref" : "FlagCollection"
+        }
       },
       "com.flag.engine.apis.Flags.insert" : {
         "request" : {
