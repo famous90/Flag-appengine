@@ -24,7 +24,7 @@ public class Shops {
 
 	@ApiMethod(name = "shops.insert", path = "shop", httpMethod = "post")
 	public Shop insert(Shop shop) {
-		log.warning("insert shop: " + shop.toString());
+		log.info("insert shop: " + shop.toString());
 
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		pm.makePersistent(shop);
@@ -50,7 +50,7 @@ public class Shops {
 	@SuppressWarnings("unchecked")
 	@ApiMethod(name = "shops.list", path = "shop_list", httpMethod = "get")
 	public ShopCollection list(@Nullable @Named("ids") List<Long> ids) {
-		log.warning("list shop: " + ids);
+		log.info("list shop: " + ids);
 
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		List<Object> keys = new ArrayList<Object>();
@@ -67,7 +67,7 @@ public class Shops {
 	@SuppressWarnings("unchecked")
 	@ApiMethod(name = "shops.all", path = "shop_all", httpMethod = "get")
 	public ShopCollection all() {
-		log.warning("all shop");
+		log.info("all shop");
 
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		Query query = pm.newQuery(Shop.class);
@@ -78,7 +78,7 @@ public class Shops {
 
 	@ApiMethod(name = "shops.update", path = "shop", httpMethod = "put")
 	public Shop update(Shop shop) {
-		log.warning("update shop: " + shop.toString());
+		log.info("update shop: " + shop.toString());
 
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		Shop target = null;

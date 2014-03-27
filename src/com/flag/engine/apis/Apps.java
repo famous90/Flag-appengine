@@ -21,7 +21,7 @@ public class Apps {
 	
 	@ApiMethod(name = "apps.versions.insert", path = "version", httpMethod = "post")
 	public Version insertVersion(Version version) {
-		log.warning("insert version: " + version.toString());
+		log.info("insert version: " + version.toString());
 		
 		version.setCreatedAt(new Date().getTime());
 		
@@ -50,7 +50,7 @@ public class Apps {
 	
 	@ApiMethod(name = "apps.notices.insert", path = "notice", httpMethod = "post")
 	public Notice insertNotice(Notice notice) {
-		log.warning("insert notice: " + notice.toString());
+		log.info("insert notice: " + notice.toString());
 		
 		notice.setCreatedAt(new Date().getTime());
 		

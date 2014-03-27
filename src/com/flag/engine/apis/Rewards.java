@@ -25,7 +25,7 @@ public class Rewards {
 
 	@ApiMethod(name = "rewards.insert", path = "reward", httpMethod = "post")
 	public User insert(Reward reward) {
-		log.warning("insert reward: " + reward.toString());
+		log.info("insert reward: " + reward.toString());
 
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 
@@ -52,7 +52,7 @@ public class Rewards {
 	@SuppressWarnings("unchecked")
 	@ApiMethod(name = "rewards.list", path = "reward", httpMethod = "get")
 	public RewardCollection list(@Nullable @Named("userId") long userId) {
-		log.warning("list rewards: " + userId);
+		log.info("list rewards: " + userId);
 
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 

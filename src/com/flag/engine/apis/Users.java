@@ -21,7 +21,7 @@ public class Users {
 
 	@ApiMethod(name = "users.insert", path = "new_user", httpMethod = "post")
 	public User insert(UserForm userForm) {
-		log.warning("new user: " + userForm.toString());
+		log.info("new user: " + userForm.toString());
 
 		User user = new User(userForm);
 
@@ -35,7 +35,7 @@ public class Users {
 	@SuppressWarnings("unchecked")
 	@ApiMethod(name = "users.get", path = "old_user", httpMethod = "post")
 	public User get(UserForm userForm) {
-		log.warning("old user: " + userForm.toString());
+		log.info("old user: " + userForm.toString());
 
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		Query query = pm.newQuery(User.class);
@@ -52,7 +52,7 @@ public class Users {
 	@SuppressWarnings("unchecked")
 	@ApiMethod(name = "users.retain", path = "retain_user", httpMethod = "post")
 	public User retain(RetainForm retainForm) {
-		log.warning("retain user: " + retainForm.toString());
+		log.info("retain user: " + retainForm.toString());
 		
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		Query query = pm.newQuery(User.class);

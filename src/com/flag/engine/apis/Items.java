@@ -23,7 +23,7 @@ public class Items {
 
 	@ApiMethod(name = "items.insert", path = "item", httpMethod = "post")
 	public Item insert(Item item) {
-		log.warning("insert item: " + item.toString());
+		log.info("insert item: " + item.toString());
 
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		pm.makePersistent(item);
@@ -35,7 +35,7 @@ public class Items {
 	@SuppressWarnings("unchecked")
 	@ApiMethod(name = "items.list", path = "item", httpMethod = "get")
 	public ItemCollection list(@Nullable @Named("userId") long userId, @Nullable @Named("shopId") long shopId) {
-		log.warning("list item: " + shopId);
+		log.info("list item: " + shopId);
 
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 
@@ -52,7 +52,7 @@ public class Items {
 
 	@ApiMethod(name = "items.update", path = "item", httpMethod = "put")
 	public Item update(Item item) {
-		log.warning("update item: " + item.toString());
+		log.info("update item: " + item.toString());
 
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		Item target = null;

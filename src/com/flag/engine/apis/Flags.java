@@ -25,7 +25,7 @@ public class Flags {
 
 	@ApiMethod(name = "flags.insert", path = "flag", httpMethod = "post")
 	public Flag insert(Flag flag) {
-		log.warning("insert flag: " + flag.toString());
+		log.info("insert flag: " + flag.toString());
 
 		flag.setCreatedAt(new Date().getTime());
 
@@ -39,7 +39,7 @@ public class Flags {
 	@SuppressWarnings("unchecked")
 	@ApiMethod(name = "flags.list", path = "flag", httpMethod = "get")
 	public FlagCollection list(@Nullable @Named("userId") long userId, @Nullable @Named("lat") double lat, @Nullable @Named("lon") double lon) {
-		log.warning("list flag: lat=" + lat + " lon=" + lon);
+		log.info("list flag: lat=" + lat + " lon=" + lon);
 
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 
@@ -56,7 +56,7 @@ public class Flags {
 	@SuppressWarnings("unchecked")
 	@ApiMethod(name = "flags.list.close", path = "flag_list", httpMethod = "get")
 	public FlagCollection listClose(@Nullable @Named("userId") long userId, @Nullable @Named("lat") double lat, @Nullable @Named("lon") double lon) {
-		log.warning("list flag: lat=" + lat + " lon=" + lon);
+		log.info("list flag: lat=" + lat + " lon=" + lon);
 
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 

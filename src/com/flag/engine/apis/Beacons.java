@@ -21,7 +21,7 @@ public class Beacons {
 
 	@ApiMethod(name = "beacons.insert", path = "beacon", httpMethod = "post")
 	public Beacon insert(Beacon beacon) {
-		log.warning("insert beacon: " + beacon.toString());
+		log.info("insert beacon: " + beacon.toString());
 
 		PersistenceManager pm = PMF.getPersistenceManager();
 		pm.makePersistent(beacon);
