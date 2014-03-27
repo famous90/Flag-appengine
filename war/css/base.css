@@ -295,3 +295,8 @@ div.shop:hover {
 
 
 
+
+#header-margin-dummy {
+    width: 100%;
+    height: 60px;
+}
