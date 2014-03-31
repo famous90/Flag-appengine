@@ -14,7 +14,7 @@ public class Shop {
 	public static final int TYPE_MALL = 2;
 
 	@PrimaryKey
-	@Persistent(valueStrategy = IdGeneratorStrategy.INCREMENT)
+	@Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
 	private Long id;
 
 	@Persistent

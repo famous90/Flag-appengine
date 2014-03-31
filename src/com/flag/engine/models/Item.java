@@ -12,7 +12,7 @@ import javax.jdo.annotations.PrimaryKey;
 @PersistenceCapable(identityType = IdentityType.APPLICATION, table = "items")
 public class Item {
 	@PrimaryKey
-	@Persistent(valueStrategy = IdGeneratorStrategy.INCREMENT)
+	@Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
 	private Long id;
 
 	@Persistent

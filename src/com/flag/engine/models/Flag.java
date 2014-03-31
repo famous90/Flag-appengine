@@ -10,7 +10,7 @@ import javax.jdo.annotations.PrimaryKey;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION, table = "flags")
 public class Flag {
-	@Persistent(valueStrategy = IdGeneratorStrategy.INCREMENT)
+	@Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
 	@PrimaryKey
 	private Long id;
 

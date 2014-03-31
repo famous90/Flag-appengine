@@ -13,12 +13,12 @@ function getItems(shopId) {
 }
 
 function setItemMenus() {
-    showUpIndicator('javascript:backToShops();');
+    showUpIndicator('javascript:backToShopsFromItems();');
     setAddButton('javascript:showItemAdderScreen();');
     $('#item_adder_screen').on('shown.bs.modal', showFirstItemAdder);
 }
 
-function backToShops() {
+function backToShopsFromItems() {
     $('#items').html('');
     getShops();
 }
@@ -99,11 +99,17 @@ function addItemAdder() {
             $('#add_item_thumbnail_form_' + index).attr('action', res.url);
         });
         
-        showItemAdderButton();
+        if (indexArray.length < 5)
+            showItemAdderButton();
     });
 }
 
 function addAndGetIndex() {
+    if (indexArray.length == 0) {
+        indexArray[0] = 0;
+        return 0;
+    }
+    
     indexArray[indexArray.length] = indexArray[indexArray.length - 1] + 1;
     return indexArray[indexArray.length - 1];
 }
@@ -111,6 +117,9 @@ function addAndGetIndex() {
 function removeItemAdder(i) {
     $('#add_item_' + i).remove();
     removeIndex(i);
+    
+    if (indexArray.length == 4)
+        showItemAdderButton();
 }
 
 function removeIndex(i) {

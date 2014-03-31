@@ -9,6 +9,7 @@
         <script type="text/javascript" src="./js/render.js"></script>
         <script type="text/javascript" src="./js/resp.js"></script>
         <script type="text/javascript" src="./js/shop.js"></script>
+        <script type="text/javascript" src="./js/flag.js"></script>
         <script type="text/javascript" src="./js/item.js"></script>
         <script type="text/javascript" src="./js/base.js"></script>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
@@ -18,6 +19,16 @@
     </head>
     
     <body>
+        <header id="home_header">
+            <div id="logo_box"><span id="logo_text">DALshop Console</span></div>
+            
+            <ul class="nav nav-pills navbar-right">
+                <li>
+                    <a href="#">Sign Out</a>
+                </li>
+            </ul>
+        </header>
+        
         <div id="waiting_dialog" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-sm">
                 <div class="modal-content">
@@ -28,83 +39,97 @@
             </div>
         </div>
         
-        <div id="shop_adder_screen" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div id="uploading_shop_dialog" class="modal fade bs-example-modal-sm" tabindex="1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-sm">
-                            <div class="modal-content">
-                                <div class="modal-body">
-                                    Uploading Shop...
+        <nav id="menu_bar">
+            <ul class="nav nav-pills nav-stacked span2">
+                <li><a href="javascript:showShopAdmin();">Shop Admin <span class="glyphicon glyphicon-chevron-right menu-chevron"></span></a></li>
+                <li class="disabled"><a href="#">Cash Flow <span class="glyphicon glyphicon-chevron-right menu-chevron menu-inactive"></span></a></li>
+                <li class="disabled"><a href="#">Data Viewer <span class="glyphicon glyphicon-chevron-right menu-chevron menu-inactive"></span></a></li>
+            </ul>
+        </nav>
+        
+        <section id="contents">
+            <header id="up_indicator_header">
+                <ul class="nav nav-pills navbar-left">
+                    <li class="active">
+                        <a id="up_indicator" href="#"><span class="glyphicon glyphicon-chevron-left span_icon"></span> Back</a>
+                    </li>
+                </ul>
+                <ul class="nav nav-pills navbar-right">
+                    <li class="active">
+                        <a id="add_button" href="#"><span class="glyphicon glyphicon-plus span_icon"></span> Add</a>
+                    </li>
+                </ul>
+            </header>
+            
+            <div id="shop_adder_screen" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div id="uploading_shop_dialog" class="modal fade bs-example-modal-sm" tabindex="1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-sm">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        Uploading Shop...
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title">Add Shop</h4>
-                    </div>
-                    <div class="modal-body">
-                        <section id="shop_to_be_added">
-                        </section>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-toggle="modal" onclick="addShop();">Save</button>
+
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">Add Shop</h4>
+                        </div>
+                        <div class="modal-body">
+                            <section id="shop_to_be_added">
+                            </section>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" onclick="addShop();">Save</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <div id="item_adder_screen" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div id="uploading_items_dialog" class="modal fade bs-example-modal-sm" tabindex="1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-sm">
-                            <div class="modal-content">
-                                <div class="modal-body">
-                                    Uploading Items...
+
+            <div id="item_adder_screen" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div id="uploading_items_dialog" class="modal fade bs-example-modal-sm" tabindex="1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-sm">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        Uploading Items...
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title">Add Items</h4>
-                    </div>
-                    <div class="modal-body">
-                        <section id="items_to_be_added">
-                        </section>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-toggle="modal" onclick="addItems();">Save</button>
+
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">Add Items</h4>
+                        </div>
+                        <div class="modal-body">
+                            <section id="items_to_be_added">
+                            </section>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" onclick="addItems();">Save</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    
-        <header class="up_indicator_header">
-            <ul class="nav nav-pills navbar-left">
-                <li class="active">
-                    <a id="up_indicator" href="#"><span class="glyphicon glyphicon-chevron-left span_icon"></span> Back</a>
-                </li>
-            </ul>
-            <ul class="nav nav-pills navbar-right">
-                <li class="active">
-                    <a id="add_button" href="#"><span class="glyphicon glyphicon-plus span_icon"></span> Add</a>
-                </li>
-            </ul>
-        </header>
-        
-        <section id="header-margin-dummy" />
-        
-        <section id="shops">
-            <!-- goes all shops list -->
+
+            <section id="shops">
+                <!-- goes all shops list -->
+            </section>
+
+            <section id="flags">
+                <!-- goes all items list -->
+            </section>
+
+            <section id="items">
+                <!-- goes all items list -->
+            </section>
         </section>
         
-        <section id="items">
-            <!-- goes all items list -->
-        </section>
+        
     </body>
 </html>

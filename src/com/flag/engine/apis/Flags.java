@@ -52,6 +52,19 @@ public class Flags {
 		return new FlagCollection(flags);
 	}
 
+	@SuppressWarnings("unchecked")
+	@ApiMethod(name = "flags.list.byshop", path = "flags", httpMethod = "get")
+	public FlagCollection listByShop(@Nullable @Named("shopId") long shopId) {
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+
+		Query query = pm.newQuery(Flag.class);
+		query.setFilter("shopId == theShopId");
+		query.declareParameters("long theShopId");
+		List<Flag> flags = (List<Flag>) pm.newQuery(query).executeWithArray(shopId);
+
+		return new FlagCollection(flags);
+	}
+
 	// temporary
 	@SuppressWarnings("unchecked")
 	@ApiMethod(name = "flags.list.close", path = "flag_list", httpMethod = "get")

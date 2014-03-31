@@ -52,3 +52,12 @@ function init() {
         getShops();
     }, ROOT);
 };
+
+// menu functions
+
+function showShopAdmin() {
+    $('#shops').html('');
+    $('#flags').html('');
+    $('#items').html('');
+    getShops();
+}

@@ -1,11 +1,11 @@
 html {
     width: 100%;
     height: 100%;
+    background-color: rgba(0, 0, 0, 0.07);
 }
 
 body {
     width: 100%;
-    height: 100%;
 }
 
 div {
@@ -40,16 +40,14 @@ span {
 }
 .shop {
     display: block;
-    margin: 10px;
-    width: calc(100% - 20px);
+    width: calc(100% - 14px);
     height: 350px;
+    margin: 7px;
     border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 2px;
+    background-color: white;
 }
 
-div.shop:hover {
-    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
-}
+
 
 .shop_logo {
     float: left;
@@ -149,10 +147,10 @@ div.shop:hover {
     display: block;
     width: 300px;
     height: 520px;
-    margin: 10px;
     padding: 10px;
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 2px;
+    background-color: white;
 }
 
 .item_img {
@@ -276,12 +274,10 @@ div.shop:hover {
     float: left;
 }
 
-.up_indicator_header {
-    position: fixed;
+#up_indicator_header {
     width: 100%;
     height: 60px;
     padding: 10px;
-    background-color: rgba(0, 0, 0, 0.1);
 }
 
 .span_icon {
@@ -296,7 +292,57 @@ div.shop:hover {
 
 
 
-#header-margin-dummy {
+
+
+#header_margin {
+    position: relative;
+    display: block;
     width: 100%;
     height: 60px;
+}
+
+
+
+#home_header {
+    width: 100%;
+    height: 60px;
+    padding: 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    background-color: rgba(0, 0, 0, 0.07);
+}
+
+#menu_bar {
+    position: absolute;
+    width: 250px;
+}
+
+#contents {
+    position: absolute;
+    width: calc(100% - 250px);
+    min-height: calc(100% - 60px);
+    margin-left: 250px;
+    padding: 0 0 10px 0;
+    background-color: rgb(250, 250, 250);
+}
+
+#logo_box {
+    float: left;
+    height: 100%;
+}
+
+#logo_text {
+    height: 100%;
+    line-height: 150%;
+    font-size: 25px;
+    font-weight: 600;
+}
+
+
+
+.menu-chevron {
+    height: 20px;
+}
+
+.menu-inactive {
+    opacity: 0;
 }

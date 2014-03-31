@@ -17,7 +17,7 @@ public class Reward {
 	public static final long TYPE_SHOP = 1;
 	public static final long TYPE_ITEM = 2;
 
-	@Persistent(valueStrategy = IdGeneratorStrategy.INCREMENT)
+	@Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
 	@PrimaryKey
 	private Long id;
 

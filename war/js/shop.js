@@ -207,6 +207,12 @@ function deleteShop(i) {
     }
 };
 
+function loadFlags(i) {
+    var shop = shops[i];
+    $('#shops').html('');
+    getFlags(shop.id);
+}
+
 function loadItems(i) {
     var shop = shops[i];
     $('#shops').html('');
