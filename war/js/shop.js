@@ -122,12 +122,16 @@ function addShop() {
     var i = 0;
     $('#add_shop_logo_form').ajaxSubmit(function(resLogo) {
         shopLogoUrl = 'https://genuine-evening-455.appspot.com/serve?blob-key=' + resLogo.url;
-        if (++i == 2)
+        i++;
+        progressShopUpload(i);
+        if (i == 2)
             sendAddShop();
     });
     $('#add_shop_image_form').ajaxSubmit(function(resImage) {
         shopImageUrl = 'https://genuine-evening-455.appspot.com/serve?blob-key=' + resImage.url;
-        if (++i == 2)
+        i++;
+        progressShopUpload(i);
+        if (i == 2)
             sendAddShop();
     });
 };
@@ -141,9 +145,15 @@ function sendAddShop() {
         'type': shopType,
         'reward': shopReward
     }).execute(function(res) {
+        progressShopUpload(2);
         finishAddShop();
     });
 };
+
+function progressShopUpload(i) {
+    var rate = (i / 3) * 100;
+    $('#shop_upload_progress_bar').attr('style', 'width: ' + rate + '%');
+}
 
 function finishAddShop() {
     $('#uploading_shop_dialog').modal('hide');

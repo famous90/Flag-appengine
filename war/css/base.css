@@ -319,6 +319,7 @@ span {
 #contents {
     position: absolute;
     width: calc(100% - 250px);
+    min-width: 1000px;
     min-height: calc(100% - 60px);
     margin-left: 250px;
     padding: 0 0 10px 0;
@@ -345,4 +346,80 @@ span {
 
 .menu-inactive {
     opacity: 0;
+}
+
+#flags {
+    position: absolute;
+    width: 100%;
+    height: calc(100% - 72px);
+}
+
+#flag_map {
+    float: right;
+    width: calc(100% - 410px);
+    height: 100%;
+    margin-right: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+    background-color: white;
+}
+
+#flag_list {
+    float: right;
+    width: 385px;
+    height: 100%;
+    margin-right: 5px;
+    overflow-y: scroll;
+}
+
+.flag {
+    width: 100%;
+    height: 100px;
+    margin-bottom: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+    background-color: white;
+}
+
+.flag_indicator {
+    float: right;
+    width: 50px;
+    height: 100%;
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.flag_name {
+    float: right;
+    width: 333px;
+    height: 59px;
+}
+
+.flag_addr {
+    float: right;
+    width: 333px;
+    height: 39px;
+}
+
+.flag-chevron {
+    display: block;
+    margin-left: 17px;
+    margin-top: 39px;
+}
+
+.flag-inactive {
+    opacity: 0.2;
+}
+
+.span_flag_name {
+    height: 100%;
+    line-height: 280%;
+    padding-left: 20px;
+    font-size: 20px;
+}
+
+.span_flag_addr {
+    height: 100%;
+    line-height: 150%;
+    padding-left: 20px;
+    color: gray;
 }

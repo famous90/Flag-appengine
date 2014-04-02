@@ -142,6 +142,8 @@ function hideItemAdderButton() {
 
 var itemUploadTotal = 0;
 var itemUploadCount = 0;
+var itemProgressTotal = 0;
+var itemProgressCount = 0;
 
 function addItems() {
     hideItemAdderButton();
@@ -152,6 +154,7 @@ function addItems() {
     });
     
     itemUploadTotal = indexArray.length;
+    itemProgressTotal = itemUploadTotal * 2;
     for (var i = 0; i < itemUploadTotal; i++) {
         addItem(indexArray[i]);
     }
@@ -160,6 +163,7 @@ function addItems() {
 function addItem(i) {
     $('#add_item_thumbnail_form_' + i).ajaxSubmit(function(res) {
         $('#add_item_thumbnail_url_' + i).val('https://genuine-evening-455.appspot.com/serve?blob-key=' + res.url);
+        progressItemUpload();
         sendAddItem(i);
     });
 }
@@ -186,10 +190,17 @@ function sendAddItem(i) {
         'shopId': shopId
     }).execute(function(res) {
         $('#add_item_' + i).remove();
+        progressItemUpload();
         itemUploadCount++;
         if (itemUploadTotal == itemUploadCount)
             finishItemUpload();
     });
+}
+
+function progressItemUpload() {
+    itemProgressCount++;
+    var rate = (itemProgressCount / itemProgressTotal) * 100;
+    $('#item_upload_progress_bar').attr('style', 'width: ' + rate + '%');
 }
 
 function finishItemUpload() {
@@ -204,6 +215,8 @@ function refreshItemUploadIndexes() {
     indexArray = [0];
     itemUploadTotal = 0;
     itemUploadCount = 0;
+    itemProgressTotal = 0;
+    itemProgressCount = 0;
 }
 
 function deleteItem(i) {
