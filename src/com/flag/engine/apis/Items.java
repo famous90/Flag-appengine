@@ -49,6 +49,23 @@ public class Items {
 
 		return new ItemCollection(items);
 	}
+	
+	@ApiMethod(name = "items.get", path = "one_item", httpMethod = "get")
+	public Item get(@Nullable @Named("userId") long userId, @Nullable @Named("itemId") long itemId) {
+		log.info("get item: " + itemId);
+		
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+		Item item = null;
+		
+		try {
+			item = pm.getObjectById(Item.class, itemId);
+			item.setRewardedForUser(userId);
+			item.setLikedForUser(userId);
+		} catch (JDOObjectNotFoundException e) {
+		}
+		
+		return item;
+	}
 
 	@ApiMethod(name = "items.update", path = "item", httpMethod = "put")
 	public Item update(Item item) {

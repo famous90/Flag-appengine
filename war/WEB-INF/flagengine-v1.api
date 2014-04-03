@@ -474,6 +474,31 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
+    "flagengine.items.get" : {
+      "path" : "one_item",
+      "httpMethod" : "get",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Items.get",
+      "request" : {
+        "parameters" : {
+          "userId" : {
+            "type" : "int64",
+            "required" : false
+          },
+          "itemId" : {
+            "type" : "int64",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
     "flagengine.items.update" : {
       "path" : "item",
       "httpMethod" : "put",
@@ -820,6 +845,10 @@
           "rewarded" : {
             "type" : "boolean"
           },
+          "likedForUser" : {
+            "type" : "string",
+            "format" : "int64"
+          },
           "rewardedForUser" : {
             "type" : "string",
             "format" : "int64"
@@ -982,6 +1011,11 @@
       "com.flag.engine.apis.Apps.getVersion" : {
         "response" : {
           "$ref" : "Version"
+        }
+      },
+      "com.flag.engine.apis.Items.get" : {
+        "response" : {
+          "$ref" : "Item"
         }
       },
       "com.flag.engine.apis.Items.update" : {

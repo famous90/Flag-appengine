@@ -102,6 +102,8 @@ public class Shops {
 		try {
 			Shop target = pm.getObjectById(Shop.class, shopId);
 			pm.deletePersistent(target);
+			
+			// delete flags, items
 		} catch (JDOObjectNotFoundException e) {
 		} finally {
 			pm.close();

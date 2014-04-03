@@ -142,6 +142,10 @@ public class Item {
 		this.rewarded = Reward.exists(userId, id, Reward.TYPE_ITEM);
 	}
 
+	public void setLikedForUser(long userId) {
+		// TODO
+	}
+
 	public void update(Item item) {
 		if (item.getName() != null && !item.getName().isEmpty())
 			this.name = item.getName();
