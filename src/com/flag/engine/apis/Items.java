@@ -44,9 +44,12 @@ public class Items {
 		query.declareParameters("long theShopid");
 		List<Item> items = (List<Item>) pm.newQuery(query).execute(shopId);
 
-		for (Item item : items)
+		for (Item item : items) {
 			item.setRewardedForUser(userId);
-
+			item.setLikedForUser(userId);
+			item.setLikes();
+		}
+			
 		return new ItemCollection(items);
 	}
 	
@@ -61,6 +64,7 @@ public class Items {
 			item = pm.getObjectById(Item.class, itemId);
 			item.setRewardedForUser(userId);
 			item.setLikedForUser(userId);
+			item.setLikes();
 		} catch (JDOObjectNotFoundException e) {
 		}
 		

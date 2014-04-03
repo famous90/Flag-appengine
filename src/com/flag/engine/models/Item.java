@@ -50,6 +50,12 @@ public class Item {
 	@NotPersistent
 	private boolean rewarded;
 
+	@NotPersistent
+	private int likes;
+
+	@NotPersistent
+	private boolean liked;
+
 	public Long getId() {
 		return id;
 	}
@@ -142,8 +148,24 @@ public class Item {
 		this.rewarded = Reward.exists(userId, id, Reward.TYPE_ITEM);
 	}
 
+	public int getLikes() {
+		return likes;
+	}
+
+	public void setLikes() {
+		this.likes = Like.count(id);
+	}
+
+	public boolean isLiked() {
+		return liked;
+	}
+
+	public void setLiked(boolean liked) {
+		this.liked = liked;
+	}
+
 	public void setLikedForUser(long userId) {
-		// TODO
+		this.liked = Like.exists(userId, id);
 	}
 
 	public void update(Item item) {
