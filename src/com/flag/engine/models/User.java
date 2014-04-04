@@ -7,10 +7,10 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
-@PersistenceCapable(identityType = IdentityType.APPLICATION, table = "users")
+@PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class User {
 	@PrimaryKey
-	@Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
+	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	private Long id;
 
 	@Persistent

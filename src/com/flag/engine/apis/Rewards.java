@@ -27,7 +27,7 @@ public class Rewards {
 	public User insert(Reward reward) {
 		log.info("insert reward: " + reward.toString());
 
-		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+		PersistenceManager pm = PMF.getPersistenceManager();
 
 		// mark
 		reward.setCreatedAt(new Date().getTime());
@@ -54,7 +54,7 @@ public class Rewards {
 	public RewardCollection list(@Nullable @Named("userId") long userId) {
 		log.info("list rewards: " + userId);
 
-		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+		PersistenceManager pm = PMF.getPersistenceManager();
 
 		Query query = pm.newQuery(Reward.class);
 		query.setFilter("userId == theUserId");

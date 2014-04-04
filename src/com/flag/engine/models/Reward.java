@@ -103,7 +103,7 @@ public class Reward {
 
 	@SuppressWarnings("unchecked")
 	public static boolean exists(Long userId, Long targetId, Long type) {
-		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+		PersistenceManager pm = PMF.getPersistenceManager();
 
 		Query query = pm.newQuery(Reward.class);
 		query.setFilter("userId == theUserId && targetId == theTargetId && type == theType");

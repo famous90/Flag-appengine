@@ -3,6 +3,7 @@ package com.flag.engine.apis;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
@@ -19,15 +20,35 @@ import com.google.api.server.spi.config.ApiMethod;
 public class Users {
 	private static final Logger log = Logger.getLogger(Users.class.getName());
 
-	@ApiMethod(name = "users.insert", path = "new_user", httpMethod = "post")
-	public User insert(UserForm userForm) {
-		log.info("new user: " + userForm.toString());
+	@ApiMethod(name = "users.guest", path = "guest_user", httpMethod = "post")
+	public User guest() {
+		log.info("guest user");
 
-		User user = new User(userForm);
+		User user = new User();
 
-		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+		PersistenceManager pm = PMF.getPersistenceManager();
 		pm.makePersistent(user);
 		pm.close();
+
+		return user;
+	}
+
+	@ApiMethod(name = "users.insert", path = "new_user", httpMethod = "post")
+	public User insert(UserForm userForm) {
+		log.warning("new user: " + userForm.toString());
+
+		PersistenceManager pm = PMF.getPersistenceManager();
+		User user = null;
+		try {
+			user = pm.getObjectById(User.class, userForm.getId());
+			user.setEmail(userForm.getEmail());
+			user.setPassword(userForm.getPassword());
+		} catch (JDOObjectNotFoundException e) {
+			user = new User(userForm);
+			pm.makePersistent(user);
+		} finally {
+			pm.close();
+		}
 
 		return new User(user);
 	}
@@ -37,32 +58,41 @@ public class Users {
 	public User get(UserForm userForm) {
 		log.info("old user: " + userForm.toString());
 
-		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+		PersistenceManager pm = PMF.getPersistenceManager();
+
 		Query query = pm.newQuery(User.class);
 		query.setFilter("email == theEmail && password == thePassword");
 		query.declareParameters("String theEmail, String thePassword");
-
 		List<User> users = (List<User>) pm.newQuery(query).execute(userForm.getEmail(), userForm.getPassword());
-		if (users.isEmpty())
-			return null;
-		else
-			return new User(users.get(0));
+		
+		User user = null;
+		if (!users.isEmpty())
+			user = new User(users.get(0));
+		
+		try {
+			if (userForm.getId() != 0) {
+				User target = pm.getObjectById(User.class, userForm.getId());
+				pm.deletePersistent(target);
+			}
+		} catch (JDOObjectNotFoundException e) {
+		} finally {
+			pm.close();
+		}
+		
+		return user;
 	}
-	
-	@SuppressWarnings("unchecked")
+
 	@ApiMethod(name = "users.retain", path = "retain_user", httpMethod = "post")
 	public User retain(RetainForm retainForm) {
 		log.info("retain user: " + retainForm.toString());
-		
-		PersistenceManager pm = PMF.getPersistenceManagerSQL();
-		Query query = pm.newQuery(User.class);
-		query.setFilter("id == theId");
-		query.declareParameters("long theId");
-		
-		List<User> users = (List<User>) pm.newQuery(query).execute(retainForm.getId());
-		if (users.isEmpty())
+
+		PersistenceManager pm = PMF.getPersistenceManager();
+
+		try {
+			User user = pm.getObjectById(User.class, retainForm.getId());
+			return new User(user);
+		} catch (JDOObjectNotFoundException e) {
 			return null;
-		else
-			return new User(users.get(0));
+		}
 	}
 }
