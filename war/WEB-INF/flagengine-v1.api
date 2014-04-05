@@ -174,27 +174,6 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
-    "flagengine.flags.list.byshop" : {
-      "path" : "flags",
-      "httpMethod" : "get",
-      "authLevel" : "NONE",
-      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
-      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
-      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.flag.engine.apis.Flags.listByShop",
-      "request" : {
-        "parameters" : {
-          "shopId" : {
-            "type" : "int64",
-            "required" : false
-          }
-        },
-        "body" : "empty"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
     "flagengine.flags.list" : {
       "path" : "flag",
       "httpMethod" : "get",
@@ -215,6 +194,27 @@
           },
           "lon" : {
             "type" : "double",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "flagengine.flags.list.byshop" : {
+      "path" : "flags",
+      "httpMethod" : "get",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Flags.listByShop",
+      "request" : {
+        "parameters" : {
+          "shopId" : {
+            "type" : "int64",
             "required" : false
           }
         },
@@ -998,12 +998,12 @@
           "$ref" : "UploadUrl"
         }
       },
-      "com.flag.engine.apis.Flags.listByShop" : {
+      "com.flag.engine.apis.Flags.list" : {
         "response" : {
           "$ref" : "FlagCollection"
         }
       },
-      "com.flag.engine.apis.Flags.list" : {
+      "com.flag.engine.apis.Flags.listByShop" : {
         "response" : {
           "$ref" : "FlagCollection"
         }

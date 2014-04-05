@@ -11,6 +11,8 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
 import com.flag.engine.constants.Constants;
+import com.flag.engine.models.Flag;
+import com.flag.engine.models.Item;
 import com.flag.engine.models.PMF;
 import com.flag.engine.models.Shop;
 import com.flag.engine.models.ShopCollection;
@@ -95,15 +97,26 @@ public class Shops {
 		return target;
 	}
 
+	@SuppressWarnings("unchecked")
 	@ApiMethod(name = "shops.delete", path = "shop", httpMethod = "delete")
 	public void delete(@Named("shopId") Long shopId) {
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 
 		try {
+			Query query = pm.newQuery(Flag.class);
+			query.setFilter("shopId == theShopId");
+			query.declareParameters("long theShopId");
+			List<Flags> flags = (List<Flags>) pm.newQuery(query).execute(shopId);
+			pm.deletePersistentAll(flags);
+			
+			query = pm.newQuery(Item.class);
+			query.setFilter("shopId == theShopId");
+			query.declareParameters("long theShopId");
+			List<Items> items = (List<Items>) pm.newQuery(query).execute(shopId);
+			pm.deletePersistentAll(items);
+			
 			Shop target = pm.getObjectById(Shop.class, shopId);
 			pm.deletePersistent(target);
-			
-			// delete flags, items
 		} catch (JDOObjectNotFoundException e) {
 		} finally {
 			pm.close();
