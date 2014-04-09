@@ -55,7 +55,7 @@ public class Like {
 	public void refreshId() {
 		id = Like.obtainLikeId(userId, itemId);
 	}
-	
+
 	public static String obtainLikeId(Long userId, Long itemId) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("userId:").append(userId).append("/").append("itemId:").append(itemId);
@@ -63,27 +63,25 @@ public class Like {
 	}
 
 	public static boolean exists(Long userId, Long itemId) {
-		boolean doesExists = true;
 		PersistenceManager pm = PMF.getPersistenceManager();
 
 		try {
 			pm.getObjectById(Like.class, obtainLikeId(userId, itemId));
+			return true;
 		} catch (JDOObjectNotFoundException e) {
-			doesExists = false;
+			return false;
 		}
-
-		return doesExists;
 	}
 
 	@SuppressWarnings("unchecked")
 	public static int count(Long itemId) {
 		PersistenceManager pm = PMF.getPersistenceManager();
-		
+
 		Query query = pm.newQuery(Like.class);
 		query.setFilter("itemId == theItemId");
 		query.declareParameters("Long theItemId");
 		List<Like> likes = (List<Like>) pm.newQuery(query).execute(itemId);
-		
+
 		return likes.size();
 	}
 }

@@ -1,9 +1,7 @@
 package com.flag.engine.models;
 
-import java.util.List;
-
+import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
-import javax.jdo.Query;
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
@@ -17,9 +15,9 @@ public class Reward {
 	public static final long TYPE_SHOP = 1;
 	public static final long TYPE_ITEM = 2;
 
-	@Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
+	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	@PrimaryKey
-	private Long id;
+	private String id;
 
 	@Persistent
 	@Index
@@ -45,11 +43,13 @@ public class Reward {
 	@Column(name = "created_at")
 	private long createdAt;
 
-	public Long getId() {
+	public String getId() {
+		if (id == null)
+			refreshId();
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -101,18 +101,24 @@ public class Reward {
 		this.createdAt = createdAt;
 	}
 
-	@SuppressWarnings("unchecked")
+	public void refreshId() {
+		id = Reward.obtainRewardId(userId, targetId, type);
+	}
+
+	public static String obtainRewardId(Long userId, Long targetId, Long type) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("userId:").append(userId).append("/").append("targetId:").append(targetId).append("/").append("type:").append(type);
+		return sb.toString();
+	}
+
 	public static boolean exists(Long userId, Long targetId, Long type) {
 		PersistenceManager pm = PMF.getPersistenceManager();
 
-		Query query = pm.newQuery(Reward.class);
-		query.setFilter("userId == theUserId && targetId == theTargetId && type == theType");
-		query.declareParameters("Long theUserId, Long theTargetId, Long theType");
-		List<Reward> rewards = (List<Reward>) pm.newQuery(query).execute(userId, targetId, type);
-
-		if (rewards.isEmpty())
-			return false;
-		else
+		try {
+			pm.getObjectById(Reward.class, Reward.obtainRewardId(userId, targetId, type));
 			return true;
+		} catch (JDOObjectNotFoundException e) {
+			return false;
+		}
 	}
 }

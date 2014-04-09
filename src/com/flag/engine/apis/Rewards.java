@@ -30,6 +30,7 @@ public class Rewards {
 		PersistenceManager pm = PMF.getPersistenceManager();
 
 		// mark
+		reward.refreshId();
 		reward.setCreatedAt(new Date().getTime());
 		
 		// redundancy check

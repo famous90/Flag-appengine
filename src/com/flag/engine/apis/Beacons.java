@@ -23,6 +23,8 @@ public class Beacons {
 	public Beacon insert(Beacon beacon) {
 		log.info("insert beacon: " + beacon.toString());
 
+		beacon.setId(beacon.getId().toUpperCase());
+		
 		PersistenceManager pm = PMF.getPersistenceManager();
 		pm.makePersistent(beacon);
 		pm.close();
