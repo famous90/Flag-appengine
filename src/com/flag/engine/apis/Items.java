@@ -1,5 +1,6 @@
 package com.flag.engine.apis;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -30,6 +31,32 @@ public class Items {
 		pm.close();
 
 		return item;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@ApiMethod(name = "items.init", path = "item_init", httpMethod = "get")
+	public ItemCollection initItems(@Nullable @Named("userId") long userId, @Nullable @Named("mark") int mark) {
+		log.info("list item for user: " + userId);
+		
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+		
+		Query query = pm.newQuery(Item.class);
+		query.setOrdering("id desc");
+		query.setRange(mark, mark + 20);
+		List<Item> results = (List<Item>) pm.newQuery(query).execute();
+		
+		List<Integer> picks = ItemCollection.randomIndexes(results.size());
+		List<Item> items = new ArrayList<Item>();
+		for (int pick : picks)
+			items.add(results.get(pick));
+		
+		for (Item item : items) {
+			item.setRewardedForUser(userId);
+			item.setLikedForUser(userId);
+			item.setLikes();
+		}
+		
+		return new ItemCollection(items);
 	}
 
 	@SuppressWarnings("unchecked")

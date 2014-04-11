@@ -1,26 +1,13 @@
-
-<form id="edit_shop_image_form_${index}" action="" method="post" enctype="multipart/form-data">
-    <input type="file" class="edit_shop_image" name="image" onchange="showPreview(this, 'shop_thumbnail', ${index})">
-</form>
-
-<img class="shop_thumbnail" src="${img}" id="shop_thumbnail_preview_${index}"/>
-<input type="hidden" id="edit_shop_image_url_${index}" value="">
-
-<form id="edit_shop_logo_form_${index}" action="" method="post" enctype="multipart/form-data">
-    <input type="file" class="edit_shop_logo" name="image" onchange="showPreview(this, 'shop_logo', ${index})">
-</form>
-
 <div class="shop_name_box">
-    <img class="shop_logo" src="${logo}" id="shop_logo_preview_${index}">
-    <input type="hidden" id="edit_shop_logo_url_${index}" value="">
-    <input class="shop_name" type="text" id="edit_shop_name_${index}" value="${name}"/>
+    <form id="edit_shop_logo_form_${index}" action="" method="post" enctype="multipart/form-data">
+        <input type="file" class="edit_shop_logo" name="image" onchange="showPreview(this, 'shop_logo', ${index})" />
+    </form>
+    <img class="shop_logo" src="${logo}" id="shop_logo_preview_${index}" />
+    <input type="hidden" id="edit_shop_logo_url_${index}" value="" />
+    <input class="shop_name" type="text" id="edit_shop_name_${index}" value="${name}" />
 </div>
 
 <ul class="nav nav-pills shop_menu">
     <li><a href="javascript:hideShopEditor(${index})">Cancel</a></li>
     <li><a href="javascript:editShop(${index})">Save</a></li>
 </ul>
-
-<div class="shop_desc">
-    <textarea class="edit_shop_desc" id="edit_shop_desc_${index}">${desc}</textarea>
-</div>

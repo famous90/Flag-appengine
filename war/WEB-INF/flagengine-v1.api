@@ -7,7 +7,7 @@
   "defaultVersion" : false,
   "adapter" : {
     "bns" : "https://genuine-evening-455.appspot.com/_ah/spi",
-    "deadline" : 10.0,
+    "deadline" : 65.0,
     "type" : "lily"
   },
   "auth" : {
@@ -353,6 +353,35 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
+    "flagengine.shops.init" : {
+      "path" : "shop_init",
+      "httpMethod" : "get",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Shops.initShops",
+      "request" : {
+        "parameters" : {
+          "userId" : {
+            "type" : "int64",
+            "required" : false
+          },
+          "lat" : {
+            "type" : "double",
+            "required" : false
+          },
+          "lon" : {
+            "type" : "double",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
     "flagengine.shops.get" : {
       "path" : "shop",
       "httpMethod" : "get",
@@ -606,6 +635,31 @@
       },
       "response" : {
         "body" : "empty"
+      }
+    },
+    "flagengine.items.init" : {
+      "path" : "item_init",
+      "httpMethod" : "get",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Items.initItems",
+      "request" : {
+        "parameters" : {
+          "userId" : {
+            "type" : "int64",
+            "required" : false
+          },
+          "mark" : {
+            "type" : "int32",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
       }
     },
     "flagengine.items.list" : {
@@ -927,11 +981,11 @@
           "liked" : {
             "type" : "boolean"
           },
-          "likedForUser" : {
+          "rewardedForUser" : {
             "type" : "string",
             "format" : "int64"
           },
-          "rewardedForUser" : {
+          "likedForUser" : {
             "type" : "string",
             "format" : "int64"
           }
@@ -1051,6 +1105,11 @@
           "$ref" : "User"
         }
       },
+      "com.flag.engine.apis.Shops.initShops" : {
+        "response" : {
+          "$ref" : "ShopCollection"
+        }
+      },
       "com.flag.engine.apis.Shops.get" : {
         "response" : {
           "$ref" : "Shop"
@@ -1132,6 +1191,11 @@
         }
       },
       "com.flag.engine.apis.Items.delete" : {
+      },
+      "com.flag.engine.apis.Items.initItems" : {
+        "response" : {
+          "$ref" : "ItemCollection"
+        }
       },
       "com.flag.engine.apis.Items.list" : {
         "response" : {

@@ -33,10 +33,10 @@ function getShopHtml(shops) {
 
 function appendShop(data, i, shop) {
     data = replaceAll('${index}', i, data);
-    data = data.replace('${logo}', shop.logoUrl);
-    data = data.replace('${img}', shop.imageUrl);
+    data = data.replace('${logo}', shop.logoUrl + '&width=0&height=0');
     data = data.replace('${name}', shop.name);
-    data = data.replace('${desc}', replaceAll('\n', '<br/>', shop.description));
+//    data = data.replace('${img}', shop.imageUrl);
+//    data = data.replace('${desc}', replaceAll('\n', '<br/>', shop.description));
     $('#shops').append(data);
 };
 
@@ -69,19 +69,14 @@ function showShopEditor(i) {
         gapi.client.flagengine.images.uploadUrl.get().execute(function(res) {
             $('#edit_shop_logo_form_' + i).attr('action', res.url);
         });
-        gapi.client.flagengine.images.uploadUrl.get().execute(function(res) {
-            $('#edit_shop_image_form_' + i).attr('action', res.url);
-        });
     });
 };
 
 function makeShopEditor(i, data) {
     var shop = shops[i];
     data = replaceAll('${index}', i, data);
-    data = replaceAll('${logo}', shop.logoUrl, data);
+    data = data.replace('${logo}', shop.logoUrl);
     data = data.replace('${name}', shop.name);
-    data = replaceAll('${img}', shop.imageUrl, data);
-    data = data.replace('${desc}', shop.description);
     $('#shop_index_' + i).html(data);
 };
 

@@ -65,7 +65,6 @@ public class Flags {
 		return new FlagCollection(flags);
 	}
 
-	// temporary
 	@SuppressWarnings("unchecked")
 	@ApiMethod(name = "flags.list.close", path = "flag_list", httpMethod = "get")
 	public FlagCollection listClose(@Nullable @Named("userId") long userId, @Nullable @Named("lat") double lat, @Nullable @Named("lon") double lon) {

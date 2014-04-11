@@ -24,6 +24,8 @@ function backToShopsFromFlags() {
 }
 
 var flags;
+var map;
+var markers;
 
 function showFlags(res) {
     $('#flags').html('<div id="flag_map"></div><div id="flag_list"></div>');
@@ -31,9 +33,6 @@ function showFlags(res) {
     getFlagMap(flags);
     getFlagHtml(flags);
 };
-
-var map;
-var markers;
 
 function getFlagMap(flags) {
     var mapOptions = {

@@ -1,11 +1,15 @@
 <div class="shop" id="shop_index_${index}">
-    <img class="shop_thumbnail" src="${img}"/>
     <div class="shop_name_box">
-        <img class="shop_logo" src="${logo}">
-        <span class="span_name">${name}</span>
+        <table class="logo_wrapper">
+            <tr>
+                <td><img class="shop_logo" src="${logo}"></td>
+                <td><span class="span_name">${name}</span></td>
+            </tr>
+        </table>
     </div>
     
     <ul class="nav nav-pills shop_menu">
+        <li><a href="javascript:loadEvents(${index})">Details</a></li>
         <li><a href="javascript:loadFlags(${index})">Flags</a></li>
         <li><a href="javascript:loadItems(${index})">Items</a></li>
         <li class="dropdown">
@@ -16,6 +20,4 @@
             </ul>
         </li>
     </ul>
-    
-    <div class="shop_desc"><p>${desc}</p></div>
 </div>

@@ -16,6 +16,7 @@ import com.flag.engine.models.Item;
 import com.flag.engine.models.PMF;
 import com.flag.engine.models.Shop;
 import com.flag.engine.models.ShopCollection;
+import com.flag.engine.utils.LocationUtils;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 
@@ -33,6 +34,30 @@ public class Shops {
 		pm.close();
 
 		return shop;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@ApiMethod(name = "shops.init", path = "shop_init", httpMethod = "get")
+	public ShopCollection initShops(@Nullable @Named("userId") long userId, @Nullable @Named("lat") double lat, @Nullable @Named("lon") double lon) {
+		log.info("user shop: " + userId + "," + lat + "," + lon);
+		
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+
+		Query query = pm.newQuery(Flag.class);
+		query.setFilter("lon > minLon && lon < maxLon && lat > minLat && lat < maxLat");
+		query.declareParameters("double minLon, double maxLon, double minLat, double maxLat");
+		List<Flag> flags = (List<Flag>) pm.newQuery(query).executeWithArray(lon - LocationUtils.NEAR_DISTANCE_DEGREE, lon + LocationUtils.NEAR_DISTANCE_DEGREE,
+				lat - LocationUtils.NEAR_DISTANCE_DEGREE, lat + LocationUtils.NEAR_DISTANCE_DEGREE);
+
+		List<Long> ids = new ArrayList<Long>();
+		for (Flag flag : flags)
+			if (!ids.contains(flag.getShopId()))
+				ids.add(flag.getShopId());
+		
+		if (ids.size() > 0)
+			return list(ids);
+		else
+			return null;
 	}
 
 	@ApiMethod(name = "shops.get", path = "shop", httpMethod = "get")
