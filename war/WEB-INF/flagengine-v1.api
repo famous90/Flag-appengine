@@ -143,6 +143,27 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
+    "flagengine.beacons.get.all" : {
+      "path" : "beacon_all",
+      "httpMethod" : "get",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Beacons.getAll",
+      "request" : {
+        "parameters" : {
+          "tag" : {
+            "type" : "int64",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
     "flagengine.beacons.delete" : {
       "path" : "beacon",
       "httpMethod" : "delete",
@@ -204,7 +225,7 @@
       }
     },
     "flagengine.flags.list.byshop" : {
-      "path" : "flags",
+      "path" : "flag_list_byshop",
       "httpMethod" : "get",
       "authLevel" : "NONE",
       "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
@@ -544,6 +565,22 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
+    "flagengine.apps.feedbacks.insert" : {
+      "path" : "feedback",
+      "httpMethod" : "post",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Apps.insertFeedback",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "empty"
+      }
+    },
     "flagengine.apps.versions.get" : {
       "path" : "version",
       "httpMethod" : "get",
@@ -779,6 +816,23 @@
           "shopId" : {
             "type" : "string",
             "format" : "int64"
+          },
+          "flagId" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "lat" : {
+            "type" : "number"
+          },
+          "lon" : {
+            "type" : "number"
           }
         }
       },
@@ -818,6 +872,18 @@
           "rewardedForUser" : {
             "type" : "string",
             "format" : "int64"
+          }
+        }
+      },
+      "BeaconCollection" : {
+        "id" : "BeaconCollection",
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "Beacon"
+            }
           }
         }
       },
@@ -936,6 +1002,30 @@
           }
         }
       },
+      "FeedbackMessage" : {
+        "id" : "FeedbackMessage",
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "userId" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "email" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "int64"
+          }
+        }
+      },
       "Item" : {
         "id" : "Item",
         "type" : "object",
@@ -1039,6 +1129,11 @@
       "com.flag.engine.apis.Beacons.get" : {
         "response" : {
           "$ref" : "Shop"
+        }
+      },
+      "com.flag.engine.apis.Beacons.getAll" : {
+        "response" : {
+          "$ref" : "BeaconCollection"
         }
       },
       "com.flag.engine.apis.Beacons.delete" : {
@@ -1162,6 +1257,11 @@
         },
         "response" : {
           "$ref" : "Notice"
+        }
+      },
+      "com.flag.engine.apis.Apps.insertFeedback" : {
+        "request" : {
+          "$ref" : "FeedbackMessage"
         }
       },
       "com.flag.engine.apis.Apps.getVersion" : {

@@ -53,7 +53,7 @@ public class Flags {
 	}
 
 	@SuppressWarnings("unchecked")
-	@ApiMethod(name = "flags.list.byshop", path = "flags", httpMethod = "get")
+	@ApiMethod(name = "flags.list.byshop", path = "flag_list_byshop", httpMethod = "get")
 	public FlagCollection listByShop(@Nullable @Named("shopId") long shopId) {
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 

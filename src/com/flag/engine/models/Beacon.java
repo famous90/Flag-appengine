@@ -11,10 +11,25 @@ public class Beacon {
 	@PrimaryKey
 	@Persistent
 	private String id;
-	
+
+	@Persistent
+	private Long shopId;
+
+	@Persistent
+	private Long flagId;
+
+	@Persistent
+	private String name;
+
 	@Persistent
 	@Index
-	private Long shopId;
+	private long createdAt;
+
+	@Persistent
+	private double lat;
+
+	@Persistent
+	private double lon;
 
 	public String getId() {
 		return id;
@@ -31,7 +46,47 @@ public class Beacon {
 	public void setShopId(Long shopId) {
 		this.shopId = shopId;
 	}
-	
+
+	public Long getFlagId() {
+		return flagId;
+	}
+
+	public void setFlagId(Long flagId) {
+		this.flagId = flagId;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public long getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(long createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public double getLat() {
+		return lat;
+	}
+
+	public void setLat(double lat) {
+		this.lat = lat;
+	}
+
+	public double getLon() {
+		return lon;
+	}
+
+	public void setLon(double lon) {
+		this.lon = lon;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

@@ -41,8 +41,8 @@ public class Items {
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		
 		Query query = pm.newQuery(Item.class);
-		query.setOrdering("id desc");
-		query.setRange(mark, mark + 20);
+//		query.setOrdering("id desc");
+//		query.setRange(mark, mark + 20);
 		List<Item> results = (List<Item>) pm.newQuery(query).execute();
 		
 		List<Integer> picks = ItemCollection.randomIndexes(results.size());
