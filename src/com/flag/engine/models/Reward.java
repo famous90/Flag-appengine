@@ -1,8 +1,9 @@
 package com.flag.engine.models;
 
+import java.util.Date;
+
 import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
-import javax.jdo.annotations.Column;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.Index;
@@ -10,10 +11,12 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
-@PersistenceCapable(identityType = IdentityType.APPLICATION, table = "rewards")
+@PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class Reward {
-	public static final long TYPE_SHOP = 1;
-	public static final long TYPE_ITEM = 2;
+	private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 24;
+
+	public static final int TYPE_SHOP = 1;
+	public static final int TYPE_ITEM = 2;
 
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	@PrimaryKey
@@ -21,26 +24,22 @@ public class Reward {
 
 	@Persistent
 	@Index
-	@Column(name = "user_id")
 	private Long userId;
 
 	@Persistent
-	@Column(name = "target_id")
 	private Long targetId;
 
 	@Persistent
-	@Column(name = "target_name")
 	private String targetName;
 
 	@Persistent
-	private Long type;
+	private int type;
 
 	@Persistent
 	private int reward;
 
 	@Persistent
 	@Index
-	@Column(name = "created_at")
 	private long createdAt;
 
 	public String getId() {
@@ -77,11 +76,11 @@ public class Reward {
 		this.targetName = targetName;
 	}
 
-	public Long getType() {
+	public int getType() {
 		return type;
 	}
 
-	public void setType(Long type) {
+	public void setType(int type) {
 		this.type = type;
 	}
 
@@ -105,18 +104,21 @@ public class Reward {
 		id = Reward.obtainRewardId(userId, targetId, type);
 	}
 
-	public static String obtainRewardId(Long userId, Long targetId, Long type) {
+	public static String obtainRewardId(Long userId, Long targetId, int type) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("userId:").append(userId).append("/").append("targetId:").append(targetId).append("/").append("type:").append(type);
 		return sb.toString();
 	}
 
-	public static boolean exists(Long userId, Long targetId, Long type) {
+	public static boolean exists(Long userId, Long targetId, int type) {
 		PersistenceManager pm = PMF.getPersistenceManager();
 
 		try {
-			pm.getObjectById(Reward.class, Reward.obtainRewardId(userId, targetId, type));
-			return true;
+			Reward reward = pm.getObjectById(Reward.class, Reward.obtainRewardId(userId, targetId, type));
+			if (reward.getCreatedAt() < new Date().getTime() - EXPIRATION_TIME)
+				return false;
+			else
+				return true;
 		} catch (JDOObjectNotFoundException e) {
 			return false;
 		}

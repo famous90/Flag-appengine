@@ -153,7 +153,7 @@ public class Item {
 	}
 
 	public void setLikes() {
-		this.likes = Like.count(id);
+		this.likes = Like.count(id, Like.TYPE_ITEM);
 	}
 
 	public boolean isLiked() {
@@ -165,7 +165,7 @@ public class Item {
 	}
 
 	public void setLikedForUser(long userId) {
-		this.liked = Like.exists(userId, id);
+		this.liked = Like.exists(userId, id, Like.TYPE_ITEM);
 	}
 
 	public void update(Item item) {

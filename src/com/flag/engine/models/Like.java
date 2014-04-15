@@ -14,6 +14,9 @@ import javax.jdo.annotations.PrimaryKey;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class Like {
+	public static final int TYPE_SHOP = 1;
+	public static final int TYPE_ITEM = 2;
+
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	@PrimaryKey
 	private String id;
@@ -24,7 +27,10 @@ public class Like {
 
 	@Persistent
 	@Index
-	private Long itemId;
+	private Long targetId;
+
+	@Persistent
+	private int type;
 
 	public String getId() {
 		if (id == null)
@@ -44,29 +50,37 @@ public class Like {
 		this.userId = userId;
 	}
 
-	public Long getItemId() {
-		return itemId;
+	public Long getTargetId() {
+		return targetId;
 	}
 
-	public void setItemId(Long itemId) {
-		this.itemId = itemId;
+	public void setTargetId(Long targetId) {
+		this.targetId = targetId;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
 	}
 
 	public void refreshId() {
-		id = Like.obtainLikeId(userId, itemId);
+		id = Like.obtainLikeId(userId, targetId, type);
 	}
 
-	public static String obtainLikeId(Long userId, Long itemId) {
+	public static String obtainLikeId(Long userId, Long targetId, int type) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("userId:").append(userId).append("/").append("itemId:").append(itemId);
+		sb.append("userId:").append(userId).append("/").append("targetId:").append(targetId).append("/").append("type:").append(type);
 		return sb.toString();
 	}
 
-	public static boolean exists(Long userId, Long itemId) {
+	public static boolean exists(Long userId, Long targetId, int type) {
 		PersistenceManager pm = PMF.getPersistenceManager();
 
 		try {
-			pm.getObjectById(Like.class, obtainLikeId(userId, itemId));
+			pm.getObjectById(Like.class, obtainLikeId(userId, targetId, type));
 			return true;
 		} catch (JDOObjectNotFoundException e) {
 			return false;
@@ -74,13 +88,13 @@ public class Like {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static int count(Long itemId) {
+	public static int count(Long targetId, int type) {
 		PersistenceManager pm = PMF.getPersistenceManager();
 
 		Query query = pm.newQuery(Like.class);
-		query.setFilter("itemId == theItemId");
-		query.declareParameters("Long theItemId");
-		List<Like> likes = (List<Like>) pm.newQuery(query).execute(itemId);
+		query.setFilter("targetId == theTargetId && type == theType");
+		query.declareParameters("Long theTargetId, int theType");
+		List<Like> likes = (List<Like>) pm.newQuery(query).execute(targetId, type);
 
 		return likes.size();
 	}

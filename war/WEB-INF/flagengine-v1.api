@@ -78,6 +78,10 @@
           "itemId" : {
             "type" : "int64",
             "required" : false
+          },
+          "type" : {
+            "type" : "int32",
+            "required" : false
           }
         },
         "body" : "empty"
@@ -118,6 +122,27 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
+    "flagengine.beacons.get.all" : {
+      "path" : "beacon_all",
+      "httpMethod" : "get",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Beacons.getAll",
+      "request" : {
+        "parameters" : {
+          "tag" : {
+            "type" : "int64",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
     "flagengine.beacons.get" : {
       "path" : "beacon",
       "httpMethod" : "get",
@@ -135,27 +160,6 @@
           "beaconId" : {
             "type" : "string",
             "required" : true
-          }
-        },
-        "body" : "empty"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
-    "flagengine.beacons.get.all" : {
-      "path" : "beacon_all",
-      "httpMethod" : "get",
-      "authLevel" : "NONE",
-      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
-      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
-      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.flag.engine.apis.Beacons.getAll",
-      "request" : {
-        "parameters" : {
-          "tag" : {
-            "type" : "int64",
-            "required" : false
           }
         },
         "body" : "empty"
@@ -195,6 +199,27 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
+    "flagengine.flags.list.byshop" : {
+      "path" : "flag_list_byshop",
+      "httpMethod" : "get",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Flags.listByShop",
+      "request" : {
+        "parameters" : {
+          "shopId" : {
+            "type" : "int64",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
     "flagengine.flags.list" : {
       "path" : "flag",
       "httpMethod" : "get",
@@ -215,27 +240,6 @@
           },
           "lon" : {
             "type" : "double",
-            "required" : false
-          }
-        },
-        "body" : "empty"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
-    "flagengine.flags.list.byshop" : {
-      "path" : "flag_list_byshop",
-      "httpMethod" : "get",
-      "authLevel" : "NONE",
-      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
-      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
-      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.flag.engine.apis.Flags.listByShop",
-      "request" : {
-        "parameters" : {
-          "shopId" : {
-            "type" : "int64",
             "required" : false
           }
         },
@@ -746,8 +750,7 @@
             "type" : "string"
           },
           "type" : {
-            "type" : "string",
-            "format" : "int64"
+            "type" : "integer"
           },
           "reward" : {
             "type" : "integer"
@@ -800,9 +803,12 @@
             "type" : "string",
             "format" : "int64"
           },
-          "itemId" : {
+          "targetId" : {
             "type" : "string",
             "format" : "int64"
+          },
+          "type" : {
+            "type" : "integer"
           }
         }
       },
@@ -833,6 +839,18 @@
           },
           "lon" : {
             "type" : "number"
+          }
+        }
+      },
+      "BeaconCollection" : {
+        "id" : "BeaconCollection",
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "Beacon"
+            }
           }
         }
       },
@@ -872,18 +890,6 @@
           "rewardedForUser" : {
             "type" : "string",
             "format" : "int64"
-          }
-        }
-      },
-      "BeaconCollection" : {
-        "id" : "BeaconCollection",
-        "type" : "object",
-        "properties" : {
-          "items" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "Beacon"
-            }
           }
         }
       },
@@ -1126,14 +1132,14 @@
           "$ref" : "Beacon"
         }
       },
-      "com.flag.engine.apis.Beacons.get" : {
-        "response" : {
-          "$ref" : "Shop"
-        }
-      },
       "com.flag.engine.apis.Beacons.getAll" : {
         "response" : {
           "$ref" : "BeaconCollection"
+        }
+      },
+      "com.flag.engine.apis.Beacons.get" : {
+        "response" : {
+          "$ref" : "Shop"
         }
       },
       "com.flag.engine.apis.Beacons.delete" : {
@@ -1146,12 +1152,12 @@
           "$ref" : "UploadUrl"
         }
       },
-      "com.flag.engine.apis.Flags.list" : {
+      "com.flag.engine.apis.Flags.listByShop" : {
         "response" : {
           "$ref" : "FlagCollection"
         }
       },
-      "com.flag.engine.apis.Flags.listByShop" : {
+      "com.flag.engine.apis.Flags.list" : {
         "response" : {
           "$ref" : "FlagCollection"
         }

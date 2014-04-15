@@ -20,9 +20,9 @@ public class Likes {
 
 	@ApiMethod(name = "likes.insert", path = "like", httpMethod = "post")
 	public Like insert(Like like) {
-		log.info("insert like: " + like.getUserId() + "/" + like.getItemId());
+		log.info("insert like: " + like.getUserId() + "/" + like.getTargetId() + "/" + like.getType());
 		
-		if (Like.exists(like.getUserId(), like.getItemId()))
+		if (Like.exists(like.getUserId(), like.getTargetId(), like.getType()))
 			return like;
 
 		like.refreshId();
@@ -35,13 +35,13 @@ public class Likes {
 	}
 	
 	@ApiMethod(name = "likes.delete", path = "like", httpMethod = "delete")
-	public void delete(@Nullable @Named("userId") Long userId, @Nullable @Named("itemId") Long itemId) {
+	public void delete(@Nullable @Named("userId") Long userId, @Nullable @Named("itemId") Long itemId, @Nullable @Named("type") int type) {
 		log.info("delete like: " + userId + "/" + itemId);
 
 		PersistenceManager pm = PMF.getPersistenceManager();
 		
 		try {
-			Like target = pm.getObjectById(Like.class, Like.obtainLikeId(userId, itemId));
+			Like target = pm.getObjectById(Like.class, Like.obtainLikeId(userId, itemId, type));
 			pm.deletePersistent(target);
 		} catch(JDOObjectNotFoundException e) {
 		} finally {
