@@ -14,6 +14,7 @@ import com.flag.engine.constants.Constants;
 import com.flag.engine.models.Item;
 import com.flag.engine.models.ItemCollection;
 import com.flag.engine.models.PMF;
+import com.flag.engine.models.Shop;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 
@@ -32,30 +33,30 @@ public class Items {
 
 		return item;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@ApiMethod(name = "items.init", path = "item_init", httpMethod = "get")
 	public ItemCollection initItems(@Nullable @Named("userId") long userId, @Nullable @Named("mark") int mark) {
 		log.info("list item for user: " + userId);
-		
+
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
-		
+
 		Query query = pm.newQuery(Item.class);
-//		query.setOrdering("id desc");
-//		query.setRange(mark, mark + 20);
+		// query.setOrdering("id desc");
+		// query.setRange(mark, mark + 20);
 		List<Item> results = (List<Item>) pm.newQuery(query).execute();
-		
+
 		List<Integer> picks = ItemCollection.randomIndexes(results.size());
 		List<Item> items = new ArrayList<Item>();
 		for (int pick : picks)
 			items.add(results.get(pick));
-		
+
 		for (Item item : items) {
 			item.setRewardedForUser(userId);
 			item.setLikedForUser(userId);
 			item.setLikes();
 		}
-		
+
 		return new ItemCollection(items);
 	}
 
@@ -65,28 +66,51 @@ public class Items {
 		log.info("list item: " + shopId);
 
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+		Shop shop = null;
+		List<Item> items = null;
+
+		try {
+			shop = pm.getObjectById(Shop.class, shopId);
+		} catch (JDOObjectNotFoundException e) {
+			return null;
+		}
 
 		Query query = pm.newQuery(Item.class);
-		query.setFilter("shopId == theShopid");
-		query.declareParameters("long theShopid");
-		List<Item> items = (List<Item>) pm.newQuery(query).execute(shopId);
+		if (shop.getType() == Shop.TYPE_BR && shop.getParentId() != null) {
+			query.setFilter("shopId == id || shopId == parentId");
+			query.declareParameters("long id, long parentId");
+			List<Item> allItems = (List<Item>) pm.newQuery(query).execute(shop.getId(), shop.getParentId());
+
+			items = new ArrayList<Item>();
+			for (Item item : allItems)
+				if (!items.contains(item))
+					items.add(item);
+				else if (items.get(items.indexOf(item)).getShopId().equals(shop.getParentId())) {
+					items.remove(items.indexOf(item));
+					items.add(item);
+				}
+		} else {
+			query.setFilter("shopId == id");
+			query.declareParameters("long id");
+			items = (List<Item>) pm.newQuery(query).execute(shop.getId());
+		}
 
 		for (Item item : items) {
 			item.setRewardedForUser(userId);
 			item.setLikedForUser(userId);
 			item.setLikes();
 		}
-			
+
 		return new ItemCollection(items);
 	}
-	
+
 	@ApiMethod(name = "items.get", path = "one_item", httpMethod = "get")
 	public Item get(@Nullable @Named("userId") long userId, @Nullable @Named("itemId") long itemId) {
 		log.info("get item: " + itemId);
-		
+
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		Item item = null;
-		
+
 		try {
 			item = pm.getObjectById(Item.class, itemId);
 			item.setRewardedForUser(userId);
@@ -94,7 +118,7 @@ public class Items {
 			item.setLikes();
 		} catch (JDOObjectNotFoundException e) {
 		}
-		
+
 		return item;
 	}
 
@@ -116,11 +140,11 @@ public class Items {
 
 		return target;
 	}
-	
+
 	@ApiMethod(name = "items.delete", path = "item", httpMethod = "delete")
 	public void delete(@Named("itemId") Long itemId) {
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
-		
+
 		try {
 			Item target = pm.getObjectById(Item.class, itemId);
 			pm.deletePersistent(target);

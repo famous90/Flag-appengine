@@ -1,150 +1,179 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <title>DALshop</title>
-        <link rel="stylesheet" href="./css/base.css" />
-        <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
-        <script type="text/javascript" src="./js/render.js"></script>
-        <script type="text/javascript" src="./js/resp.js"></script>
-        <script type="text/javascript" src="./js/shop.js"></script>
-        <script type="text/javascript" src="./js/flag.js"></script>
-        <script type="text/javascript" src="./js/item.js"></script>
-        <script type="text/javascript" src="./js/base.js"></script>
-        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-        <script type="text/javascript" src="./js/jquery.form.js"></script> 
-        <script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-        <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=init"></script>
-        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w&sensor=true"></script>
-    </head>
-    
-    <body>
-        <header id="home_header">
-            <div id="logo_box"><span id="logo_text">DALshop Console</span></div>
-            
-            <ul class="nav nav-pills navbar-right">
-                <li>
-                    <a href="#">Sign Out</a>
-                </li>
-            </ul>
-        </header>
-        
-        <div id="waiting_dialog" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-sm">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        Please Wait...
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <nav id="menu_bar">
-            <ul class="nav nav-pills nav-stacked span2">
-                <li><a href="javascript:showShopAdmin();">Shop Admin <span class="glyphicon glyphicon-chevron-right menu-chevron"></span></a></li>
-                <li class="disabled"><a href="#">Cash Flow <span class="glyphicon glyphicon-chevron-right menu-chevron menu-inactive"></span></a></li>
-                <li class="disabled"><a href="#">Data Viewer <span class="glyphicon glyphicon-chevron-right menu-chevron menu-inactive"></span></a></li>
-            </ul>
-        </nav>
-        
-        <section id="contents">
-            <header id="up_indicator_header">
-                <ul class="nav nav-pills navbar-left">
-                    <li class="active">
-                        <a id="up_indicator" href="#"><span class="glyphicon glyphicon-chevron-left span_icon"></span> Back</a>
-                    </li>
-                </ul>
-                <ul class="nav nav-pills navbar-right">
-                    <li class="active">
-                        <a id="add_button" href="#"><span class="glyphicon glyphicon-plus span_icon"></span> Add</a>
-                    </li>
-                </ul>
-            </header>
-            
-            <div id="shop_adder_screen" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div id="uploading_shop_dialog" class="modal fade bs-example-modal-sm" tabindex="1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-sm">
-                                <div class="modal-content">
-                                    <div class="modal-body">
-                                        Uploading Shop...
-                                        <div class="progress progress-striped active">
-                                            <div id="shop_upload_progress_bar" class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
-                                                <span class="sr-only"></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+<head>
+<meta charset="utf-8" />
+<title>DALshop</title>
+<link rel="stylesheet" href="./css/base.css" />
+<link rel="stylesheet"
+	href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+<script type="text/javascript" src="./js/render.js"></script>
+<script type="text/javascript" src="./js/resp.js"></script>
+<script type="text/javascript" src="./js/shop.js"></script>
+<script type="text/javascript" src="./js/flag.js"></script>
+<script type="text/javascript" src="./js/item.js"></script>
+<script type="text/javascript" src="./js/base.js"></script>
+<script type="text/javascript"
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script type="text/javascript" src="./js/jquery.form.js"></script>
+<script type="text/javascript"
+	src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script type="text/javascript"
+	src="https://apis.google.com/js/client.js?onload=init"></script>
+<script type="text/javascript"
+	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w&sensor=true"></script>
+</head>
 
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title">Add Shop</h4>
-                        </div>
-                        <div class="modal-body">
-                            <section id="shop_to_be_added">
-                            </section>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" data-toggle="modal" onclick="addShop();">Save</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<body>
+	<header id="home_header">
 
-            <div id="item_adder_screen" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div id="uploading_items_dialog" class="modal fade bs-example-modal-sm" tabindex="1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-sm">
-                                <div class="modal-content">
-                                    <div class="modal-body">
-                                        Uploading Items...
-                                        <div class="progress progress-striped active">
-                                            <div id="item_upload_progress_bar" class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
-                                                <span class="sr-only"></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+		<form action="/item_sheet" method="post" enctype="multipart/form-data">
+			<input type="hidden" name="shopId" value="1">
+			<input type="file" name="sheet">
+			<input type="submit" value="save">
+		</form>
 
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title">Add Items</h4>
-                        </div>
-                        <div class="modal-body">
-                            <section id="items_to_be_added">
-                            </section>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" data-toggle="modal" onclick="addItems();">Save</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+		<div id="logo_box">
+			<span id="logo_text">DALshop Console</span>
+		</div>
 
-            <section id="flags">
-                <!-- goes all flags list -->
-            </section>
+		<ul class="nav nav-pills navbar-right">
+			<li><a href="#">Sign Out</a></li>
+		</ul>
+	</header>
 
-            <section id="shops">
-                <!-- goes all shops list -->
-            </section>
-            
-            <section id="events">
-                <!-- goes all shops list -->
-            </section>
+	<div id="waiting_dialog" class="modal fade bs-example-modal-sm"
+		tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-body">Please Wait...</div>
+			</div>
+		</div>
+	</div>
 
-            <section id="items">
-                <!-- goes all items list -->
-            </section>
-        </section>
-        
-        
-    </body>
+	<nav id="menu_bar">
+		<ul class="nav nav-pills nav-stacked span2">
+			<li><a href="javascript:showShopAdmin();">Shop Admin <span
+					class="glyphicon glyphicon-chevron-right menu-chevron"></span></a></li>
+			<li class="disabled"><a href="#">Cash Flow <span
+					class="glyphicon glyphicon-chevron-right menu-chevron menu-inactive"></span></a></li>
+			<li class="disabled"><a href="#">Data Viewer <span
+					class="glyphicon glyphicon-chevron-right menu-chevron menu-inactive"></span></a></li>
+		</ul>
+	</nav>
+
+	<section id="contents">
+
+		<header id="up_indicator_header">
+			<ul class="nav nav-pills navbar-left">
+				<li class="active"><a id="up_indicator" href="#"><span
+						class="glyphicon glyphicon-chevron-left span_icon"></span> Back</a></li>
+			</ul>
+			<ul class="nav nav-pills navbar-right">
+				<li class="active"><a id="add_button" href="#"><span
+						class="glyphicon glyphicon-plus span_icon"></span> Add</a></li>
+			</ul>
+		</header>
+
+		<div id="shop_adder_screen" class="modal fade bs-example-modal-lg"
+			tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div id="uploading_shop_dialog"
+						class="modal fade bs-example-modal-sm" tabindex="1" role="dialog"
+						aria-labelledby="mySmallModalLabel" aria-hidden="true">
+						<div class="modal-dialog modal-sm">
+							<div class="modal-content">
+								<div class="modal-body">
+									Uploading Shop...
+									<div class="progress progress-striped active">
+										<div id="shop_upload_progress_bar" class="progress-bar"
+											role="progressbar" aria-valuenow="45" aria-valuemin="0"
+											aria-valuemax="100" style="width: 0%">
+											<span class="sr-only"></span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
+						<h4 class="modal-title">Add Shop</h4>
+					</div>
+					<div class="modal-body">
+						<section id="shop_to_be_added"></section>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" data-toggle="modal"
+							onclick="addShop();">Save</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="item_adder_screen" class="modal fade bs-example-modal-lg"
+			tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div id="uploading_items_dialog"
+						class="modal fade bs-example-modal-sm" tabindex="1" role="dialog"
+						aria-labelledby="mySmallModalLabel" aria-hidden="true">
+						<div class="modal-dialog modal-sm">
+							<div class="modal-content">
+								<div class="modal-body">
+									Uploading Items...
+									<div class="progress progress-striped active">
+										<div id="item_upload_progress_bar" class="progress-bar"
+											role="progressbar" aria-valuenow="45" aria-valuemin="0"
+											aria-valuemax="100" style="width: 0%">
+											<span class="sr-only"></span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
+						<h4 class="modal-title">Add Items</h4>
+					</div>
+					<div class="modal-body">
+						<section id="items_to_be_added"></section>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" data-toggle="modal"
+							onclick="addItems();">Save</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<section id="flags">
+			<!-- goes all flags list -->
+		</section>
+
+		<section id="shops">
+			<!-- goes all shops list -->
+		</section>
+
+		<section id="events">
+			<!-- goes all shops list -->
+		</section>
+
+		<section id="items">
+			<!-- goes all items list -->
+		</section>
+	</section>
+
+
+</body>
 </html>

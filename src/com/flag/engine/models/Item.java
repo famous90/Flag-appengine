@@ -1,6 +1,5 @@
 package com.flag.engine.models;
 
-import javax.jdo.annotations.Column;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.Index;
@@ -8,6 +7,8 @@ import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
+
+import com.flag.engine.utils.CalUtils;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION, table = "items")
 public class Item {
@@ -17,14 +18,12 @@ public class Item {
 
 	@Persistent
 	@Index
-	@Column(name = "shop_id")
 	private Long shopId;
 
 	@Persistent
 	private String name;
 
 	@Persistent
-	@Column(name = "thumbnail_url")
 	private String thumbnailUrl;
 
 	@Persistent
@@ -34,14 +33,13 @@ public class Item {
 	private int sale;
 
 	@Persistent
-	@Column(name = "old_price")
 	private String oldPrice;
 
 	@Persistent
 	private String price;
 
 	@Persistent
-	@Column(name = "barcode_id")
+	@Index
 	private String barcodeId;
 
 	@Persistent
@@ -55,6 +53,23 @@ public class Item {
 
 	@NotPersistent
 	private boolean liked;
+
+	public Item(Long shopId, String[] dataArray) {
+		this.shopId = shopId;
+		barcodeId = dataArray[0];
+		name = dataArray[1];
+		description = dataArray[2];
+		if (dataArray[4].isEmpty()) {
+			price = dataArray[3];
+			oldPrice = dataArray[4];
+		} else {
+			price = dataArray[4];
+			oldPrice = dataArray[3];
+			sale = CalUtils.discountRate(price, oldPrice);
+		}
+		reward = (int) CalUtils.toNumber(dataArray[5]);
+		thumbnailUrl = "";
+	}
 
 	public Long getId() {
 		return id;
@@ -180,5 +195,22 @@ public class Item {
 		if (item.getPrice() != null && !item.getPrice().isEmpty())
 			this.price = item.getPrice();
 		this.reward = item.getReward();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		try {
+			Item target = (Item) o;
+			return target.getId() == id
+					|| (target.getBarcodeId() != null && !target.getBarcodeId().isEmpty() && barcodeId != null && !barcodeId.isEmpty() && target.getBarcodeId()
+							.equals(barcodeId));
+		} catch (ClassCastException e) {
+			return false;
+		}
+	}
+
+	@Override
+	public String toString() {
+		return name + " " + barcodeId;
 	}
 }

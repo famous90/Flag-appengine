@@ -115,7 +115,7 @@ public class Reward {
 
 		try {
 			Reward reward = pm.getObjectById(Reward.class, Reward.obtainRewardId(userId, targetId, type));
-			if (reward.getCreatedAt() < new Date().getTime() - EXPIRATION_TIME)
+			if (reward.getType() == Reward.TYPE_SHOP && reward.getCreatedAt() < new Date().getTime() - EXPIRATION_TIME)
 				return false;
 			else
 				return true;

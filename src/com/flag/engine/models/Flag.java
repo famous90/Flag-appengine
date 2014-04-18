@@ -1,6 +1,5 @@
 package com.flag.engine.models;
 
-import javax.jdo.annotations.Column;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.Index;
@@ -23,19 +22,15 @@ public class Flag {
 	private double lon;
 
 	@Persistent
-	@Column(name = "created_at")
 	private long createdAt;
 
 	@Persistent
-	@Column(name = "shop_id")
 	private Long shopId;
 
 	@Persistent
-	@Column(name = "shop_name")
 	private String shopName;
-	
+
 	@Persistent
-	@Column(name = "shop_type")
 	private int shopType;
 
 	public Long getId() {
@@ -97,10 +92,8 @@ public class Flag {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-
 		sb.append("id=" + id).append(", lat=" + lat).append(", lon=" + lon).append(", createdAt=" + createdAt).append(", shopId=" + shopId)
 				.append(", shopName=" + shopName);
-
 		return sb.toString();
 	}
 }

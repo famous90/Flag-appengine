@@ -1,6 +1,5 @@
 package com.flag.engine.models;
 
-import javax.jdo.annotations.Column;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.NotPersistent;
@@ -10,26 +9,23 @@ import javax.jdo.annotations.PrimaryKey;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION, table = "shops")
 public class Shop {
-	public static final int TYPE_STORE = 1;
-	public static final int TYPE_MALL = 2;
+	public static final int TYPE_HQ = 1;
+	public static final int TYPE_BR = 2;
 
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
 	private Long id;
 
 	@Persistent
-	@Column(name = "parent_id")
 	private Long parentId;
 
 	@Persistent
 	private String name;
 
 	@Persistent
-	@Column(name = "logo_url")
 	private String logoUrl;
 
 	@Persistent
-	@Column(name = "image_url")
 	private String imageUrl;
 
 	@Persistent

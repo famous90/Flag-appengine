@@ -13,7 +13,7 @@ import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.OutputSettings;
 import com.google.appengine.api.images.Transform;
 
-public class Serve extends HttpServlet {
+public class ServeImage extends HttpServlet {
 	/**
 	 * 
 	 */
