@@ -11,8 +11,10 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
 import com.flag.engine.constants.Constants;
+import com.flag.engine.models.BranchItemMatcher;
 import com.flag.engine.models.Item;
 import com.flag.engine.models.ItemCollection;
+import com.flag.engine.models.Like;
 import com.flag.engine.models.PMF;
 import com.flag.engine.models.Shop;
 import com.google.api.server.spi.config.Api;
@@ -26,6 +28,8 @@ public class Items {
 	@ApiMethod(name = "items.insert", path = "item", httpMethod = "post")
 	public Item insert(Item item) {
 		log.info("insert item: " + item.toString());
+
+		item.calSale();
 
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		pm.makePersistent(item);
@@ -51,11 +55,7 @@ public class Items {
 		for (int pick : picks)
 			items.add(results.get(pick));
 
-		for (Item item : items) {
-			item.setRewardedForUser(userId);
-			item.setLikedForUser(userId);
-			item.setLikes();
-		}
+		Item.setRelatedVariables(items, userId);
 
 		return new ItemCollection(items);
 	}
@@ -67,7 +67,8 @@ public class Items {
 
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		Shop shop = null;
-		List<Item> items = null;
+		List<Item> items = new ArrayList<Item>();
+		List<Item> hiddenItems = new ArrayList<Item>();
 
 		try {
 			shop = pm.getObjectById(Shop.class, shopId);
@@ -81,27 +82,43 @@ public class Items {
 			query.declareParameters("long id, long parentId");
 			List<Item> allItems = (List<Item>) pm.newQuery(query).execute(shop.getId(), shop.getParentId());
 
-			items = new ArrayList<Item>();
+			query = pm.newQuery(BranchItemMatcher.class);
+			query.setFilter("branchShopId == id");
+			query.declareParameters("long id");
+			List<BranchItemMatcher> matchers = (List<BranchItemMatcher>) pm.newQuery(query).execute(shop.getId());
+
+			List<Item> brItems = new ArrayList<Item>();
 			for (Item item : allItems)
-				if (!items.contains(item))
-					items.add(item);
-				else if (items.get(items.indexOf(item)).getShopId().equals(shop.getParentId())) {
-					items.remove(items.indexOf(item));
-					items.add(item);
+				if (!brItems.contains(item))
+					brItems.add(item);
+				else if (brItems.get(brItems.indexOf(item)).getShopId().equals(shop.getParentId())) {
+					brItems.remove(brItems.indexOf(item));
+					brItems.add(item);
 				}
+
+			for (Item brItem : brItems) {
+				boolean seen = false;
+				for (BranchItemMatcher matcher : matchers)
+					if (brItem.getId().equals(matcher.getItemId())) {
+						seen = true;
+						brItem.setRewardable(matcher.isRewardable());
+					}
+
+				if (seen)
+					items.add(brItem);
+				else
+					hiddenItems.add(brItem);
+			}
+
 		} else {
 			query.setFilter("shopId == id");
 			query.declareParameters("long id");
 			items = (List<Item>) pm.newQuery(query).execute(shop.getId());
 		}
 
-		for (Item item : items) {
-			item.setRewardedForUser(userId);
-			item.setLikedForUser(userId);
-			item.setLikes();
-		}
+		Item.setRelatedVariables(items, userId);
 
-		return new ItemCollection(items);
+		return new ItemCollection(items, hiddenItems);
 	}
 
 	@ApiMethod(name = "items.get", path = "one_item", httpMethod = "get")
@@ -109,17 +126,15 @@ public class Items {
 		log.info("get item: " + itemId);
 
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
-		Item item = null;
+		List<Item> items = new ArrayList<Item>();
 
 		try {
-			item = pm.getObjectById(Item.class, itemId);
-			item.setRewardedForUser(userId);
-			item.setLikedForUser(userId);
-			item.setLikes();
+			items.add(pm.getObjectById(Item.class, itemId));
+			Item.setRelatedVariables(items, userId);
 		} catch (JDOObjectNotFoundException e) {
 		}
 
-		return item;
+		return items.get(0);
 	}
 
 	@ApiMethod(name = "items.update", path = "item", httpMethod = "put")
@@ -141,16 +156,72 @@ public class Items {
 		return target;
 	}
 
+	@SuppressWarnings("unchecked")
 	@ApiMethod(name = "items.delete", path = "item", httpMethod = "delete")
-	public void delete(@Named("itemId") Long itemId) {
-		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+	public void delete(@Nullable @Named("itemId") long itemId) {
+		PersistenceManager pmSQL = PMF.getPersistenceManagerSQL();
+		PersistenceManager pm = PMF.getPersistenceManager();
 
 		try {
-			Item target = pm.getObjectById(Item.class, itemId);
-			pm.deletePersistent(target);
+			Item item = pmSQL.getObjectById(Item.class, itemId);
+			pmSQL.deletePersistent(item);
+
+			Query query = pm.newQuery(Like.class);
+			query.setFilter("type == typeItem && targetId == itemId");
+			query.declareParameters("int typeItem, long itemId");
+			List<Like> likes = (List<Like>) pm.newQuery(query).execute(Like.TYPE_ITEM, itemId);
+			pm.deletePersistentAll(likes);
 		} catch (JDOObjectNotFoundException e) {
 		} finally {
+			pmSQL.close();
 			pm.close();
 		}
+	}
+
+	@ApiMethod(name = "items.branch.expose", path = "item_branch", httpMethod = "post")
+	public BranchItemMatcher expose(BranchItemMatcher matcher) {
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+		pm.makePersistent(matcher);
+		pm.close();
+		
+		return matcher;
+	}
+
+	@SuppressWarnings("unchecked")
+	@ApiMethod(name = "items.branch.hide", path = "item_branch", httpMethod = "delete")
+	public void hide(@Nullable @Named("shopId") long shopId, @Nullable @Named("itemId") long itemId) {
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+		
+		Query query = pm.newQuery(BranchItemMatcher.class);
+		query.setFilter("branchShopId == shopId && itemId == theItemId");
+		query.declareParameters("long shopId, long theItemId");
+		List<BranchItemMatcher> matchers = (List<BranchItemMatcher>) pm.newQuery(query).execute(shopId, itemId);
+		
+		pm.deletePersistentAll(matchers);
+		pm.close();
+	}
+
+	@SuppressWarnings("unchecked")
+	@ApiMethod(name = "items.branch.reward", path = "item_branch", httpMethod = "put")
+	public BranchItemMatcher toggleReward(BranchItemMatcher matcher) {
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+		
+		Query query = pm.newQuery(BranchItemMatcher.class);
+		query.setFilter("branchShopId == shopId && itemId == theItemId");
+		query.declareParameters("long shopId, long theItemId");
+		List<BranchItemMatcher> matchers = (List<BranchItemMatcher>) pm.newQuery(query).execute(matcher.getBranchShopId(), matcher.getItemId());
+		
+		BranchItemMatcher target = null;
+		if (!matchers.isEmpty()) {
+			target = matchers.get(0);
+			if(target.isRewardable())
+				target.setRewardable(false);
+			else
+				target.setRewardable(true);
+		}
+		
+		pm.close();
+
+		return target;
 	}
 }

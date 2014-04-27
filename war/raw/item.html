@@ -1,14 +1,14 @@
-<div class="item" id="item_index_${index}">
-    <img class="item_img" src="${img}" />
-    <div class="item_name"><span class="span_align">${name}</span></div>
-    <div class="item_desc">${desc}</div>
-    <div class="item_sale"><span class="span_align">${sale}% discount</span></div>
-    <div class="item_price"><span class="span_align">${price}</span></div>
-    <div class="item_old_price"><span class="span_align" style="text-decoration: line-through;">${oldPrice}</span></div>
-    <div class="item_reward"><span class="span_align">scan reward: ${reward}</span></div>
-    <div class="item_barcode"><span class="span_align">barcode: ${barcodeId}</span></div>
-    <ul class="nav nav-pills item_menu">
-        <li><a href="javascript:editItem(${index})">Edit</a></li>
-        <li><a href="javascript:deleteItem(${index})">Delete</a></li>
-    </ul>
+<div class="item" id="item_${index}">
+    <img class="item_img" id="item_img_${index}" src="${item_img}" />
+    <div class="item_name" id="item_name_${index}">${item_name}</div>
+    <div class="item_barcode" id="item_barcode_${index}">${item_barcodeId}</div>
+    <div class="item_desc" id="item_desc_${index}">${item_desc}</div>
+    <div class="item_dicount_info"><span class="item_sale" id="item_sale_${index}">${item_sale}</span> <span class="item_old_price" id="item_old_price_${index}">${item_oldPrice}</span></div>
+    <div class="item_price_info"><span class="item_reward" id="item_reward_${index}">reward: ${item_reward}</span> <span class="item_price" id="item_price_${index}">${item_price}</span></div>
+    <button type="button" class="btn btn-primary button_item_edit" data-toggle="modal" onclick="editModeItem(${index});">
+        <span class="glyphicon glyphicon-pencil icon_span"></span> 수정
+    </button>
+    <button type="button" class="btn btn-primary button_item_edit" data-toggle="modal" onclick="deleteItem(${index});">
+        <span class="glyphicon glyphicon-trash icon_span"></span> 삭제
+    </button>
 </div>

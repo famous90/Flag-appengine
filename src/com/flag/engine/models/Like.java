@@ -1,10 +1,5 @@
 package com.flag.engine.models;
 
-import java.util.List;
-
-import javax.jdo.JDOObjectNotFoundException;
-import javax.jdo.PersistenceManager;
-import javax.jdo.Query;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.Index;
@@ -74,28 +69,5 @@ public class Like {
 		StringBuilder sb = new StringBuilder();
 		sb.append("userId:").append(userId).append("/").append("targetId:").append(targetId).append("/").append("type:").append(type);
 		return sb.toString();
-	}
-
-	public static boolean exists(Long userId, Long targetId, int type) {
-		PersistenceManager pm = PMF.getPersistenceManager();
-
-		try {
-			pm.getObjectById(Like.class, obtainLikeId(userId, targetId, type));
-			return true;
-		} catch (JDOObjectNotFoundException e) {
-			return false;
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	public static int count(Long targetId, int type) {
-		PersistenceManager pm = PMF.getPersistenceManager();
-
-		Query query = pm.newQuery(Like.class);
-		query.setFilter("targetId == theTargetId && type == theType");
-		query.declareParameters("Long theTargetId, int theType");
-		List<Like> likes = (List<Like>) pm.newQuery(query).execute(targetId, type);
-
-		return likes.size();
 	}
 }

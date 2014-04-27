@@ -3,8 +3,10 @@ package com.flag.engine.servelets;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
+import javax.jdo.Query;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -23,15 +25,18 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.flag.engine.exceptions.InvalidSheetFormatException;
+import com.flag.engine.exceptions.InvalidShopException;
 import com.flag.engine.models.Item;
 import com.flag.engine.models.PMF;
 
 public class ItemSheet extends HttpServlet {
+	private static final Logger log = Logger.getLogger(ItemSheet.class.getName());
 	private static final long serialVersionUID = 1L;
 	private ServletFileUpload upload = new ServletFileUpload();
 
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		log.warning("item sheet upload: start");
 		long shopId = 0;
 		List<Item> items = new ArrayList<Item>();
 
@@ -47,12 +52,14 @@ public class ItemSheet extends HttpServlet {
 					} else {
 						try {
 							shopId = Long.valueOf(shopIdString);
+							log.warning("item sheet upload: shop id is " + shopId);
 						} catch (NumberFormatException e) {
 							res.getWriter().write("shop id must be a number : " + shopIdString);
 							return;
 						}
 					}
 				} else {
+					log.warning("item sheet upload: file found");
 					Workbook wb;
 					if (item.getName().endsWith(".xlsx"))
 						wb = new XSSFWorkbook(item.openStream());
@@ -61,6 +68,7 @@ public class ItemSheet extends HttpServlet {
 					else
 						throw new InvalidSheetFormatException();
 
+					log.warning("item sheet upload: parsing sheet file");
 					Sheet sheet = wb.getSheetAt(0);
 					Row row;
 					Cell cell;
@@ -79,25 +87,58 @@ public class ItemSheet extends HttpServlet {
 								else
 									dataArray[c] = "";
 							}
-
-							items.add(new Item(shopId, dataArray));
+							
+							boolean isFalseData = false;
+							for (int i = 0; i < 4; i++)
+								if (dataArray[i].isEmpty())
+									isFalseData = true;
+							
+							if(!isFalseData)
+								items.add(new Item(dataArray));
 						}
 					}
 				}
 			}
 
 			if (shopId != 0)
-				saveItems(items);
+				saveItems(shopId, items);
+			else
+				throw new InvalidShopException();
+
+			res.getWriter().write("success");
 
 		} catch (FileUploadException e) {
 			e.printStackTrace();
+			res.getWriter().write("no file specified");
 		} catch (InvalidSheetFormatException e) {
 			e.printStackTrace();
+			res.getWriter().write("invalid sheet format. must be .xls or .xlsx");
+		} catch (InvalidShopException e) {
+			e.printStackTrace();
+			res.getWriter().write("no such shop");
 		}
 	}
 
-	private void saveItems(List<Item> items) {
+	@SuppressWarnings("unchecked")
+	private void saveItems(long shopId, List<Item> items) {
+		log.warning("items to be uploaded are : " + items.toString());
+		
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+		
+		Query query = pm.newQuery(Item.class);
+		query.setFilter("shopId == theShopId");
+		query.declareParameters("long theShopId");
+		List<Item> shopItems = (List<Item>) pm.newQuery(query).execute(shopId);
+		
+		List<Item> deletableItems = new ArrayList<Item>();
+		for (Item item : items) {
+			item.setShopId(shopId);
+			for (Item shopItem : shopItems)
+				if (shopItem.equals(item))
+					deletableItems.add(shopItem);
+		}
+		
+		pm.deletePersistentAll(deletableItems);
 		pm.makePersistentAll(items);
 		pm.close();
 	}

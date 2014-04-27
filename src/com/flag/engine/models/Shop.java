@@ -1,7 +1,15 @@
 package com.flag.engine.models;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.jdo.PersistenceManager;
+import javax.jdo.Query;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
+import javax.jdo.annotations.Index;
 import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -17,7 +25,12 @@ public class Shop {
 	private Long id;
 
 	@Persistent
+	@Index
 	private Long parentId;
+
+	@Persistent
+	@Index
+	private Long providerId;
 
 	@Persistent
 	private String name;
@@ -40,6 +53,12 @@ public class Shop {
 	@NotPersistent
 	private boolean rewarded;
 
+	@NotPersistent
+	private int likes;
+
+	@NotPersistent
+	private boolean liked;
+
 	public Long getId() {
 		return id;
 	}
@@ -54,6 +73,14 @@ public class Shop {
 
 	public void setParentId(Long parentId) {
 		this.parentId = parentId;
+	}
+
+	public Long getProviderId() {
+		return providerId;
+	}
+
+	public void setProviderId(Long providerId) {
+		this.providerId = providerId;
 	}
 
 	public String getName() {
@@ -112,8 +139,20 @@ public class Shop {
 		this.rewarded = rewarded;
 	}
 
-	public void setRewardedForUser(long userId) {
-		this.rewarded = Reward.exists(userId, id, Reward.TYPE_SHOP);
+	public int getLikes() {
+		return likes;
+	}
+
+	public void setLikes(int likes) {
+		this.likes = likes;
+	}
+
+	public boolean isLiked() {
+		return liked;
+	}
+
+	public void setLiked(boolean liked) {
+		this.liked = liked;
 	}
 
 	public void update(Shop shop) {
@@ -126,5 +165,56 @@ public class Shop {
 		if (shop.getDescription() != null && !shop.getDescription().isEmpty())
 			this.description = shop.getDescription();
 		this.reward = shop.getReward();
+	}
+
+	@SuppressWarnings("unchecked")
+	public static void setRelatedVariables(List<Shop> shops, long userId) {
+		PersistenceManager pm = PMF.getPersistenceManager();
+
+		Query query = pm.newQuery(Like.class);
+
+		StringBuilder sbFilter = new StringBuilder("type == typeShop && (");
+		StringBuilder sbParams = new StringBuilder("int typeShop");
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("typeShop", Like.TYPE_SHOP);
+		int i = 0;
+
+		for (Shop shop : shops) {
+			sbFilter.append("targetId == shopId" + i);
+			if (i < shops.size() - 1)
+				sbFilter.append(" || ");
+			sbParams.append(", long shopId" + i);
+			paramMap.put("shopId" + i, shop.getId());
+			i++;
+		}
+		sbFilter.append(")");
+
+		query.setFilter(sbFilter.toString());
+		query.declareParameters(sbParams.toString());
+		List<Like> likes = (List<Like>) pm.newQuery(query).executeWithMap(paramMap);
+
+		for (Like like : likes)
+			for (Shop shop : shops)
+				if (like.getTargetId().equals(shop.getId())) {
+					shop.setLikes(shop.getLikes() + 1);
+					if (like.getUserId().equals(userId))
+						shop.setLiked(true);
+					break;
+				}
+
+		query = pm.newQuery(Reward.class);
+		query.setFilter(sbFilter.toString());
+		query.declareParameters(sbParams.toString());
+		paramMap.remove("typeItem");
+		paramMap.put("typeItem", Reward.TYPE_SHOP);
+		List<Reward> rewards = (List<Reward>) pm.newQuery(query).executeWithMap(paramMap);
+
+		for (Reward reward : rewards)
+			for (Shop shop : shops)
+				if (reward.getTargetId().equals(shop.getId()) && reward.getUserId().equals(userId)
+						&& reward.getCreatedAt() > new Date().getTime() - Reward.EXPIRATION_TIME) {
+					shop.setRewarded(true);
+					break;
+				}
 	}
 }

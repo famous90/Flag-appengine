@@ -1,5 +1,6 @@
 package com.flag.engine.apis;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -53,20 +54,22 @@ public class Beacons {
 	public Shop get(@Nullable @Named("userId") long userId, @Named("beaconId") String beaconId) {
 		PersistenceManager pm = PMF.getPersistenceManager();
 		PersistenceManager pmSQL = PMF.getPersistenceManagerSQL();
-		Shop shop = null;
-
+		List<Shop> shops = new ArrayList<Shop>();
+		
 		try {
 			Beacon beacon = pm.getObjectById(Beacon.class, beaconId.toUpperCase());
-			shop = pmSQL.getObjectById(Shop.class, beacon.getShopId());
-			shop.setRewardedForUser(userId);
+			Shop shop = pmSQL.getObjectById(Shop.class, beacon.getShopId());
 			
 			Flag flag = pmSQL.getObjectById(Flag.class, beacon.getFlagId());
 			shop.setName(flag.getShopName());
+			
+			shops.add(shop);
+			Shop.setRelatedVariables(shops, userId);
 		} catch (JDOObjectNotFoundException e) {
 			// ...
 		}
 
-		return shop;
+		return shops.get(0);
 	}
 
 	@SuppressWarnings("unchecked")

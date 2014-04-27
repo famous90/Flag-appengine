@@ -1,5 +1,11 @@
 package com.flag.engine.models;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.jdo.PersistenceManager;
+import javax.jdo.Query;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.Index;
@@ -46,6 +52,9 @@ public class Item {
 	private int reward;
 
 	@NotPersistent
+	private boolean rewardable;
+
+	@NotPersistent
 	private boolean rewarded;
 
 	@NotPersistent
@@ -54,8 +63,7 @@ public class Item {
 	@NotPersistent
 	private boolean liked;
 
-	public Item(Long shopId, String[] dataArray) {
-		this.shopId = shopId;
+	public Item(String[] dataArray) {
 		barcodeId = dataArray[0];
 		name = dataArray[1];
 		description = dataArray[2];
@@ -65,7 +73,7 @@ public class Item {
 		} else {
 			price = dataArray[4];
 			oldPrice = dataArray[3];
-			sale = CalUtils.discountRate(price, oldPrice);
+			sale = CalUtils.discountRate(oldPrice, price);
 		}
 		reward = (int) CalUtils.toNumber(dataArray[5]);
 		thumbnailUrl = "";
@@ -147,6 +155,14 @@ public class Item {
 		return reward;
 	}
 
+	public boolean isRewardable() {
+		return rewardable;
+	}
+
+	public void setRewardable(boolean rewardable) {
+		this.rewardable = rewardable;
+	}
+
 	public void setReward(int reward) {
 		this.reward = reward;
 	}
@@ -159,16 +175,12 @@ public class Item {
 		this.rewarded = rewarded;
 	}
 
-	public void setRewardedForUser(long userId) {
-		this.rewarded = Reward.exists(userId, id, Reward.TYPE_ITEM);
-	}
-
 	public int getLikes() {
 		return likes;
 	}
 
-	public void setLikes() {
-		this.likes = Like.count(id, Like.TYPE_ITEM);
+	public void setLikes(int likes) {
+		this.likes = likes;
 	}
 
 	public boolean isLiked() {
@@ -179,22 +191,47 @@ public class Item {
 		this.liked = liked;
 	}
 
-	public void setLikedForUser(long userId) {
-		this.liked = Like.exists(userId, id, Like.TYPE_ITEM);
+	// public void setRewardedForUser(long userId) {
+	// this.rewarded = Reward.exists(userId, id, Reward.TYPE_ITEM);
+	// }
+	//
+	// public void setLikesAndLiked(long userId) {
+	// List<Like> likes = Like.list(id, Like.TYPE_ITEM);
+	// for (Like like : likes)
+	// if (like.getId().equals(Like.obtainLikeId(userId, id, Like.TYPE_ITEM))) {
+	// this.liked = true;
+	// break;
+	// }
+	// this.likes = likes.size();
+	// }
+
+	public void calSale() {
+		if (oldPrice != null && !oldPrice.isEmpty())
+			sale = CalUtils.discountRate(oldPrice, price);
 	}
 
 	public void update(Item item) {
 		if (item.getName() != null && !item.getName().isEmpty())
-			this.name = item.getName();
+			name = item.getName();
 		if (item.getThumbnailUrl() != null && !item.getThumbnailUrl().isEmpty())
-			this.thumbnailUrl = item.getThumbnailUrl();
+			thumbnailUrl = item.getThumbnailUrl();
 		if (item.getDescription() != null && !item.getDescription().isEmpty())
-			this.description = item.getDescription();
+			description = item.getDescription();
 		if (item.getBarcodeId() != null && !item.getBarcodeId().isEmpty())
-			this.barcodeId = item.getBarcodeId();
+			barcodeId = item.getBarcodeId();
 		if (item.getPrice() != null && !item.getPrice().isEmpty())
-			this.price = item.getPrice();
-		this.reward = item.getReward();
+			price = item.getPrice();
+		reward = item.getReward();
+
+		if (item.getOldPrice() == null)
+			oldPrice = "";
+		else
+			oldPrice = item.getOldPrice();
+
+		if (oldPrice != null && !oldPrice.isEmpty())
+			sale = CalUtils.discountRate(oldPrice, price);
+		else
+			sale = 0;
 	}
 
 	@Override
@@ -202,8 +239,8 @@ public class Item {
 		try {
 			Item target = (Item) o;
 			return target.getId() == id
-					|| (target.getBarcodeId() != null && !target.getBarcodeId().isEmpty() && barcodeId != null && !barcodeId.isEmpty() && target.getBarcodeId()
-							.equals(barcodeId));
+					|| (target.getBarcodeId() != null && !target.getBarcodeId().isEmpty() && barcodeId != null && !barcodeId.isEmpty() && target
+							.getBarcodeId().equals(barcodeId));
 		} catch (ClassCastException e) {
 			return false;
 		}
@@ -212,5 +249,58 @@ public class Item {
 	@Override
 	public String toString() {
 		return name + " " + barcodeId;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static void setRelatedVariables(List<Item> items, long userId) {
+		if (items == null || items.isEmpty())
+			return;
+
+		PersistenceManager pm = PMF.getPersistenceManager();
+		Query query = pm.newQuery(Like.class);
+
+		StringBuilder sbFilter = new StringBuilder("type == typeItem");
+		StringBuilder sbParams = new StringBuilder("int typeItem");
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("typeItem", Like.TYPE_ITEM);
+		int i = 0;
+
+		sbFilter.append(" && (");
+		for (Item item : items) {
+			sbFilter.append("targetId == itemId" + i);
+			if (i < items.size() - 1)
+				sbFilter.append(" || ");
+			sbParams.append(", long itemId" + i);
+			paramMap.put("itemId" + i, item.getId());
+			i++;
+		}
+		sbFilter.append(")");
+
+		query.setFilter(sbFilter.toString());
+		query.declareParameters(sbParams.toString());
+		List<Like> likes = (List<Like>) pm.newQuery(query).executeWithMap(paramMap);
+
+		for (Like like : likes)
+			for (Item item : items)
+				if (like.getTargetId().equals(item.getId())) {
+					item.setLikes(item.getLikes() + 1);
+					if (like.getUserId().equals(userId))
+						item.setLiked(true);
+					break;
+				}
+
+		query = pm.newQuery(Reward.class);
+		query.setFilter(sbFilter.toString());
+		query.declareParameters(sbParams.toString());
+		paramMap.remove("typeItem");
+		paramMap.put("typeItem", Reward.TYPE_ITEM);
+		List<Reward> rewards = (List<Reward>) pm.newQuery(query).executeWithMap(paramMap);
+
+		for (Reward reward : rewards)
+			for (Item item : items)
+				if (reward.getTargetId().equals(item.getId()) && reward.getUserId().equals(userId)) {
+					item.setRewarded(true);
+					break;
+				}
 	}
 }

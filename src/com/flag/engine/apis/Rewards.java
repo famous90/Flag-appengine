@@ -32,16 +32,12 @@ public class Rewards {
 		// mark
 		reward.refreshId();
 		reward.setCreatedAt(new Date().getTime());
-		
-		// redundancy check
-		if (Reward.exists(reward.getUserId(), reward.getTargetId(), reward.getType()))
-			return null;
 
 		// give reward
 		try {
+			pm.makePersistent(reward);
 			User user = pm.getObjectById(User.class, reward.getUserId());
 			user.rewarded(reward.getReward());
-			pm.makePersistent(reward);
 			return new User(user);
 		} catch (JDOObjectNotFoundException e) {
 			return null;

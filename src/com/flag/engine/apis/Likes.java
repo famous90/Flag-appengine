@@ -1,11 +1,13 @@
 package com.flag.engine.apis;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 import javax.inject.Named;
 import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
+import javax.jdo.Query;
 
 import com.flag.engine.constants.Constants;
 import com.flag.engine.models.Like;
@@ -22,9 +24,6 @@ public class Likes {
 	public Like insert(Like like) {
 		log.info("insert like: " + like.getUserId() + "/" + like.getTargetId() + "/" + like.getType());
 		
-		if (Like.exists(like.getUserId(), like.getTargetId(), like.getType()))
-			return like;
-
 		like.refreshId();
 		
 		PersistenceManager pm = PMF.getPersistenceManager();
@@ -47,5 +46,16 @@ public class Likes {
 		} finally {
 			pm.close();
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	@ApiMethod(name = "likes.delete.all", path = "like_all", httpMethod = "delete")
+	public void deleteAll() {
+		PersistenceManager pm = PMF.getPersistenceManager();
+		
+		Query query = pm.newQuery(Like.class);
+		List<Like> likes = (List<Like>) pm.newQuery(query).execute();
+		pm.deletePersistentAll(likes);
+		pm.close();
 	}
 }

@@ -1,9 +1,5 @@
 package com.flag.engine.models;
 
-import java.util.Date;
-
-import javax.jdo.JDOObjectNotFoundException;
-import javax.jdo.PersistenceManager;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.Index;
@@ -13,8 +9,7 @@ import javax.jdo.annotations.PrimaryKey;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class Reward {
-	private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 24;
-
+	public static final long EXPIRATION_TIME = 1000 * 60 * 60 * 24;
 	public static final int TYPE_SHOP = 1;
 	public static final int TYPE_ITEM = 2;
 
@@ -27,6 +22,7 @@ public class Reward {
 	private Long userId;
 
 	@Persistent
+	@Index
 	private Long targetId;
 
 	@Persistent
@@ -101,26 +97,13 @@ public class Reward {
 	}
 
 	public void refreshId() {
-		id = Reward.obtainRewardId(userId, targetId, type);
+		id = Reward.obtainRewardId(userId, targetId, type, createdAt);
 	}
 
-	public static String obtainRewardId(Long userId, Long targetId, int type) {
+	public static String obtainRewardId(Long userId, Long targetId, int type, long createdAt) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("userId:").append(userId).append("/").append("targetId:").append(targetId).append("/").append("type:").append(type);
+		sb.append("userId:").append(userId).append("/targetId:").append(targetId).append("/type:").append(type).append("/createdAt:")
+				.append(createdAt);
 		return sb.toString();
-	}
-
-	public static boolean exists(Long userId, Long targetId, int type) {
-		PersistenceManager pm = PMF.getPersistenceManager();
-
-		try {
-			Reward reward = pm.getObjectById(Reward.class, Reward.obtainRewardId(userId, targetId, type));
-			if (reward.getType() == Reward.TYPE_SHOP && reward.getCreatedAt() < new Date().getTime() - EXPIRATION_TIME)
-				return false;
-			else
-				return true;
-		} catch (JDOObjectNotFoundException e) {
-			return false;
-		}
 	}
 }

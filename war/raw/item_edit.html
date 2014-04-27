@@ -1,0 +1,23 @@
+<div class="item_edit" id="item_edit_${index}">
+    <form action="action" id="item_img_edit_form_${index}" method="post" enctype="multipart/form-data">
+        <input type="file" name="image" class="item_img_edit_file" id="item_img_edit_file_${index}" onchange="showPreview(this, 'item_img_edit_${index}')">
+    </form>
+    <img class="item_img" id="item_img_edit_${index}" src="img_src" />
+    <div class="item_name"><input id="item_name_edit_${index}" type="text" placeholder="name"/></div>
+    <div class="item_barcode"><input id="item_barcode_edit_${index}" type="text" placeholder="barcode"/></div>
+    <div><textarea class="item_desc_edit" id="item_desc_edit_${index}">desc</textarea></div>
+    <div class="item_dicount_info">
+        <input class="item_old_price_edit" id="item_old_price_edit_${index}" type="text" placeholder="old price"/>
+        <div class="item_sale_edit"><input id="item_sale_edit_${index}" type="checkbox" onchange="onItemSaleToggle(this, ${index});" /> sale</div>
+    </div>
+    <div class="item_price_info">
+        <input class="item_reward" id="item_reward_edit_${index}" type="text" placeholder="reward"/>
+        <input class="item_price" id="item_price_edit_${index}" type="text" placeholder="price" />
+    </div>
+    <button type="button" class="btn btn-primary button_item_edit" data-toggle="modal" onclick="editItem(${index});">
+        <span class="glyphicon glyphicon-ok icon_span"></span> 저장
+    </button>
+    <button type="button" class="btn btn-primary button_item_edit" data-toggle="modal" onclick="cancelEditItem(${index});">
+        <span class="glyphicon glyphicon-remove icon_span"></span> 취소
+    </button>
+</div>

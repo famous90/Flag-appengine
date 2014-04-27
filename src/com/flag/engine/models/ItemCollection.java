@@ -6,6 +6,7 @@ import java.util.Random;
 
 public class ItemCollection {
 	private List<Item> items;
+	private List<Item> hiddenItems;
 
 	public ItemCollection() {
 		super();
@@ -16,12 +17,26 @@ public class ItemCollection {
 		this.items = items;
 	}
 
+	public ItemCollection(List<Item> items, List<Item> hiddenItems) {
+		super();
+		this.items = items;
+		this.hiddenItems = hiddenItems;
+	}
+
 	public List<Item> getItems() {
 		return items;
 	}
 
 	public void setItems(List<Item> items) {
 		this.items = items;
+	}
+
+	public List<Item> getHiddenItems() {
+		return hiddenItems;
+	}
+
+	public void setHiddenItems(List<Item> hiddenItems) {
+		this.hiddenItems = hiddenItems;
 	}
 
 	public static List<Integer> randomIndexes(int size) {
@@ -35,7 +50,7 @@ public class ItemCollection {
 				else
 					i--;
 			}
-		
+
 		return picks;
 	}
 }

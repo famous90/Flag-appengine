@@ -14,9 +14,6 @@ import com.google.appengine.api.images.OutputSettings;
 import com.google.appengine.api.images.Transform;
 
 public class ServeImage extends HttpServlet {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private ImagesService imagesService = ImagesServiceFactory.getImagesService();
 

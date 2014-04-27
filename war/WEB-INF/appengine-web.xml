@@ -30,6 +30,7 @@
 		<include path="/images/**.jpeg" />
 		<include path="/images/**.png" />
 		<include path="/raw/**.html" />
+		<include path="/raw/sample_sheet.xlsx" />
 	</static-files>
 
 </appengine-web-app>

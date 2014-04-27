@@ -32,6 +32,10 @@ public class UploadImage extends HttpServlet {
 
 		List<BlobKey> blobKeys = blobKeyMap.get("image");
 		List<BlobInfo> blobInfos = blobInfoMap.get("image");
+		if (blobKeys == null || blobKeys.isEmpty()) {
+			log.warning("no blob uploaded");
+			return;
+		}
 
 		String fileName = blobInfos.get(0).getFilename();
 		if (fileName.indexOf('.') > -1)
@@ -40,7 +44,7 @@ public class UploadImage extends HttpServlet {
 		if (!matchWithItem(fileName, blobKeys.get(0).getKeyString(), req.getParameter("shopId"))) {
 			res.setContentType("application/json");
 			PrintWriter out = res.getWriter();
-			out.print("{\"url\": \"" + blobKeys.get(0).getKeyString() + "\"}");
+			out.print("{\"url\": \"https://genuine-evening-455.appspot.com/serve?blob-key=" + blobKeys.get(0).getKeyString() + "\"}");
 			out.flush();
 		}
 	}
@@ -49,7 +53,6 @@ public class UploadImage extends HttpServlet {
 	private boolean matchWithItem(String fileName, String keyString, String shopId) {
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		String url = "https://genuine-evening-455.appspot.com/serve?blob-key=" + keyString;
-		log.warning("filename : " + fileName);
 
 		Query query = pm.newQuery(Item.class);
 		query.setFilter("barcodeId == fileName");

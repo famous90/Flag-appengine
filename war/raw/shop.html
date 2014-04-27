@@ -1,23 +1,6 @@
-<div class="shop" id="shop_index_${index}">
-    <div class="shop_name_box">
-        <table class="logo_wrapper">
-            <tr>
-                <td><img class="shop_logo" src="${logo}"></td>
-                <td><span class="span_name">${name}</span></td>
-            </tr>
-        </table>
-    </div>
-    
-    <ul class="nav nav-pills shop_menu">
-        <li><a href="javascript:loadEvents(${index})">Details</a></li>
-        <li><a href="javascript:loadFlags(${index})">Flags</a></li>
-        <li><a href="javascript:loadItems(${index})">Items</a></li>
-        <li class="dropdown">
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Menu <span class="caret"></span></a>
-            <ul class="dropdown-menu">
-                <li><a href="javascript:showShopEditor(${index})">Edit</a></li>
-                <li><a href="javascript:deleteShop(${index})">Delete</a></li>
-            </ul>
-        </li>
-    </ul>
+<div class="shop" id="shop_${index}" onclick="showShopContents(${isHQ}, ${index})">
+    <table class="shop_logo_box">
+        <tr><td><img class="shop_logo" src="${shop_logo_url}"/></td></tr>
+    </table>
+    <div class="shop_name"><span class="text_span">${shop_name}</span></div>
 </div>
