@@ -274,6 +274,11 @@ var hiddenItems;
 
 function getItems() {
     $('#shop_contents_items').html('');
+    if (targetShop.type == 1)
+        $('.button_item_add').css('display', 'block');
+    else if (targetShop.type == 2)
+        $('.button_item_add').css('display', 'none');
+    
     gapi.client.flagengine.items.list({shopId: targetShop.id, userId: 0}).execute(function(res) {
         items = res.items || [];
         hiddenItems = res.hiddenItems || [];

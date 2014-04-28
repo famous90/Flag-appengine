@@ -20,17 +20,30 @@ var drop = function (e) {
     var files = e.originalEvent.dataTransfer.files;
     processFiles(files);
 }
+
+function showDropzoneAssist() {
+    $('.dropzone_assist').css('display', 'block');
+}
+
+function hideDropzoneAssist() {
+    $('.dropzone_assist').css('display', 'none');
+}
     
 function initDropForm() {
-    var zone = $('.dropzone');
-    zone.html('<span class="dropzone_help">Drag and Drop images here.</span>');
+    $('.dropzone_items').html('');
     fileIndexes = [];
     lastIndex = -1;
     files = [];
+    showDropzoneAssist();
     
+    var zone = $('.dropzone');
     zone.on('dragenter', dragenter);
     zone.on('dragover', dragover);
     zone.on('drop', drop);
+}
+
+function addFromFileBrowser(input) {
+    processFiles(input.files);
 }
 
 function processFiles(files) {
@@ -46,12 +59,15 @@ function processFiles(files) {
         
         addDropItem(files[i], index, htmldata);
     }
+    
+    if (fileIndexes.length > 0)
+        hideDropzoneAssist();
 }
 
 function addDropItem(file, index, htmldata) {
     htmldata = replaceAll('${index}', index, htmldata);
     htmldata = htmldata.replace('${filename}', file.name);
-    $('.dropzone').append(htmldata);
+    $('.dropzone_items').append(htmldata);
     
     var reader = new FileReader();
     reader.onload = function(e) {
@@ -71,6 +87,9 @@ function removeDropItem(index) {
             newFileIndexes[newFileIndexes.length] = fileIndexes[i];
     
     fileIndexes = newFileIndexes;
+    
+    if (fileIndexes.length == 0)
+        showDropzoneAssist();
 }
 
 var pTotal;
