@@ -858,6 +858,59 @@
       "response" : {
         "body" : "autoTemplate(backendResponse)"
       }
+    },
+    "flagengine.userInfos.update" : {
+      "path" : "user_info",
+      "httpMethod" : "patch",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.UserInfos.update",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "flagengine.usreinfos.insert" : {
+      "path" : "user_info",
+      "httpMethod" : "post",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.UserInfos.insert",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "flagengine.userinfos.get" : {
+      "path" : "user_info",
+      "httpMethod" : "get",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.UserInfos.get",
+      "request" : {
+        "parameters" : {
+          "userId" : {
+            "type" : "int64",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
     }
   },
   "descriptor" : {
@@ -1288,6 +1341,31 @@
             "type" : "integer"
           }
         }
+      },
+      "UserInfo" : {
+        "id" : "UserInfo",
+        "type" : "object",
+        "properties" : {
+          "userId" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "sex" : {
+            "type" : "boolean"
+          },
+          "birthYear" : {
+            "type" : "integer"
+          },
+          "job" : {
+            "type" : "integer"
+          },
+          "lat" : {
+            "type" : "number"
+          },
+          "lon" : {
+            "type" : "number"
+          }
+        }
       }
     },
     "methods" : {
@@ -1537,6 +1615,27 @@
         },
         "response" : {
           "$ref" : "Provider"
+        }
+      },
+      "com.flag.engine.apis.UserInfos.update" : {
+        "request" : {
+          "$ref" : "UserInfo"
+        },
+        "response" : {
+          "$ref" : "UserInfo"
+        }
+      },
+      "com.flag.engine.apis.UserInfos.insert" : {
+        "request" : {
+          "$ref" : "UserInfo"
+        },
+        "response" : {
+          "$ref" : "UserInfo"
+        }
+      },
+      "com.flag.engine.apis.UserInfos.get" : {
+        "response" : {
+          "$ref" : "UserInfo"
         }
       }
     }

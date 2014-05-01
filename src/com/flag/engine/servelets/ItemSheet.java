@@ -2,9 +2,11 @@ package com.flag.engine.servelets;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 import javax.servlet.ServletException;
@@ -28,6 +30,7 @@ import com.flag.engine.exceptions.InvalidSheetFormatException;
 import com.flag.engine.exceptions.InvalidShopException;
 import com.flag.engine.models.Item;
 import com.flag.engine.models.PMF;
+import com.flag.engine.models.Shop;
 
 public class ItemSheet extends HttpServlet {
 	private static final Logger log = Logger.getLogger(ItemSheet.class.getName());
@@ -37,6 +40,7 @@ public class ItemSheet extends HttpServlet {
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		log.warning("item sheet upload: start");
+		long startTime = new Date().getTime();
 		long shopId = 0;
 		List<Item> items = new ArrayList<Item>();
 
@@ -87,13 +91,13 @@ public class ItemSheet extends HttpServlet {
 								else
 									dataArray[c] = "";
 							}
-							
+
 							boolean isFalseData = false;
 							for (int i = 0; i < 4; i++)
 								if (dataArray[i].isEmpty())
 									isFalseData = true;
-							
-							if(!isFalseData)
+
+							if (!isFalseData)
 								items.add(new Item(dataArray));
 						}
 					}
@@ -105,6 +109,7 @@ public class ItemSheet extends HttpServlet {
 			else
 				throw new InvalidShopException();
 
+			log.warning("process time: " + (new Date().getTime() - startTime) + "ms");
 			res.getWriter().write("success");
 
 		} catch (FileUploadException e) {
@@ -122,25 +127,36 @@ public class ItemSheet extends HttpServlet {
 	@SuppressWarnings("unchecked")
 	private void saveItems(long shopId, List<Item> items) {
 		log.warning("items to be uploaded are : " + items.toString());
-		
+		long startTime = new Date().getTime();
+
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
-		
+
+		Shop shop;
+		try {
+			shop = pm.getObjectById(Shop.class, shopId);
+		} catch (JDOObjectNotFoundException e) {
+			return;
+		}
+
 		Query query = pm.newQuery(Item.class);
 		query.setFilter("shopId == theShopId");
 		query.declareParameters("long theShopId");
 		List<Item> shopItems = (List<Item>) pm.newQuery(query).execute(shopId);
-		
+
 		List<Item> deletableItems = new ArrayList<Item>();
 		for (Item item : items) {
 			item.setShopId(shopId);
+			item.setThumbnailUrl(shop.getImageUrl());
 			for (Item shopItem : shopItems)
 				if (shopItem.equals(item))
 					deletableItems.add(shopItem);
 		}
-		
+
 		pm.deletePersistentAll(deletableItems);
 		pm.makePersistentAll(items);
 		pm.close();
+
+		log.warning("data insertion time: " + (new Date().getTime() - startTime) + "ms");
 	}
 
 }

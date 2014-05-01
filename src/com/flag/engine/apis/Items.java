@@ -1,7 +1,12 @@
 package com.flag.engine.apis;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
@@ -12,11 +17,14 @@ import javax.jdo.Query;
 
 import com.flag.engine.constants.Constants;
 import com.flag.engine.models.BranchItemMatcher;
+import com.flag.engine.models.Flag;
 import com.flag.engine.models.Item;
 import com.flag.engine.models.ItemCollection;
 import com.flag.engine.models.Like;
 import com.flag.engine.models.PMF;
 import com.flag.engine.models.Shop;
+import com.flag.engine.models.UserInfo;
+import com.flag.engine.utils.LocationUtils;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 
@@ -42,21 +50,84 @@ public class Items {
 	@ApiMethod(name = "items.init", path = "item_init", httpMethod = "get")
 	public ItemCollection initItems(@Nullable @Named("userId") long userId, @Nullable @Named("mark") int mark) {
 		log.info("list item for user: " + userId);
+		long startTime = new Date().getTime();
 
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+		double lat = 0;
+		double lon = 0;
 
-		Query query = pm.newQuery(Item.class);
+		try {
+			UserInfo userInfo = pm.getObjectById(UserInfo.class, userId);
+			lat = userInfo.getLat();
+			lon = userInfo.getLon();
+		} catch (JDOObjectNotFoundException e) {
+			log.warning("no user info");
+		}
+		
+		log.warning("userinfo process time: " + (new Date().getTime() - startTime) + "ms");
+
+		Query query = pm.newQuery(Flag.class);
+		query.setFilter("lon > minLon && lon < maxLon && lat > minLat && lat < maxLat");
+		query.declareParameters("double minLon, double maxLon, double minLat, double maxLat");
+		List<Flag> flags = (List<Flag>) pm.newQuery(query).executeWithArray(lon - LocationUtils.NEAR_DISTANCE_DEGREE,
+				lon + LocationUtils.NEAR_DISTANCE_DEGREE, lat - LocationUtils.NEAR_DISTANCE_DEGREE, lat + LocationUtils.NEAR_DISTANCE_DEGREE);
+
+		log.warning("flag count: " + flags.size());
+		log.warning("flag process time: " + (new Date().getTime() - startTime) + "ms");
+		
+		Set<Long> shopIds = new HashSet<Long>();
+		for (Flag flag : flags)
+			shopIds.add(flag.getShopId());
+
+		log.warning("shopId process time: " + (new Date().getTime() - startTime) + "ms");
+		
+		StringBuilder sbFilter = new StringBuilder();
+		StringBuilder sbParams = new StringBuilder();
+		Map<String, Long> paramMap = new HashMap<String, Long>();
+		int i = 0;
+
+		for (Long shopId : shopIds) {
+			if (i > 0) {
+				sbFilter.append(" || ");
+				sbParams.append(", ");
+			}
+
+			sbFilter.append("shopId == id" + i);
+			sbParams.append("long id" + i);
+			paramMap.put("id" + i, shopId);
+
+			i++;
+		}
+
+		log.warning("query filter process time: " + (new Date().getTime() - startTime) + "ms");
+		
+		query = pm.newQuery(Item.class);
+		query.setFilter(sbFilter.toString());
+		query.declareParameters(sbParams.toString());
 		// query.setOrdering("id desc");
 		// query.setRange(mark, mark + 20);
-		List<Item> results = (List<Item>) pm.newQuery(query).execute();
+		List<Item> results = (List<Item>) pm.newQuery(query).executeWithMap(paramMap);
 
-		List<Integer> picks = ItemCollection.randomIndexes(results.size());
+		log.warning("item process time: " + (new Date().getTime() - startTime) + "ms");
+		
+		List<Item> candidates = new ArrayList<Item>();
+		for (Item item : results)
+			if (!candidates.contains(item))
+				candidates.add(item);
+
+		log.warning("candidate process time: " + (new Date().getTime() - startTime) + "ms");
+		
 		List<Item> items = new ArrayList<Item>();
+		List<Integer> picks = ItemCollection.randomIndexes(candidates.size());
 		for (int pick : picks)
-			items.add(results.get(pick));
+			items.add(candidates.get(pick));
 
+		log.warning("pick process time: " + (new Date().getTime() - startTime) + "ms");
+		
 		Item.setRelatedVariables(items, userId);
 
+		log.warning("var process time: " + (new Date().getTime() - startTime) + "ms");
+		
 		return new ItemCollection(items);
 	}
 

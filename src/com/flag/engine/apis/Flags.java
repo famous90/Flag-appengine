@@ -1,7 +1,9 @@
 package com.flag.engine.apis;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
@@ -14,6 +16,8 @@ import com.flag.engine.constants.Constants;
 import com.flag.engine.models.Flag;
 import com.flag.engine.models.FlagCollection;
 import com.flag.engine.models.PMF;
+import com.flag.engine.models.Shop;
+import com.flag.engine.models.UserInfo;
 import com.flag.engine.utils.LocationUtils;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -46,8 +50,8 @@ public class Flags {
 		Query query = pm.newQuery(Flag.class);
 		query.setFilter("lon > minLon && lon < maxLon && lat > minLat && lat < maxLat");
 		query.declareParameters("double minLon, double maxLon, double minLat, double maxLat");
-		List<Flag> flags = (List<Flag>) pm.newQuery(query).executeWithArray(lon - LocationUtils.NEAR_DISTANCE_DEGREE, lon + LocationUtils.NEAR_DISTANCE_DEGREE,
-				lat - LocationUtils.NEAR_DISTANCE_DEGREE, lat + LocationUtils.NEAR_DISTANCE_DEGREE);
+		List<Flag> flags = (List<Flag>) pm.newQuery(query).executeWithArray(lon - LocationUtils.NEAR_DISTANCE_DEGREE,
+				lon + LocationUtils.NEAR_DISTANCE_DEGREE, lat - LocationUtils.NEAR_DISTANCE_DEGREE, lat + LocationUtils.NEAR_DISTANCE_DEGREE);
 
 		return new FlagCollection(flags);
 	}
@@ -56,11 +60,37 @@ public class Flags {
 	@ApiMethod(name = "flags.list.byshop", path = "flag_list_byshop", httpMethod = "get")
 	public FlagCollection listByShop(@Nullable @Named("shopId") long shopId) {
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+		Shop shop;
 
-		Query query = pm.newQuery(Flag.class);
-		query.setFilter("shopId == theShopId");
-		query.declareParameters("long theShopId");
-		List<Flag> flags = (List<Flag>) pm.newQuery(query).executeWithArray(shopId);
+		try {
+			shop = pm.getObjectById(Shop.class, shopId);
+		} catch (JDOObjectNotFoundException e) {
+			return null;
+		}
+
+		Query query;
+		StringBuilder sbFilter = new StringBuilder("shopId == id");
+		StringBuilder sbParam = new StringBuilder("long id");
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("id", shopId);
+
+		if (shop.getType() == Shop.TYPE_HQ) {
+			query = pm.newQuery(Shop.class);
+			query.setFilter("parentId == shopId");
+			query.declareParameters("long shopId");
+			List<Shop> brShops = (List<Shop>) pm.newQuery(query).execute(shopId);
+
+			for (int i = 0; i < brShops.size(); i++) {
+				sbFilter.append(" || shopId == id" + i);
+				sbParam.append(", long id" + i);
+				paramMap.put("id" + i, brShops.get(i).getId());
+			}
+		}
+
+		query = pm.newQuery(Flag.class);
+		query.setFilter(sbFilter.toString());
+		query.declareParameters(sbParam.toString());
+		List<Flag> flags = (List<Flag>) pm.newQuery(query).executeWithMap(paramMap);
 
 		return new FlagCollection(flags);
 	}
@@ -72,19 +102,33 @@ public class Flags {
 
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 
+		try {
+			UserInfo userInfo = pm.getObjectById(UserInfo.class, userId);
+			userInfo.setLat(lat);
+			userInfo.setLon(lon);
+		} catch (JDOObjectNotFoundException e) {
+			UserInfo userInfo = new UserInfo();
+			userInfo.setUserId(userId);
+			userInfo.setLat(lat);
+			userInfo.setLon(lon);
+			pm.makePersistent(userInfo);
+		}
+		
 		Query query = pm.newQuery(Flag.class);
 		query.setFilter("lon > minLon && lon < maxLon && lat > minLat && lat < maxLat");
 		query.declareParameters("double minLon, double maxLon, double minLat, double maxLat");
-		List<Flag> flags = (List<Flag>) pm.newQuery(query).executeWithArray(lon - LocationUtils.CLOSE_DISTANCE_DEGREE, lon + LocationUtils.CLOSE_DISTANCE_DEGREE,
-				lat - LocationUtils.CLOSE_DISTANCE_DEGREE, lat + LocationUtils.CLOSE_DISTANCE_DEGREE);
-
+		List<Flag> flags = (List<Flag>) pm.newQuery(query).executeWithArray(lon - LocationUtils.CLOSE_DISTANCE_DEGREE,
+				lon + LocationUtils.CLOSE_DISTANCE_DEGREE, lat - LocationUtils.CLOSE_DISTANCE_DEGREE, lat + LocationUtils.CLOSE_DISTANCE_DEGREE);
+		
+		pm.close();
+		
 		return new FlagCollection(flags);
 	}
-	
+
 	@ApiMethod(name = "flags.delete", path = "flag", httpMethod = "delete")
 	public void delete(@Named("flagId") Long flagId) {
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
-		
+
 		try {
 			Flag target = pm.getObjectById(Flag.class, flagId);
 			pm.deletePersistent(target);
