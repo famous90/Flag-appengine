@@ -22,45 +22,75 @@ public class ServeImage extends HttpServlet {
 		Image image = ImagesServiceFactory.makeImageFromBlob(new BlobKey(req.getParameter("blob-key")));
 		Transform dummy = ImagesServiceFactory.makeRotate(360);
 		image = imagesService.applyTransform(dummy, image);
+		
 		int width = 0;
 		int height = 0;
-		
 		try {
 			width = Integer.valueOf(req.getParameter("width"));
+		} catch (NumberFormatException e) {
+			width = 0;
+		}
+		try {
 			height = Integer.valueOf(req.getParameter("height"));
 		} catch (NumberFormatException e) {
-			width = 360;
-			height = 360;
+			height = 0;
 		}
 		
-		if (width != 0 && height != 0) {
-			Transform resize = makeResize(image, width, height);
+		if (width > 0 && height > 0) {
+			Transform resize = makeOutsideResize(image, width, height);
 			image = imagesService.applyTransform(resize, image);
 
 			Transform centerCrop = makeCenterCrop(image, width, height);
 			OutputSettings settings = new OutputSettings(ImagesService.OutputEncoding.JPEG);
-			settings.setQuality(60);
+			settings.setQuality(70);
 			image = imagesService.applyTransform(centerCrop, image, settings);
+		} else if (width > 0 || height > 0) {
+			Transform resize = makeInsideResize(image, width, height);
+			OutputSettings settings = new OutputSettings(ImagesService.OutputEncoding.JPEG);
+			settings.setQuality(70);
+			image = imagesService.applyTransform(resize, image, settings);
 		}
 		
 		res.addHeader("Content-Type", "image/" + image.getFormat().toString());
 		res.getOutputStream().write(image.getImageData());
 	}
 
-	private Transform makeResize(Image image, float targetWidth, float targetHeight) {
+	private Transform makeOutsideResize(Image image, float targetWidth, float targetHeight) {
 		float width = image.getWidth();
 		float height = image.getHeight();
 		float wratio = width / targetWidth;
 		float hratio = height / targetHeight;
 		int size;
 		
-		if (wratio > hratio) {
+		if (wratio > hratio)
 			size = (int) (width / hratio);
-		} else {
+		else
 			size = (int) (height / wratio);
-		}
 		
 		return ImagesServiceFactory.makeResize(size, size);
+	}
+
+	private Transform makeInsideResize(Image image, float targetWidth, float targetHeight) {
+		float width = image.getWidth();
+		float height = image.getHeight();
+		int wsize;
+		int hsize;
+		
+		if (targetWidth > 0 && targetHeight > 0) {
+			wsize = (int) targetWidth;
+			hsize = (int) targetHeight;
+		} else if (targetWidth > 0) {
+			wsize = (int) targetWidth;
+			hsize = (int) (height * (targetWidth / width));
+		} else if (targetHeight > 0) {
+			wsize = (int) (width * (targetHeight / height));
+			hsize = (int) targetHeight;
+		} else {
+			wsize = (int) width;
+			hsize = (int) height;
+		}
+		
+		return ImagesServiceFactory.makeResize(wsize, hsize);
 	}
 
 	private Transform makeCenterCrop(Image image, float targetWidth, float targetHeight) {

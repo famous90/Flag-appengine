@@ -121,6 +121,33 @@ public class Items {
 		return new ItemCollection(items, hiddenItems);
 	}
 
+	@SuppressWarnings("unchecked")
+	@ApiMethod(name = "items.list.user", path = "item_user")
+	public ItemCollection listByUser(@Nullable @Named("userId") long userId) {
+		PersistenceManager pm = PMF.getPersistenceManager();
+		PersistenceManager pmSQL = PMF.getPersistenceManagerSQL();
+		List<Item> items = new ArrayList<Item>();
+
+		Query query = pm.newQuery(Like.class);
+		query.setFilter("userId == id && type == itemType");
+		query.declareParameters("long id, int itemType");
+		List<Like> likes = (List<Like>) pm.newQuery(query).execute(userId, Like.TYPE_ITEM);
+
+		query = pmSQL.newQuery(Item.class);
+		List<Item> allItems = (List<Item>) pmSQL.newQuery(query).execute();
+
+		for (Like like : likes)
+			for (Item item : allItems)
+				if (like.getTargetId().equals(item.getId())) {
+					items.add(item);
+					break;
+				}
+
+		Item.setRelatedVariables(items, userId);
+
+		return new ItemCollection(items);
+	}
+
 	@ApiMethod(name = "items.get", path = "one_item", httpMethod = "get")
 	public Item get(@Nullable @Named("userId") long userId, @Nullable @Named("itemId") long itemId) {
 		log.info("get item: " + itemId);
@@ -183,7 +210,7 @@ public class Items {
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		pm.makePersistent(matcher);
 		pm.close();
-		
+
 		return matcher;
 	}
 
@@ -191,12 +218,12 @@ public class Items {
 	@ApiMethod(name = "items.branch.hide", path = "item_branch", httpMethod = "delete")
 	public void hide(@Nullable @Named("shopId") long shopId, @Nullable @Named("itemId") long itemId) {
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
-		
+
 		Query query = pm.newQuery(BranchItemMatcher.class);
 		query.setFilter("branchShopId == shopId && itemId == theItemId");
 		query.declareParameters("long shopId, long theItemId");
 		List<BranchItemMatcher> matchers = (List<BranchItemMatcher>) pm.newQuery(query).execute(shopId, itemId);
-		
+
 		pm.deletePersistentAll(matchers);
 		pm.close();
 	}
@@ -205,21 +232,21 @@ public class Items {
 	@ApiMethod(name = "items.branch.reward", path = "item_branch", httpMethod = "put")
 	public BranchItemMatcher toggleReward(BranchItemMatcher matcher) {
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
-		
+
 		Query query = pm.newQuery(BranchItemMatcher.class);
 		query.setFilter("branchShopId == shopId && itemId == theItemId");
 		query.declareParameters("long shopId, long theItemId");
 		List<BranchItemMatcher> matchers = (List<BranchItemMatcher>) pm.newQuery(query).execute(matcher.getBranchShopId(), matcher.getItemId());
-		
+
 		BranchItemMatcher target = null;
 		if (!matchers.isEmpty()) {
 			target = matchers.get(0);
-			if(target.isRewardable())
+			if (target.isRewardable())
 				target.setRewardable(false);
 			else
 				target.setRewardable(true);
 		}
-		
+
 		pm.close();
 
 		return target;

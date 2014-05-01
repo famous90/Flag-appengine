@@ -25,6 +25,7 @@ public class Like {
 	private Long targetId;
 
 	@Persistent
+	@Index
 	private int type;
 
 	public String getId() {

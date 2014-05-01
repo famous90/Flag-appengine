@@ -250,9 +250,14 @@ public class Item {
 	public String toString() {
 		return name + " " + barcodeId;
 	}
-
-	@SuppressWarnings("unchecked")
+	
 	public static void setRelatedVariables(List<Item> items, long userId) {
+		setLikeVariables(items, userId);
+		setRewardVariables(items, userId);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static void setLikeVariables(List<Item> items, long userId) {
 		if (items == null || items.isEmpty())
 			return;
 
@@ -288,12 +293,35 @@ public class Item {
 						item.setLiked(true);
 					break;
 				}
+	}
 
-		query = pm.newQuery(Reward.class);
+	@SuppressWarnings("unchecked")
+	public static void setRewardVariables(List<Item> items, long userId) {
+		if (items == null || items.isEmpty())
+			return;
+
+		PersistenceManager pm = PMF.getPersistenceManager();
+		Query query = pm.newQuery(Reward.class);
+
+		StringBuilder sbFilter = new StringBuilder("type == typeItem");
+		StringBuilder sbParams = new StringBuilder("int typeItem");
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("typeItem", Reward.TYPE_ITEM);
+		int i = 0;
+
+		sbFilter.append(" && (");
+		for (Item item : items) {
+			sbFilter.append("targetId == itemId" + i);
+			if (i < items.size() - 1)
+				sbFilter.append(" || ");
+			sbParams.append(", long itemId" + i);
+			paramMap.put("itemId" + i, item.getId());
+			i++;
+		}
+		sbFilter.append(")");
+
 		query.setFilter(sbFilter.toString());
 		query.declareParameters(sbParams.toString());
-		paramMap.remove("typeItem");
-		paramMap.put("typeItem", Reward.TYPE_ITEM);
 		List<Reward> rewards = (List<Reward>) pm.newQuery(query).executeWithMap(paramMap);
 
 		for (Reward reward : rewards)
