@@ -18,7 +18,7 @@ public class UserInfo {
 
 	@Persistent
 	@Index
-	private int birthYear;
+	private long birth;
 
 	@Persistent
 	private int job;
@@ -47,12 +47,12 @@ public class UserInfo {
 		this.sex = sex;
 	}
 
-	public int getBirthYear() {
-		return birthYear;
+	public long getBirth() {
+		return birth;
 	}
 
-	public void setBirthYear(int birthYear) {
-		this.birthYear = birthYear;
+	public void setBirth(long birth) {
+		this.birth = birth;
 	}
 
 	public int getJob() {
@@ -81,7 +81,7 @@ public class UserInfo {
 
 	public void update(UserInfo userInfo) {
 		this.sex = userInfo.getSex();
-		this.birthYear = userInfo.getBirthYear();
+		this.birth = userInfo.getBirth();
 		this.job = userInfo.getJob();
 	}
 }

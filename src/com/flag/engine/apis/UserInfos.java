@@ -43,7 +43,7 @@ public class UserInfos {
 		return userInfo;
 	}
 	
-	@ApiMethod(name = "userInfos.update", path = "user_info", httpMethod = "patch")
+	@ApiMethod(name = "userInfos.update", path = "user_info", httpMethod = "put")
 	public UserInfo update(UserInfo userInfo) {
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		UserInfo target;

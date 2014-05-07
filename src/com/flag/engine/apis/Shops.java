@@ -1,6 +1,7 @@
 package com.flag.engine.apis;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -36,36 +37,47 @@ public class Shops {
 
 		return shop;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@ApiMethod(name = "shops.init", path = "shop_init", httpMethod = "get")
 	public ShopCollection initShops(@Nullable @Named("userId") long userId, @Nullable @Named("lat") double lat, @Nullable @Named("lon") double lon) {
 		log.info("user shop: " + userId + "," + lat + "," + lon);
-		
+		long startTime = new Date().getTime();
+
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 
 		Query query = pm.newQuery(Flag.class);
 		query.setFilter("lon > minLon && lon < maxLon && lat > minLat && lat < maxLat");
 		query.declareParameters("double minLon, double maxLon, double minLat, double maxLat");
-		List<Flag> flags = (List<Flag>) pm.newQuery(query).executeWithArray(lon - LocationUtils.NEAR_DISTANCE_DEGREE, lon + LocationUtils.NEAR_DISTANCE_DEGREE,
-				lat - LocationUtils.NEAR_DISTANCE_DEGREE, lat + LocationUtils.NEAR_DISTANCE_DEGREE);
+		List<Flag> flags = (List<Flag>) pm.newQuery(query).executeWithArray(lon - LocationUtils.NEAR_DISTANCE_DEGREE,
+				lon + LocationUtils.NEAR_DISTANCE_DEGREE, lat - LocationUtils.NEAR_DISTANCE_DEGREE, lat + LocationUtils.NEAR_DISTANCE_DEGREE);
+
+		log.warning("flag da time: " + (new Date().getTime() - startTime) + "ms");
+		log.warning("flag count: " + flags.size());
 
 		List<Long> ids = new ArrayList<Long>();
 		for (Flag flag : flags)
 			if (!ids.contains(flag.getShopId()))
 				ids.add(flag.getShopId());
-		
+
+		log.warning("shopid process time: " + (new Date().getTime() - startTime) + "ms");
+
+		ShopCollection shopCollection;
 		if (ids.size() > 0)
-			return list(ids);
+			shopCollection = list(ids);
 		else
-			return null;
+			shopCollection = null;
+
+		log.warning("shop da time: " + (new Date().getTime() - startTime) + "ms");
+
+		return shopCollection;
 	}
 
 	@ApiMethod(name = "shops.get", path = "shop", httpMethod = "get")
 	public Shop get(@Nullable @Named("userId") long userId, @Nullable @Named("id") long id) {
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		List<Shop> shops = new ArrayList<Shop>();
-		
+
 		try {
 			Shop shop = pm.getObjectById(Shop.class, id);
 			shops.add(shop);
@@ -88,7 +100,10 @@ public class Shops {
 		for (Long id : ids)
 			keys.add(pm.newObjectIdInstance(Shop.class, id));
 
-		shops = (List<Shop>) pm.getObjectsById(keys);
+		try {
+			shops = (List<Shop>) pm.getObjectsById(keys);
+		} catch (JDOObjectNotFoundException e) {
+		}
 
 		return new ShopCollection(shops);
 	}
@@ -100,22 +115,22 @@ public class Shops {
 		List<Shop> hqShops = new ArrayList<Shop>();
 		List<Shop> brShops = new ArrayList<Shop>();
 		List<Shop> shops = new ArrayList<Shop>();
-		
+
 		Query query = pm.newQuery(Shop.class);
 		List<Shop> allShops = (List<Shop>) pm.newQuery(query).execute();
-		
+
 		for (Shop allShop : allShops)
 			if (allShop.getProviderId().equals(providerId))
 				hqShops.add(allShop);
-		
+
 		for (Shop allShop : allShops)
 			for (Shop hqShop : hqShops)
 				if (hqShop.getType() == Shop.TYPE_HQ && allShop.getParentId().equals(hqShop.getId()))
 					brShops.add(allShop);
-		
+
 		shops.addAll(hqShops);
 		shops.addAll(brShops);
-				
+
 		return new ShopCollection(shops);
 	}
 
@@ -147,19 +162,19 @@ public class Shops {
 		try {
 			Shop target = pmSQL.getObjectById(Shop.class, shopId);
 			pmSQL.deletePersistent(target);
-			
+
 			Query query = pmSQL.newQuery(Flag.class);
 			query.setFilter("shopId == theShopId");
 			query.declareParameters("long theShopId");
 			List<Flags> flags = (List<Flags>) pmSQL.newQuery(query).execute(shopId);
 			pmSQL.deletePersistentAll(flags);
-			
+
 			query = pmSQL.newQuery(Item.class);
 			query.setFilter("shopId == theShopId");
 			query.declareParameters("long theShopId");
 			List<Items> items = (List<Items>) pmSQL.newQuery(query).execute(shopId);
 			pmSQL.deletePersistentAll(items);
-			
+
 			query = pm.newQuery(Like.class);
 			query.setFilter("targetId == shopId");
 			query.declareParameters("long shopId");

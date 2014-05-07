@@ -64,7 +64,7 @@ public class Items {
 			log.warning("no user info");
 		}
 		
-		log.warning("userinfo process time: " + (new Date().getTime() - startTime) + "ms");
+		log.warning("userinfo da time: " + (new Date().getTime() - startTime) + "ms");
 
 		Query query = pm.newQuery(Flag.class);
 		query.setFilter("lon > minLon && lon < maxLon && lat > minLat && lat < maxLat");
@@ -72,8 +72,8 @@ public class Items {
 		List<Flag> flags = (List<Flag>) pm.newQuery(query).executeWithArray(lon - LocationUtils.NEAR_DISTANCE_DEGREE,
 				lon + LocationUtils.NEAR_DISTANCE_DEGREE, lat - LocationUtils.NEAR_DISTANCE_DEGREE, lat + LocationUtils.NEAR_DISTANCE_DEGREE);
 
+		log.warning("flag da time: " + (new Date().getTime() - startTime) + "ms");
 		log.warning("flag count: " + flags.size());
-		log.warning("flag process time: " + (new Date().getTime() - startTime) + "ms");
 		
 		Set<Long> shopIds = new HashSet<Long>();
 		for (Flag flag : flags)
@@ -108,7 +108,7 @@ public class Items {
 		// query.setRange(mark, mark + 20);
 		List<Item> results = (List<Item>) pm.newQuery(query).executeWithMap(paramMap);
 
-		log.warning("item process time: " + (new Date().getTime() - startTime) + "ms");
+		log.warning("item da time: " + (new Date().getTime() - startTime) + "ms");
 		
 		List<Item> candidates = new ArrayList<Item>();
 		for (Item item : results)
@@ -122,11 +122,11 @@ public class Items {
 		for (int pick : picks)
 			items.add(candidates.get(pick));
 
-		log.warning("pick process time: " + (new Date().getTime() - startTime) + "ms");
+		log.warning("random pick process time: " + (new Date().getTime() - startTime) + "ms");
 		
 		Item.setRelatedVariables(items, userId);
 
-		log.warning("var process time: " + (new Date().getTime() - startTime) + "ms");
+		log.warning("rel-var da time: " + (new Date().getTime() - startTime) + "ms");
 		
 		return new ItemCollection(items);
 	}
