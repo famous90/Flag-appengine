@@ -1,10 +1,16 @@
 package com.flag.engine.models;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
+
+import com.google.appengine.api.datastore.Text;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class FeedbackMessage {
@@ -19,7 +25,7 @@ public class FeedbackMessage {
 	private String email;
 
 	@Persistent
-	private String message;
+	private Text message;
 
 	@Persistent
 	private long createdAt;
@@ -48,11 +54,11 @@ public class FeedbackMessage {
 		this.email = email;
 	}
 
-	public String getMessage() {
+	public Text getMessage() {
 		return message;
 	}
 
-	public void setMessage(String message) {
+	public void setMessage(Text message) {
 		this.message = message;
 	}
 
@@ -62,6 +68,11 @@ public class FeedbackMessage {
 
 	public void setCreatedAt(long createdAt) {
 		this.createdAt = createdAt;
+	}
+
+	public String getCreatedAtString() {
+		SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA);
+		return fm.format(new Date(createdAt));
 	}
 
 }

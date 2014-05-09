@@ -98,6 +98,13 @@ public class Items {
 
 			i++;
 		}
+		
+		// temporary
+		if (shopIds.size() == 0) {
+			sbFilter.append("shopId != givyId");
+			sbParams.append("long givyId");
+			paramMap.put("givyId", 161l);
+		}
 
 		log.warning("query filter process time: " + (new Date().getTime() - startTime) + "ms");
 		
