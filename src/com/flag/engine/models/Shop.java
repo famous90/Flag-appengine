@@ -59,6 +59,26 @@ public class Shop {
 	@NotPersistent
 	private boolean liked;
 
+	public Shop() {
+		super();
+	}
+
+	public Shop(Shop shop) {
+		super();
+		this.id = shop.getId();
+		this.parentId = shop.getParentId();
+		this.providerId = shop.getProviderId();
+		this.name = shop.getName();
+		this.logoUrl = shop.getLogoUrl();
+		this.imageUrl = shop.getImageUrl();
+		this.type = shop.getType();
+		this.description = shop.getDescription();
+		this.reward = shop.getReward();
+		this.rewarded = shop.isRewarded();
+		this.likes = shop.getLikes();
+		this.liked = shop.isLiked();
+	}
+
 	public Long getId() {
 		return id;
 	}

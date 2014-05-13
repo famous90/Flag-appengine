@@ -59,14 +59,14 @@ public class Beacons {
 		try {
 			Beacon beacon = pm.getObjectById(Beacon.class, beaconId.toUpperCase());
 			Shop shop = pmSQL.getObjectById(Shop.class, beacon.getShopId());
-			
 			Flag flag = pmSQL.getObjectById(Flag.class, beacon.getFlagId());
-			shop.setName(flag.getShopName());
 			
-			shops.add(shop);
+			Shop beaconShop = new Shop(shop);
+			beaconShop.setName(flag.getShopName());
+			shops.add(beaconShop);
 			Shop.setRelatedVariables(shops, userId);
 		} catch (JDOObjectNotFoundException e) {
-			// ...
+			return null;
 		}
 
 		return shops.get(0);
