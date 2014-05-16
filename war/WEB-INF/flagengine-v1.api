@@ -325,6 +325,27 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
+    "flagengine.flags.list.byitem" : {
+      "path" : "flag_list_byitem",
+      "httpMethod" : "get",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Flags.listByItem",
+      "request" : {
+        "parameters" : {
+          "itemId" : {
+            "type" : "int64",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
     "flagengine.flags.list.byshop" : {
       "path" : "flag_list_byshop",
       "httpMethod" : "get",
@@ -396,31 +417,6 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
-    "flagengine.items.list" : {
-      "path" : "item",
-      "httpMethod" : "get",
-      "authLevel" : "NONE",
-      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
-      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
-      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.flag.engine.apis.Items.list",
-      "request" : {
-        "parameters" : {
-          "userId" : {
-            "type" : "int64",
-            "required" : false
-          },
-          "shopId" : {
-            "type" : "int64",
-            "required" : false
-          }
-        },
-        "body" : "empty"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
     "flagengine.items.list.user" : {
       "path" : "item_user",
       "httpMethod" : "GET",
@@ -474,6 +470,27 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
+    "flagengine.items.list.manager" : {
+      "path" : "item_manager",
+      "httpMethod" : "get",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Items.listForManager",
+      "request" : {
+        "parameters" : {
+          "shopId" : {
+            "type" : "int64",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
     "flagengine.items.branch.expose" : {
       "path" : "item_branch",
       "httpMethod" : "post",
@@ -509,6 +526,31 @@
       },
       "response" : {
         "body" : "empty"
+      }
+    },
+    "flagengine.items.list" : {
+      "path" : "item",
+      "httpMethod" : "get",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Items.listByShop",
+      "request" : {
+        "parameters" : {
+          "userId" : {
+            "type" : "int64",
+            "required" : false
+          },
+          "shopId" : {
+            "type" : "int64",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
       }
     },
     "flagengine.items.init" : {
@@ -603,8 +645,8 @@
       }
     },
     "flagengine.shops.list" : {
-      "path" : "shop_list",
-      "httpMethod" : "get",
+      "path" : "list/{ids}",
+      "httpMethod" : "GET",
       "authLevel" : "NONE",
       "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
       "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
@@ -615,7 +657,7 @@
           "ids" : {
             "repeated" : true,
             "type" : "int64",
-            "required" : false
+            "required" : true
           }
         },
         "body" : "empty"
@@ -1232,6 +1274,12 @@
           "description" : {
             "type" : "string"
           },
+          "sex" : {
+            "type" : "integer"
+          },
+          "type" : {
+            "type" : "integer"
+          },
           "sale" : {
             "type" : "integer"
           },
@@ -1491,6 +1539,11 @@
           "$ref" : "Flag"
         }
       },
+      "com.flag.engine.apis.Flags.listByItem" : {
+        "response" : {
+          "$ref" : "FlagCollection"
+        }
+      },
       "com.flag.engine.apis.Flags.listByShop" : {
         "response" : {
           "$ref" : "FlagCollection"
@@ -1501,11 +1554,6 @@
       "com.flag.engine.apis.Flags.list" : {
         "response" : {
           "$ref" : "FlagCollection"
-        }
-      },
-      "com.flag.engine.apis.Items.list" : {
-        "response" : {
-          "$ref" : "ItemCollection"
         }
       },
       "com.flag.engine.apis.Items.listByUser" : {
@@ -1529,6 +1577,11 @@
           "$ref" : "Item"
         }
       },
+      "com.flag.engine.apis.Items.listForManager" : {
+        "response" : {
+          "$ref" : "ItemCollection"
+        }
+      },
       "com.flag.engine.apis.Items.expose" : {
         "request" : {
           "$ref" : "BranchItemMatcher"
@@ -1538,6 +1591,11 @@
         }
       },
       "com.flag.engine.apis.Items.delete" : {
+      },
+      "com.flag.engine.apis.Items.listByShop" : {
+        "response" : {
+          "$ref" : "ItemCollection"
+        }
       },
       "com.flag.engine.apis.Items.initItems" : {
         "response" : {

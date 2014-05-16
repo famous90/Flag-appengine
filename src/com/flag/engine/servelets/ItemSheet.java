@@ -28,7 +28,9 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.flag.engine.exceptions.InvalidSheetFormatException;
 import com.flag.engine.exceptions.InvalidShopException;
+import com.flag.engine.models.BranchItemMatcher;
 import com.flag.engine.models.Item;
+import com.flag.engine.models.ItemHidden;
 import com.flag.engine.models.PMF;
 import com.flag.engine.models.Shop;
 
@@ -42,7 +44,7 @@ public class ItemSheet extends HttpServlet {
 		log.warning("item sheet upload: start");
 		long startTime = new Date().getTime();
 		long shopId = 0;
-		List<Item> items = new ArrayList<Item>();
+		List<ItemHidden> items = new ArrayList<ItemHidden>();
 
 		try {
 			FileItemIterator iterator = upload.getItemIterator(req);
@@ -98,7 +100,7 @@ public class ItemSheet extends HttpServlet {
 									isFalseData = true;
 
 							if (!isFalseData)
-								items.add(new Item(dataArray));
+								items.add(new ItemHidden(dataArray));
 						}
 					}
 				}
@@ -125,8 +127,8 @@ public class ItemSheet extends HttpServlet {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void saveItems(long shopId, List<Item> items) {
-		log.warning("items to be uploaded are : " + items.toString());
+	private void saveItems(long shopId, List<ItemHidden> items) {
+		log.warning("# of items to be uploaded: " + items.size());
 		long startTime = new Date().getTime();
 
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
@@ -138,22 +140,54 @@ public class ItemSheet extends HttpServlet {
 			return;
 		}
 
-		Query query = pm.newQuery(Item.class);
-		query.setFilter("shopId == theShopId");
-		query.declareParameters("long theShopId");
-		List<Item> shopItems = (List<Item>) pm.newQuery(query).execute(shopId);
+		if (shop.getType() > 100) {// == Shop.TYPE_HQ) {
+			Query query = pm.newQuery(ItemHidden.class);
+			query.setFilter("shopId == theShopId");
+			query.declareParameters("long theShopId");
+			List<ItemHidden> shopItems = (List<ItemHidden>) pm.newQuery(query).execute(shopId);
 
-		List<Item> deletableItems = new ArrayList<Item>();
-		for (Item item : items) {
-			item.setShopId(shopId);
-			item.setThumbnailUrl(shop.getImageUrl());
-			for (Item shopItem : shopItems)
-				if (shopItem.equals(item))
-					deletableItems.add(shopItem);
+			List<ItemHidden> deletableItems = new ArrayList<ItemHidden>();
+			for (ItemHidden item : items) {
+				item.setShopId(shopId);
+				item.setThumbnailUrl("url");
+				for (ItemHidden shopItem : shopItems)
+					if (shopItem.equals(item))
+						deletableItems.add(shopItem);
+			}
+
+			pm.deletePersistentAll(deletableItems);
+			pm.makePersistentAll(items);
+		} else {
+			List<Item> newItems = new ArrayList<Item>();
+			for (ItemHidden item : items)
+				newItems.add(new Item(item));
+			
+			
+			Query query = pm.newQuery(Item.class);
+			query.setFilter("shopId == theShopId");
+			query.declareParameters("long theShopId");
+			List<Item> shopItems = (List<Item>) pm.newQuery(query).execute(shopId);
+
+			List<Item> deletableItems = new ArrayList<Item>();
+			for (Item item : newItems) {
+				item.setShopId(shopId);
+				item.setThumbnailUrl("url");
+				for (Item shopItem : shopItems)
+					if (shopItem.equals(item))
+						deletableItems.add(shopItem);
+			}
+
+			pm.deletePersistentAll(deletableItems);
+			pm.makePersistentAll(newItems);
+			
+			if (shop.getType() == Shop.TYPE_BR) { // temporary
+				List<BranchItemMatcher> matchers = new ArrayList<BranchItemMatcher>();
+				for (Item newItem : newItems)
+					matchers.add(new BranchItemMatcher(shopId, newItem.getId()));
+			} // temporary
 		}
-
-		pm.deletePersistentAll(deletableItems);
-		pm.makePersistentAll(items);
+		
+		
 		pm.close();
 
 		log.warning("data insertion time: " + (new Date().getTime() - startTime) + "ms");

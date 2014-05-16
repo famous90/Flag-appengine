@@ -62,15 +62,29 @@ public class Shops {
 
 		log.warning("shopid process time: " + (new Date().getTime() - startTime) + "ms");
 
-		ShopCollection shopCollection;
-		if (ids.size() > 0)
-			shopCollection = list(ids);
-		else
-			shopCollection = null;
 
-		log.warning("shop da time: " + (new Date().getTime() - startTime) + "ms");
+		return list(ids);
+	}
 
-		return shopCollection;
+	@SuppressWarnings("unchecked")
+	public ShopCollection list(@Named("ids") List<Long> ids) {
+		log.info("list shop: " + ids);
+
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+		List<Object> keys = new ArrayList<Object>();
+		List<Shop> shops = null;
+		
+		for (Long id : ids)
+			keys.add(pm.newObjectIdInstance(Shop.class, id));
+
+		try {
+			shops = (List<Shop>) pm.getObjectsById(ids);
+		} catch (JDOObjectNotFoundException e) {
+			ids.remove(e.getFailedObject());
+			return list(ids);
+		}
+
+		return new ShopCollection(shops);
 	}
 
 	@ApiMethod(name = "shops.get", path = "shop", httpMethod = "get")
@@ -86,26 +100,6 @@ public class Shops {
 		}
 
 		return shops.get(0);
-	}
-
-	@SuppressWarnings("unchecked")
-	@ApiMethod(name = "shops.list", path = "shop_list", httpMethod = "get")
-	public ShopCollection list(@Nullable @Named("ids") List<Long> ids) {
-		log.info("list shop: " + ids);
-
-		PersistenceManager pm = PMF.getPersistenceManagerSQL();
-		List<Object> keys = new ArrayList<Object>();
-		List<Shop> shops = null;
-
-		for (Long id : ids)
-			keys.add(pm.newObjectIdInstance(Shop.class, id));
-
-		try {
-			shops = (List<Shop>) pm.getObjectsById(keys);
-		} catch (JDOObjectNotFoundException e) {
-		}
-
-		return new ShopCollection(shops);
 	}
 
 	@SuppressWarnings("unchecked")

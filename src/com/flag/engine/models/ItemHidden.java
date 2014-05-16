@@ -1,11 +1,5 @@
 package com.flag.engine.models;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.jdo.PersistenceManager;
-import javax.jdo.Query;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.Index;
@@ -16,19 +10,8 @@ import javax.jdo.annotations.PrimaryKey;
 
 import com.flag.engine.utils.CalUtils;
 
-@PersistenceCapable(identityType = IdentityType.APPLICATION, table = "items")
-public class Item {
-	public static final int ITEM_SEX_NONE = 0;
-	public static final int ITEM_SEX_FEMALE = 1;
-	public static final int ITEM_SEX_MALE = 2;
-
-	public static final int ITEM_TYPE_CLOTHE = 100;
-	public static final int ITEM_TYPE_SHOES = 200;
-	public static final int ITEM_TYPE_BAG = 300;
-	public static final int ITEM_TYPE_ACCESSORY = 400;
-	public static final int ITEM_TYPE_ELECTRIC = 500;
-	public static final int ITEM_TYPE_BEUTY = 600;
-
+@PersistenceCapable(identityType = IdentityType.APPLICATION, table = "items_hidden")
+public class ItemHidden {
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
 	private Long id;
@@ -47,11 +30,9 @@ public class Item {
 	private String description;
 
 	@Persistent
-	@Index
 	private int sex;
 
 	@Persistent
-	@Index
 	private int type;
 
 	@Persistent
@@ -82,28 +63,24 @@ public class Item {
 	@NotPersistent
 	private boolean liked;
 
-	public Item() {
+	public ItemHidden() {
 		super();
 	}
 
-	public Item(ItemHidden itemHidden) {
-		super();
-		this.id = itemHidden.getId();
-		this.shopId = itemHidden.getShopId();
-		this.name = itemHidden.getName();
-		this.thumbnailUrl = itemHidden.getThumbnailUrl();
-		this.description = itemHidden.getDescription();
-		this.sex = itemHidden.getSex();
-		this.type = itemHidden.getType();
-		this.sale = itemHidden.getSale();
-		this.oldPrice = itemHidden.getOldPrice();
-		this.price = itemHidden.getPrice();
-		this.barcodeId = itemHidden.getBarcodeId();
-		this.reward = itemHidden.getReward();
-		this.rewardable = itemHidden.isRewardable();
-		this.rewarded = itemHidden.isRewarded();
-		this.likes = itemHidden.getLikes();
-		this.liked = itemHidden.isLiked();
+	public ItemHidden(String[] dataArray) {
+		barcodeId = dataArray[0];
+		name = dataArray[1];
+		description = dataArray[2];
+		if (dataArray[4].isEmpty()) {
+			price = dataArray[3];
+			oldPrice = dataArray[4];
+		} else {
+			price = dataArray[4];
+			oldPrice = dataArray[3];
+			sale = CalUtils.discountRate(oldPrice, price);
+		}
+		reward = (int) CalUtils.toNumber(dataArray[5]);
+		thumbnailUrl = "";
 	}
 
 	public Long getId() {
@@ -239,7 +216,7 @@ public class Item {
 			sale = CalUtils.discountRate(oldPrice, price);
 	}
 
-	public void update(Item item) {
+	public void update(ItemHidden item) {
 		if (item.getName() != null && !item.getName().isEmpty())
 			name = item.getName();
 		if (item.getThumbnailUrl() != null && !item.getThumbnailUrl().isEmpty())
@@ -266,7 +243,7 @@ public class Item {
 	@Override
 	public boolean equals(Object o) {
 		try {
-			Item target = (Item) o;
+			ItemHidden target = (ItemHidden) o;
 			return target.getId() == id
 					|| (target.getBarcodeId() != null && !target.getBarcodeId().isEmpty() && barcodeId != null && !barcodeId.isEmpty() && target
 							.getBarcodeId().equals(barcodeId));
@@ -278,86 +255,5 @@ public class Item {
 	@Override
 	public String toString() {
 		return name + " " + barcodeId;
-	}
-
-	public static void setRelatedVariables(List<Item> items, long shopId, long userId) {
-		setLikeVariables(items, userId);
-		setRewardVariables(items, shopId, userId);
-	}
-
-	@SuppressWarnings("unchecked")
-	public static void setLikeVariables(List<Item> items, long userId) {
-		if (items == null || items.isEmpty())
-			return;
-
-		PersistenceManager pm = PMF.getPersistenceManager();
-		Query query = pm.newQuery(Like.class);
-
-		StringBuilder sbFilter = new StringBuilder("type == typeItem");
-		StringBuilder sbParams = new StringBuilder("int typeItem");
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("typeItem", Like.TYPE_ITEM);
-		int i = 0;
-
-		sbFilter.append(" && (");
-		for (Item item : items) {
-			sbFilter.append("targetId == itemId" + i);
-			if (i < items.size() - 1)
-				sbFilter.append(" || ");
-			sbParams.append(", long itemId" + i);
-			paramMap.put("itemId" + i, item.getId());
-			i++;
-		}
-		sbFilter.append(")");
-
-		query.setFilter(sbFilter.toString());
-		query.declareParameters(sbParams.toString());
-		List<Like> likes = (List<Like>) pm.newQuery(query).executeWithMap(paramMap);
-
-		for (Like like : likes)
-			for (Item item : items)
-				if (like.getTargetId().equals(item.getId())) {
-					item.setLikes(item.getLikes() + 1);
-					if (like.getUserId().equals(userId))
-						item.setLiked(true);
-					break;
-				}
-	}
-
-	@SuppressWarnings("unchecked")
-	public static void setRewardVariables(List<Item> items, long shopId, long userId) {
-		if (items == null || items.isEmpty())
-			return;
-
-		PersistenceManager pm = PMF.getPersistenceManager();
-		Query query = pm.newQuery(Reward.class);
-
-		StringBuilder sbFilter = new StringBuilder("type == typeItem");
-		StringBuilder sbParams = new StringBuilder("int typeItem");
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("typeItem", Reward.TYPE_ITEM);
-		int i = 0;
-
-		sbFilter.append(" && (");
-		for (Item item : items) {
-			sbFilter.append("targetId == itemId" + i);
-			if (i < items.size() - 1)
-				sbFilter.append(" || ");
-			sbParams.append(", long itemId" + i);
-			paramMap.put("itemId" + i, item.getId());
-			i++;
-		}
-		sbFilter.append(")");
-
-		query.setFilter(sbFilter.toString());
-		query.declareParameters(sbParams.toString());
-		List<Reward> rewards = (List<Reward>) pm.newQuery(query).executeWithMap(paramMap);
-
-		for (Reward reward : rewards)
-			for (Item item : items)
-				if (reward.getTargetId().equals(item.getId()) && reward.getUserId().equals(userId)) {
-					item.setRewarded(true);
-					break;
-				}
 	}
 }

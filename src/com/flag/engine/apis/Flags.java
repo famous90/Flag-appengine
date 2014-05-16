@@ -13,6 +13,7 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
 import com.flag.engine.constants.Constants;
+import com.flag.engine.models.BranchItemMatcher;
 import com.flag.engine.models.Flag;
 import com.flag.engine.models.FlagCollection;
 import com.flag.engine.models.PMF;
@@ -92,6 +93,43 @@ public class Flags {
 		query.declareParameters(sbParam.toString());
 		List<Flag> flags = (List<Flag>) pm.newQuery(query).executeWithMap(paramMap);
 
+		return new FlagCollection(flags);
+	}
+
+	@SuppressWarnings("unchecked")
+	@ApiMethod(name = "flags.list.byitem", path = "flag_list_byitem", httpMethod = "get")
+	public FlagCollection listByItem(@Nullable @Named("itemId") long itemId) {
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+
+		Query query = pm.newQuery(BranchItemMatcher.class);
+		query.setFilter("itemId == id");
+		query.declareParameters("long id");
+		List<BranchItemMatcher> matchers = (List<BranchItemMatcher>) pm.newQuery(query).execute(itemId);
+		
+		if (matchers.isEmpty())
+			return null;
+
+		StringBuilder sbFilter = new StringBuilder();
+		StringBuilder sbParam = new StringBuilder();
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		int i = 0;
+		
+		for (BranchItemMatcher matcher : matchers) {
+			if (sbFilter.length() > 0) {
+				sbFilter.append(" || ");
+				sbParam.append(", ");
+			}
+			
+			sbFilter.append("shopId == id" + i);
+			sbParam.append("long id" + i);
+			paramMap.put("id" + i, matcher.getBranchShopId());
+		}
+		
+		query = pm.newQuery(Flag.class);
+		query.setFilter(sbFilter.toString());
+		query.declareParameters(sbParam.toString());
+		List<Flag> flags = (List<Flag>) pm.newQuery(query).executeWithMap(paramMap);
+		
 		return new FlagCollection(flags);
 	}
 
