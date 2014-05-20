@@ -21,4 +21,12 @@ public class LocationUtils {
 	public static double distance(double latx, double lonx, double laty, double lony) {
 		return Math.sqrt((latx - laty) * (latx - laty) + (lonx - lony) * (lonx - lony));
 	}
+
+	public static double metricDistance(double latx, double lonx, double laty, double lony) {
+		double scale = 6400 * 1000 * (Math.PI / 180);
+		double dX = scale * Math.abs((latx - laty));
+		double dY = scale * Math.abs((lonx - lony));
+
+		return Math.sqrt(dX * dX + dY * dY);
+	}
 }

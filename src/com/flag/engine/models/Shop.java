@@ -222,11 +222,15 @@ public class Shop {
 					break;
 				}
 
+		sbFilter.append(" && userId == theUserId");
+		sbParams.append(", long theUserId");
+		paramMap.put("theUserId", userId);
+		paramMap.remove("typeItem");
+		paramMap.put("typeItem", Reward.TYPE_SHOP);
+		
 		query = pm.newQuery(Reward.class);
 		query.setFilter(sbFilter.toString());
 		query.declareParameters(sbParams.toString());
-		paramMap.remove("typeItem");
-		paramMap.put("typeItem", Reward.TYPE_SHOP);
 		List<Reward> rewards = (List<Reward>) pm.newQuery(query).executeWithMap(paramMap);
 
 		for (Reward reward : rewards)

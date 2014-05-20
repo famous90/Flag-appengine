@@ -274,10 +274,11 @@ var hiddenItems;
 
 function getItems() {
     $('#shop_contents_items').html('');
-    if (targetShop.type == 1)
-        $('.button_item_add').css('display', 'block');
-    else if (targetShop.type == 2)
-        $('.button_item_add').css('display', 'none');
+    $('.button_item_add').css('display', 'block');
+// if (targetShop.type == 1)
+// $('.button_item_add').css('display', 'block');
+// else if (targetShop.type == 2)
+// $('.button_item_add').css('display', 'none');
     
     gapi.client.flagengine.items.list({shopId: targetShop.id, userId: 0}).execute(function(res) {
         items = res.items || [];
@@ -291,17 +292,18 @@ function getItems() {
 
 function getItemHtml() {
     var viewPath;
-    if (targetShop.type == 1)
-        viewPath = 'raw/item.html';
-    else if (targetShop.type == 2)
-        viewPath = 'raw/item_br.html'
+    viewPath = 'raw/item.html';
+// if (targetShop.type == 1)
+// viewPath = 'raw/item.html';
+// else if (targetShop.type == 2)
+// viewPath = 'raw/item_br.html'
     
     $.get(viewPath, function(data) {
         $.get('raw/item_edit.html', function(data_edit) {
             for (var i = 0; i < items.length; i++) {
                 showItem(data, items[i], i);
-                if (targetShop.type == 1)
-                    appendItemEditor(data_edit, i);
+// if (targetShop.type == 1)
+                appendItemEditor(data_edit, i);
                 if (items[i].rewardable)
                     $('#button_item_scan_' + i).css('opacity', 1);
             }

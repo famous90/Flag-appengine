@@ -3,6 +3,7 @@ package com.flag.engine.models;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.Index;
+import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
@@ -32,6 +33,29 @@ public class Flag {
 
 	@Persistent
 	private int shopType;
+
+	@Persistent
+	private int reward;
+
+	@NotPersistent
+	private double distance;
+	
+	public Flag() {
+		super();
+	}
+
+	public Flag(Flag flag) {
+		super();
+		this.id = flag.getId();
+		this.lat = flag.getLat();
+		this.lon = flag.getLon();
+		this.createdAt = flag.getCreatedAt();
+		this.shopId = flag.getShopId();
+		this.shopName = flag.getShopName();
+		this.shopType = flag.getShopType();
+		this.reward = flag.getReward();
+		this.distance = flag.getDistance();
+	}
 
 	public Long getId() {
 		return id;
@@ -87,6 +111,22 @@ public class Flag {
 
 	public void setShopType(int shopType) {
 		this.shopType = shopType;
+	}
+
+	public int getReward() {
+		return reward;
+	}
+
+	public void setReward(int reward) {
+		this.reward = reward;
+	}
+
+	public double getDistance() {
+		return distance;
+	}
+
+	public void setDistance(double distance) {
+		this.distance = distance;
 	}
 
 	@Override

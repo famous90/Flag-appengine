@@ -1,6 +1,7 @@
 package com.flag.engine.apis;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -18,6 +19,7 @@ import com.flag.engine.models.Like;
 import com.flag.engine.models.PMF;
 import com.flag.engine.models.Shop;
 import com.flag.engine.models.ShopCollection;
+import com.flag.engine.utils.FlagDistanceComparator;
 import com.flag.engine.utils.LocationUtils;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -49,57 +51,56 @@ public class Shops {
 		Query query = pm.newQuery(Flag.class);
 		query.setFilter("lon > minLon && lon < maxLon && lat > minLat && lat < maxLat");
 		query.declareParameters("double minLon, double maxLon, double minLat, double maxLat");
-		List<Flag> flags = (List<Flag>) pm.newQuery(query).executeWithArray(lon - LocationUtils.NEAR_DISTANCE_DEGREE,
+		List<Flag> results = (List<Flag>) pm.newQuery(query).executeWithArray(lon - LocationUtils.NEAR_DISTANCE_DEGREE,
 				lon + LocationUtils.NEAR_DISTANCE_DEGREE, lat - LocationUtils.NEAR_DISTANCE_DEGREE, lat + LocationUtils.NEAR_DISTANCE_DEGREE);
 
 		log.warning("flag da time: " + (new Date().getTime() - startTime) + "ms");
-		log.warning("flag count: " + flags.size());
+		log.warning("flag count: " + results.size());
 
-		List<Long> ids = new ArrayList<Long>();
-		for (Flag flag : flags)
-			if (!ids.contains(flag.getShopId()))
-				ids.add(flag.getShopId());
+		List<Flag> sortedResults = new ArrayList<Flag>();
+		sortedResults.addAll(results);
+		Collections.sort(sortedResults, new FlagDistanceComparator(lat, lon));
+
+		List<Long> exIds = new ArrayList<Long>();
+		List<Object> ids = new ArrayList<Object>();
+		List<Flag> flags = new ArrayList<Flag>();
+		for (Flag sortedResult : sortedResults)
+			if (!exIds.contains(sortedResult.getShopId())) {
+				exIds.add(sortedResult.getShopId());
+				ids.add(pm.newObjectIdInstance(Shop.class, sortedResult.getShopId()));
+				flags.add(sortedResult);
+			}
 
 		log.warning("shopid process time: " + (new Date().getTime() - startTime) + "ms");
 
+		List<Shop> shops = listByIds(ids);
 
-		return list(ids);
+		log.warning("shop da time: " + (new Date().getTime() - startTime) + "ms");
+
+		Shop.setRelatedVariables(shops, userId);
+
+		log.warning("rel-var da time: " + (new Date().getTime() - startTime) + "ms");
+
+		return new ShopCollection(shops, flags);
 	}
 
 	@SuppressWarnings("unchecked")
-	public ShopCollection list(@Named("ids") List<Long> ids) {
-		log.info("list shop: " + ids);
+	private List<Shop> listByIds(List<Object> ids) {
+		log.warning("list shops: " + ids);
+		if (ids == null || ids.isEmpty())
+			return null;
 
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
-		List<Object> keys = new ArrayList<Object>();
 		List<Shop> shops = null;
-		
-		for (Long id : ids)
-			keys.add(pm.newObjectIdInstance(Shop.class, id));
 
 		try {
 			shops = (List<Shop>) pm.getObjectsById(ids);
 		} catch (JDOObjectNotFoundException e) {
 			ids.remove(e.getFailedObject());
-			return list(ids);
+			return listByIds(ids);
 		}
 
-		return new ShopCollection(shops);
-	}
-
-	@ApiMethod(name = "shops.get", path = "shop", httpMethod = "get")
-	public Shop get(@Nullable @Named("userId") long userId, @Nullable @Named("id") long id) {
-		PersistenceManager pm = PMF.getPersistenceManagerSQL();
-		List<Shop> shops = new ArrayList<Shop>();
-
-		try {
-			Shop shop = pm.getObjectById(Shop.class, id);
-			shops.add(shop);
-			Shop.setRelatedVariables(shops, userId);
-		} catch (JDOObjectNotFoundException e) {
-		}
-
-		return shops.get(0);
+		return shops;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -126,6 +127,21 @@ public class Shops {
 		shops.addAll(brShops);
 
 		return new ShopCollection(shops);
+	}
+
+	@ApiMethod(name = "shops.get", path = "shop", httpMethod = "get")
+	public Shop get(@Nullable @Named("userId") long userId, @Nullable @Named("id") long id) {
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+		List<Shop> shops = new ArrayList<Shop>();
+
+		try {
+			Shop shop = pm.getObjectById(Shop.class, id);
+			shops.add(shop);
+			Shop.setRelatedVariables(shops, userId);
+		} catch (JDOObjectNotFoundException e) {
+		}
+
+		return shops.get(0);
 	}
 
 	@ApiMethod(name = "shops.update", path = "shop", httpMethod = "put")

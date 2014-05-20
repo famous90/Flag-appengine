@@ -2,11 +2,7 @@ package com.flag.engine.apis;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
@@ -17,15 +13,12 @@ import javax.jdo.Query;
 
 import com.flag.engine.constants.Constants;
 import com.flag.engine.models.BranchItemMatcher;
-import com.flag.engine.models.Flag;
 import com.flag.engine.models.Item;
 import com.flag.engine.models.ItemCollection;
 import com.flag.engine.models.ItemHidden;
 import com.flag.engine.models.Like;
 import com.flag.engine.models.PMF;
 import com.flag.engine.models.Shop;
-import com.flag.engine.models.UserInfo;
-import com.flag.engine.utils.LocationUtils;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 
@@ -54,81 +47,16 @@ public class Items {
 		long startTime = new Date().getTime();
 
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
-		double lat = 0;
-		double lon = 0;
 
-		try {
-			UserInfo userInfo = pm.getObjectById(UserInfo.class, userId);
-			lat = userInfo.getLat();
-			lon = userInfo.getLon();
-		} catch (JDOObjectNotFoundException e) {
-			log.warning("no user info");
-		}
-
-		log.warning("userinfo da time: " + (new Date().getTime() - startTime) + "ms");
-
-		Query query = pm.newQuery(Flag.class);
-		query.setFilter("lon > minLon && lon < maxLon && lat > minLat && lat < maxLat");
-		query.declareParameters("double minLon, double maxLon, double minLat, double maxLat");
-		List<Flag> flags = (List<Flag>) pm.newQuery(query).executeWithArray(lon - LocationUtils.NEAR_DISTANCE_DEGREE,
-				lon + LocationUtils.NEAR_DISTANCE_DEGREE, lat - LocationUtils.NEAR_DISTANCE_DEGREE, lat + LocationUtils.NEAR_DISTANCE_DEGREE);
-
-		log.warning("flag da time: " + (new Date().getTime() - startTime) + "ms");
-		log.warning("flag count: " + flags.size());
-
-		Set<Long> shopIds = new HashSet<Long>();
-		for (Flag flag : flags)
-			shopIds.add(flag.getShopId());
-
-		log.warning("shopId process time: " + (new Date().getTime() - startTime) + "ms");
-
-		StringBuilder sbFilter = new StringBuilder();
-		StringBuilder sbParams = new StringBuilder();
-		Map<String, Long> paramMap = new HashMap<String, Long>();
-		int i = 0;
-
-		for (Long shopId : shopIds) {
-			if (i > 0) {
-				sbFilter.append(" || ");
-				sbParams.append(", ");
-			}
-
-			sbFilter.append("shopId == id" + i);
-			sbParams.append("long id" + i);
-			paramMap.put("id" + i, shopId);
-
-			i++;
-		}
-
-		// temporary
-		if (shopIds.size() == 0) {
-			sbFilter.append("shopId != givyId");
-			sbParams.append("long givyId");
-			paramMap.put("givyId", 161l);
-		}
-
-		log.warning("query filter process time: " + (new Date().getTime() - startTime) + "ms");
-
-		query = pm.newQuery(Item.class);
-		query.setFilter(sbFilter.toString());
-		query.declareParameters(sbParams.toString());
-		// query.setOrdering("id desc");
-		// query.setRange(mark, mark + 20);
-		List<Item> results = (List<Item>) pm.newQuery(query).executeWithMap(paramMap);
+		Query query = pm.newQuery(Item.class);
+		List<Item> results = (List<Item>) pm.newQuery(query).execute();
 
 		log.warning("item da time: " + (new Date().getTime() - startTime) + "ms");
 
-		List<Item> candidates = new ArrayList<Item>();
-		for (Item item : results)
-			if (!candidates.contains(item))
-				candidates.add(item);
-
-		log.warning("candidate process time: " + (new Date().getTime() - startTime) + "ms");
-
 		List<Item> items = new ArrayList<Item>();
-		List<Integer> picks = ItemCollection.randomIndexes(candidates.size());
+		List<Integer> picks = ItemCollection.randomIndexes(results.size());
 		for (int pick : picks)
-			items.add(candidates.get(pick));
+			items.add(results.get(pick));
 
 		log.warning("random pick process time: " + (new Date().getTime() - startTime) + "ms");
 
@@ -153,8 +81,8 @@ public class Items {
 		for (BranchItemMatcher matcher : matchers)
 			ids.add(pm.newObjectIdInstance(Item.class, matcher.getItemId()));
 
-		List<Item> items = list(ids);
-		
+		List<Item> items = listByIds(ids);
+
 		for (Item item : items)
 			for (BranchItemMatcher matcher : matchers)
 				if (matcher.getItemId().equals(item.getId())) {
@@ -162,22 +90,26 @@ public class Items {
 						item.setReward(0);
 					break;
 				}
-		
-		Item.setRelatedVariables(items, shopId, userId);
+
+		Item.setRelatedVariables(items, userId);
 
 		return new ItemCollection(items);
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<Item> list(List<Object> ids) {
-		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+	private List<Item> listByIds(List<Object> ids) {
+		log.warning("list items: " + ids);
+		if (ids == null || ids.isEmpty())
+			return null;
 
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		List<Item> items = null;
+
 		try {
 			items = (List<Item>) pm.getObjectsById(ids);
 		} catch (JDOObjectNotFoundException e) {
 			ids.remove(e.getFailedObject());
-			return list(ids);
+			return listByIds(ids);
 		}
 
 		return items;
@@ -211,7 +143,7 @@ public class Items {
 			for (BranchItemMatcher matcher : matchers)
 				ids.add(pm.newObjectIdInstance(Item.class, matcher.getItemId()));
 
-			items.addAll(list(ids));
+			items.addAll(listByIds(ids));
 
 			if (shop.getParentId() != null) {
 				query = pm.newQuery(ItemHidden.class);
@@ -242,8 +174,8 @@ public class Items {
 	}
 
 	@SuppressWarnings("unchecked")
-	@ApiMethod(name = "items.list.user", path = "item_user")
-	public ItemCollection listByUser(@Nullable @Named("userId") long userId) {
+	@ApiMethod(name = "items.list.user", path = "item_user", httpMethod = "get")
+	public ItemCollection listForUser(@Nullable @Named("userId") long userId) {
 		PersistenceManager pm = PMF.getPersistenceManager();
 		PersistenceManager pmSQL = PMF.getPersistenceManagerSQL();
 
@@ -259,6 +191,43 @@ public class Items {
 		List<Item> items = (List<Item>) pmSQL.getObjectsById(ids);
 
 		Item.setLikeVariables(items, userId);
+
+		return new ItemCollection(items);
+	}
+
+	@SuppressWarnings({ "unchecked" })
+	@ApiMethod(name = "items.list.reward", path = "item_reward")
+	public ItemCollection listForReward(@Nullable @Named("userId") long userId, @Nullable @Named("mark") int mark) {
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+
+		Query query = pm.newQuery(BranchItemMatcher.class);
+		query.setFilter("rewardable == True");
+		query.declareParameters("boolean True");
+		List<BranchItemMatcher> matchers = (List<BranchItemMatcher>) pm.newQuery(query).execute(true);
+
+		List<Long> itemIds = new ArrayList<Long>();
+		for (BranchItemMatcher matcher : matchers)
+			if (!itemIds.contains(matcher.getItemId()))
+				itemIds.add(matcher.getItemId());
+
+		List<Object> ids = new ArrayList<Object>();
+		for (int i = mark * 20; i < (mark + 1) * 20; i++)
+			try {
+				ids.add(itemIds.get(i));
+			} catch (IndexOutOfBoundsException e) {
+				break;
+			}
+
+		if (ids.isEmpty())
+			return null;
+		
+		List<Item> items = listByIds(ids);
+		Item.setRelatedVariables(items, userId);
+		
+		List<Item> ableItems = new ArrayList<Item>();
+		for (Item item : items)
+			if (!item.isRewarded())
+				ableItems.add(item);
 
 		return new ItemCollection(items);
 	}
@@ -313,6 +282,7 @@ public class Items {
 			query.declareParameters("int typeItem, long itemId");
 			List<Like> likes = (List<Like>) pm.newQuery(query).execute(Like.TYPE_ITEM, itemId);
 			pm.deletePersistentAll(likes);
+
 		} catch (JDOObjectNotFoundException e) {
 			try {
 				ItemHidden item = pmSQL.getObjectById(ItemHidden.class, itemId);
@@ -324,7 +294,8 @@ public class Items {
 				List<Item> brItems = (List<Item>) pm.newQuery(query).execute(item.getBarcodeId());
 
 				for (Item brItem : brItems)
-					delete(brItem.getId());
+					if (brItem.getBarcodeId() != null && !brItem.getBarcodeId().trim().isEmpty())
+						delete(brItem.getId());
 
 			} catch (JDOObjectNotFoundException e2) {
 			}

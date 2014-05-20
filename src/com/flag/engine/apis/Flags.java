@@ -1,5 +1,6 @@
 package com.flag.engine.apis;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -97,6 +98,25 @@ public class Flags {
 	}
 
 	@SuppressWarnings("unchecked")
+	@ApiMethod(name = "flags.list.byreward", path = "flag_list_byreward", httpMethod = "get")
+	public FlagCollection listReward(@Nullable @Named("userId") long userId, @Nullable @Named("lat") double lat, @Nullable @Named("lon") double lon) {
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+
+		Query query = pm.newQuery(Flag.class);
+		query.setFilter("lon > minLon && lon < maxLon && lat > minLat && lat < maxLat");
+		query.declareParameters("double minLon, double maxLon, double minLat, double maxLat");
+		List<Flag> flags = (List<Flag>) pm.newQuery(query).executeWithArray(lon - LocationUtils.NEAR_DISTANCE_DEGREE,
+				lon + LocationUtils.NEAR_DISTANCE_DEGREE, lat - LocationUtils.NEAR_DISTANCE_DEGREE, lat + LocationUtils.NEAR_DISTANCE_DEGREE);
+
+		List<Flag> rewardFlags = new ArrayList<Flag>();
+		for (Flag flag : flags)
+			if (flag.getReward() > 0)
+				rewardFlags.add(flag);
+
+		return new FlagCollection(rewardFlags);
+	}
+
+	@SuppressWarnings("unchecked")
 	@ApiMethod(name = "flags.list.byitem", path = "flag_list_byitem", httpMethod = "get")
 	public FlagCollection listByItem(@Nullable @Named("itemId") long itemId) {
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
@@ -105,7 +125,7 @@ public class Flags {
 		query.setFilter("itemId == id");
 		query.declareParameters("long id");
 		List<BranchItemMatcher> matchers = (List<BranchItemMatcher>) pm.newQuery(query).execute(itemId);
-		
+
 		if (matchers.isEmpty())
 			return null;
 
@@ -113,23 +133,60 @@ public class Flags {
 		StringBuilder sbParam = new StringBuilder();
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		int i = 0;
-		
+
 		for (BranchItemMatcher matcher : matchers) {
 			if (sbFilter.length() > 0) {
 				sbFilter.append(" || ");
 				sbParam.append(", ");
 			}
-			
+
 			sbFilter.append("shopId == id" + i);
 			sbParam.append("long id" + i);
 			paramMap.put("id" + i, matcher.getBranchShopId());
 		}
-		
+
 		query = pm.newQuery(Flag.class);
 		query.setFilter(sbFilter.toString());
 		query.declareParameters(sbParam.toString());
 		List<Flag> flags = (List<Flag>) pm.newQuery(query).executeWithMap(paramMap);
-		
+
+		return new FlagCollection(flags);
+	}
+
+	@SuppressWarnings("unchecked")
+	@ApiMethod(name = "flags.list.byitem.reward", path = "flag_list_byitem_reward", httpMethod = "get")
+	public FlagCollection listByItemReward(@Nullable @Named("itemId") long itemId) {
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+
+		Query query = pm.newQuery(BranchItemMatcher.class);
+		query.setFilter("itemId == id && rewardable == True");
+		query.declareParameters("long id, boolean True");
+		List<BranchItemMatcher> matchers = (List<BranchItemMatcher>) pm.newQuery(query).execute(itemId, true);
+
+		if (matchers.isEmpty())
+			return null;
+
+		StringBuilder sbFilter = new StringBuilder();
+		StringBuilder sbParam = new StringBuilder();
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		int i = 0;
+
+		for (BranchItemMatcher matcher : matchers) {
+			if (sbFilter.length() > 0) {
+				sbFilter.append(" || ");
+				sbParam.append(", ");
+			}
+
+			sbFilter.append("shopId == id" + i);
+			sbParam.append("long id" + i);
+			paramMap.put("id" + i, matcher.getBranchShopId());
+		}
+
+		query = pm.newQuery(Flag.class);
+		query.setFilter(sbFilter.toString());
+		query.declareParameters(sbParam.toString());
+		List<Flag> flags = (List<Flag>) pm.newQuery(query).executeWithMap(paramMap);
+
 		return new FlagCollection(flags);
 	}
 
@@ -151,15 +208,15 @@ public class Flags {
 			userInfo.setLon(lon);
 			pm.makePersistent(userInfo);
 		}
-		
+
 		Query query = pm.newQuery(Flag.class);
 		query.setFilter("lon > minLon && lon < maxLon && lat > minLat && lat < maxLat");
 		query.declareParameters("double minLon, double maxLon, double minLat, double maxLat");
 		List<Flag> flags = (List<Flag>) pm.newQuery(query).executeWithArray(lon - LocationUtils.CLOSE_DISTANCE_DEGREE,
 				lon + LocationUtils.CLOSE_DISTANCE_DEGREE, lat - LocationUtils.CLOSE_DISTANCE_DEGREE, lat + LocationUtils.CLOSE_DISTANCE_DEGREE);
-		
+
 		pm.close();
-		
+
 		return new FlagCollection(flags);
 	}
 

@@ -18,9 +18,11 @@ public class BranchItemMatcher {
 	private Long branchShopId;
 
 	@Persistent
+	@Index
 	private Long itemId;
 
 	@Persistent
+	@Index
 	private boolean rewardable;
 
 	public BranchItemMatcher(Long branchShopId, Long itemId) {

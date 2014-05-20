@@ -280,9 +280,9 @@ public class Item {
 		return name + " " + barcodeId;
 	}
 
-	public static void setRelatedVariables(List<Item> items, long shopId, long userId) {
+	public static void setRelatedVariables(List<Item> items, long userId) {
 		setLikeVariables(items, userId);
-		setRewardVariables(items, shopId, userId);
+		setRewardVariables(items, userId);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -325,16 +325,17 @@ public class Item {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static void setRewardVariables(List<Item> items, long shopId, long userId) {
+	public static void setRewardVariables(List<Item> items, long userId) {
 		if (items == null || items.isEmpty())
 			return;
 
 		PersistenceManager pm = PMF.getPersistenceManager();
 		Query query = pm.newQuery(Reward.class);
 
-		StringBuilder sbFilter = new StringBuilder("type == typeItem");
-		StringBuilder sbParams = new StringBuilder("int typeItem");
+		StringBuilder sbFilter = new StringBuilder("userId == theUserId && type == typeItem");
+		StringBuilder sbParams = new StringBuilder("long theUserId, int typeItem");
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("theUserId", userId);
 		paramMap.put("typeItem", Reward.TYPE_ITEM);
 		int i = 0;
 
@@ -355,7 +356,7 @@ public class Item {
 
 		for (Reward reward : rewards)
 			for (Item item : items)
-				if (reward.getTargetId().equals(item.getId()) && reward.getUserId().equals(userId)) {
+				if (reward.getTargetId().equals(item.getId())) {
 					item.setRewarded(true);
 					break;
 				}
