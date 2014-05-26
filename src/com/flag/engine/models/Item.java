@@ -23,6 +23,11 @@ public class Item {
 	public static final int ITEM_SEX_MALE = 2;
 
 	public static final int ITEM_TYPE_CLOTHE = 100;
+	public static final int ITEM_TYPE_UPPER = 110;
+	public static final int ITEM_TYPE_JACKET = 111;
+	public static final int ITEM_TYPE_PANTS = 120;
+	public static final int ITEM_TYPE_SKIRT = 121;
+	public static final int ITEM_TYPE_DRESS = 130;
 	public static final int ITEM_TYPE_SHOES = 200;
 	public static final int ITEM_TYPE_BAG = 300;
 	public static final int ITEM_TYPE_ACCESSORY = 400;

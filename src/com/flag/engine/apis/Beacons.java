@@ -13,6 +13,7 @@ import javax.jdo.Query;
 
 import com.flag.engine.constants.Constants;
 import com.flag.engine.models.Beacon;
+import com.flag.engine.models.BeaconTag;
 import com.flag.engine.models.Flag;
 import com.flag.engine.models.PMF;
 import com.flag.engine.models.Shop;
@@ -30,24 +31,52 @@ public class Beacons {
 
 		PersistenceManager pm = PMF.getPersistenceManager();
 		PersistenceManager pmSQL = PMF.getPersistenceManagerSQL();
-
+		
+		beacon.setId(beacon.getId().toUpperCase());
+		beacon.setCreatedAt(new Date().getTime());
+		
 		try {
 			Flag flag = pmSQL.getObjectById(Flag.class, beacon.getFlagId());
-
-			beacon.setId(beacon.getId().toUpperCase());
-			beacon.setName(flag.getShopName());
-			beacon.setCreatedAt(new Date().getTime());
+			beacon.setShopId(flag.getShopId());
 			beacon.setLat(flag.getLat());
 			beacon.setLon(flag.getLon());
-			
+			beacon.setName(flag.getShopName());
 			pm.makePersistent(beacon);
 		} catch (JDOObjectNotFoundException e) {
 			return null;
 		} finally {
 			pm.close();
+			setTag(new Date().getTime());
 		}
 
 		return beacon;
+	}
+
+	@ApiMethod(name = "beacons.delete", path = "beacon", httpMethod = "delete")
+	public void delete(Beacon beacon) {
+		PersistenceManager pm = PMF.getPersistenceManager();
+
+		try {
+			Beacon target = pm.getObjectById(Beacon.class, beacon.getId());
+			pm.deletePersistent(target);
+		} catch (JDOObjectNotFoundException e) {
+		} finally {
+			pm.close();
+			setTag(new Date().getTime());
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@ApiMethod(name = "beacons.get.all", path = "beacon_all", httpMethod = "get")
+	public List<Beacon> getAll(@Nullable @Named("tag") long tag) {
+		PersistenceManager pm = PMF.getPersistenceManager();
+
+		if (!checkTag(tag))
+			return null;
+		
+		Query query = pm.newQuery(Beacon.class);
+		List<Beacon> beacons = (List<Beacon>) pm.newQuery(query).execute();
+		return beacons;
 	}
 
 	@ApiMethod(name = "beacons.get", path = "beacon", httpMethod = "get")
@@ -71,32 +100,27 @@ public class Beacons {
 
 		return shops.get(0);
 	}
-
-	@SuppressWarnings("unchecked")
-	@ApiMethod(name = "beacons.get.all", path = "beacon_all", httpMethod = "get")
-	public List<Beacon> getAll(@Nullable @Named("tag") long tag) {
+	
+	private void setTag(long timestamp) {
 		PersistenceManager pm = PMF.getPersistenceManager();
-
-		Query query = pm.newQuery(Beacon.class);
-		query.setOrdering("createdAt desc");
-		List<Beacon> beacons = (List<Beacon>) pm.newQuery(query).execute();
-
-		if (beacons.get(0).getCreatedAt() > tag)
-			return beacons;
-		else
-			return null;
+		BeaconTag tag = new BeaconTag(timestamp);
+		pm.makePersistent(tag);
+		pm.close();
 	}
-
-	@ApiMethod(name = "beacons.delete", path = "beacon", httpMethod = "delete")
-	public void delete(Beacon beacon) {
+	
+	@SuppressWarnings("unchecked")
+	private boolean checkTag(long timestamp) {
 		PersistenceManager pm = PMF.getPersistenceManager();
-
-		try {
-			Beacon target = pm.getObjectById(Beacon.class, beacon.getId());
-			pm.deletePersistent(target);
-		} catch (JDOObjectNotFoundException e) {
-		} finally {
-			pm.close();
-		}
+		Query query = pm.newQuery(BeaconTag.class);
+		query.setOrdering("id desc");
+		query.setRange(0, 1);
+		List<BeaconTag> tags = (List<BeaconTag>) pm.newQuery(query).execute();
+		
+		if (tags.isEmpty())
+			return false;
+		else if (tags.get(0).getId().longValue() > timestamp)
+			return true;
+		else
+			return false;
 	}
 }

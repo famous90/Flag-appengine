@@ -23,14 +23,6 @@ public class UserInfo {
 	@Persistent
 	private int job;
 
-	@Persistent
-	@Index
-	private double lat;
-
-	@Persistent
-	@Index
-	private double lon;
-
 	public Long getUserId() {
 		return userId;
 	}
@@ -63,25 +55,16 @@ public class UserInfo {
 		this.job = job;
 	}
 
-	public double getLat() {
-		return lat;
-	}
-
-	public void setLat(double lat) {
-		this.lat = lat;
-	}
-
-	public double getLon() {
-		return lon;
-	}
-
-	public void setLon(double lon) {
-		this.lon = lon;
-	}
-
 	public void update(UserInfo userInfo) {
 		this.sex = userInfo.getSex();
 		this.birth = userInfo.getBirth();
 		this.job = userInfo.getJob();
+	}
+
+	public boolean isEmpty() {
+		if (!sex && birth == 0 && job == 0)
+			return true;
+		else
+			return false;
 	}
 }

@@ -19,7 +19,6 @@ import com.flag.engine.models.Flag;
 import com.flag.engine.models.FlagCollection;
 import com.flag.engine.models.PMF;
 import com.flag.engine.models.Shop;
-import com.flag.engine.models.UserInfo;
 import com.flag.engine.utils.LocationUtils;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -103,10 +102,14 @@ public class Flags {
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 
 		Query query = pm.newQuery(Flag.class);
-		query.setFilter("lon > minLon && lon < maxLon && lat > minLat && lat < maxLat");
-		query.declareParameters("double minLon, double maxLon, double minLat, double maxLat");
-		List<Flag> flags = (List<Flag>) pm.newQuery(query).executeWithArray(lon - LocationUtils.NEAR_DISTANCE_DEGREE,
-				lon + LocationUtils.NEAR_DISTANCE_DEGREE, lat - LocationUtils.NEAR_DISTANCE_DEGREE, lat + LocationUtils.NEAR_DISTANCE_DEGREE);
+		// temporary filter
+		query.setFilter("reward > zero");
+		query.declareParameters("int zero");
+		List<Flag> flags = (List<Flag>) pm.newQuery(query).execute(0);
+		// query.setFilter("lon > minLon && lon < maxLon && lat > minLat && lat < maxLat");
+		// query.declareParameters("double minLon, double maxLon, double minLat, double maxLat");
+		// List<Flag> flags = (List<Flag>) pm.newQuery(query).executeWithArray(lon - LocationUtils.NEAR_DISTANCE_DEGREE,
+		// lon + LocationUtils.NEAR_DISTANCE_DEGREE, lat - LocationUtils.NEAR_DISTANCE_DEGREE, lat + LocationUtils.NEAR_DISTANCE_DEGREE);
 
 		List<Flag> rewardFlags = new ArrayList<Flag>();
 		for (Flag flag : flags)
@@ -196,18 +199,6 @@ public class Flags {
 		log.info("list flag: lat=" + lat + " lon=" + lon);
 
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
-
-		try {
-			UserInfo userInfo = pm.getObjectById(UserInfo.class, userId);
-			userInfo.setLat(lat);
-			userInfo.setLon(lon);
-		} catch (JDOObjectNotFoundException e) {
-			UserInfo userInfo = new UserInfo();
-			userInfo.setUserId(userId);
-			userInfo.setLat(lat);
-			userInfo.setLon(lon);
-			pm.makePersistent(userInfo);
-		}
 
 		Query query = pm.newQuery(Flag.class);
 		query.setFilter("lon > minLon && lon < maxLon && lat > minLat && lat < maxLat");

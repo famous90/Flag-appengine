@@ -88,7 +88,7 @@ public class Shops {
 	private List<Shop> listByIds(List<Object> ids) {
 		log.warning("list shops: " + ids);
 		if (ids == null || ids.isEmpty())
-			return null;
+			return new ArrayList<Shop>();
 
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		List<Shop> shops = null;
@@ -101,6 +101,36 @@ public class Shops {
 		}
 
 		return shops;
+	}
+
+	@ApiMethod(name = "shop.list", path = "shop_list", httpMethod = "get")
+	private ShopCollection list(@Nullable @Named("userId") long userId, @Nullable @Named("ids") List<Long> ids) {
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+		List<Object> shopIds = new ArrayList<Object>();
+		for (Long id : ids)
+			shopIds.add(pm.newObjectIdInstance(Shop.class, id));
+		
+		List<Shop> shops = listByIds(shopIds);
+		
+		Shop.setRelatedVariables(shops, userId);
+		
+		return new ShopCollection(shops);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@ApiMethod(name = "shops.list.reward", path = "shop_list_reward", httpMethod = "get")
+	public ShopCollection listReward(@Nullable @Named("userId") long userId, @Nullable @Named("mark") int mark) {
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+		
+		Query query = pm.newQuery(Shop.class);
+		// temporary filter
+		query.setFilter("reward > zero");
+		query.declareParameters("int zero");
+		List<Shop> shops = (List<Shop>) pm.newQuery(query).execute(0);
+		
+		Shop.setRelatedVariables(shops, userId);
+		
+		return new ShopCollection(shops);
 	}
 
 	@SuppressWarnings("unchecked")

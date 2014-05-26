@@ -42,13 +42,16 @@ public class Shop {
 	private String imageUrl;
 
 	@Persistent
-	private int type;
-
-	@Persistent
 	private String description;
 
 	@Persistent
+	private int type;
+
+	@Persistent
 	private int reward;
+
+	@Persistent
+	private boolean onSale;
 
 	@NotPersistent
 	private boolean rewarded;
@@ -127,14 +130,6 @@ public class Shop {
 		this.imageUrl = imageUrl;
 	}
 
-	public int getType() {
-		return type;
-	}
-
-	public void setType(int type) {
-		this.type = type;
-	}
-
 	public String getDescription() {
 		return description;
 	}
@@ -143,12 +138,28 @@ public class Shop {
 		this.description = description;
 	}
 
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
+
 	public int getReward() {
 		return reward;
 	}
 
 	public void setReward(int reward) {
 		this.reward = reward;
+	}
+
+	public boolean isOnSale() {
+		return onSale;
+	}
+
+	public void setOnSale(boolean onSale) {
+		this.onSale = onSale;
 	}
 
 	public boolean isRewarded() {
@@ -189,6 +200,9 @@ public class Shop {
 
 	@SuppressWarnings("unchecked")
 	public static void setRelatedVariables(List<Shop> shops, long userId) {
+		if (shops == null || shops.isEmpty())
+			return;
+
 		PersistenceManager pm = PMF.getPersistenceManager();
 
 		Query query = pm.newQuery(Like.class);
@@ -227,7 +241,7 @@ public class Shop {
 		paramMap.put("theUserId", userId);
 		paramMap.remove("typeItem");
 		paramMap.put("typeItem", Reward.TYPE_SHOP);
-		
+
 		query = pm.newQuery(Reward.class);
 		query.setFilter(sbFilter.toString());
 		query.declareParameters(sbParams.toString());

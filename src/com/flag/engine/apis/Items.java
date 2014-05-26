@@ -19,6 +19,7 @@ import com.flag.engine.models.ItemHidden;
 import com.flag.engine.models.Like;
 import com.flag.engine.models.PMF;
 import com.flag.engine.models.Shop;
+import com.flag.engine.models.UserInfo;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 
@@ -40,6 +41,79 @@ public class Items {
 		return item;
 	}
 
+	@ApiMethod(name = "items.get", path = "one_item", httpMethod = "get")
+	public Item get(@Nullable @Named("userId") long userId, @Nullable @Named("itemId") long itemId) {
+		log.info("get item: " + itemId);
+
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+		List<Item> items = new ArrayList<Item>();
+
+		try {
+			items.add(pm.getObjectById(Item.class, itemId));
+			Item.setLikeVariables(items, userId);
+		} catch (JDOObjectNotFoundException e) {
+		}
+
+		return items.get(0);
+	}
+
+	@ApiMethod(name = "items.update", path = "item", httpMethod = "put")
+	public Item update(Item item) {
+		log.info("update item: " + item.toString());
+
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+		Item target = null;
+
+		try {
+			target = pm.getObjectById(Item.class, item.getId());
+			target.update(item);
+		} catch (JDOObjectNotFoundException e) {
+			return null;
+		} finally {
+			pm.close();
+		}
+
+		return target;
+	}
+
+	@SuppressWarnings("unchecked")
+	@ApiMethod(name = "items.delete", path = "item", httpMethod = "delete")
+	public void delete(@Nullable @Named("itemId") long itemId) {
+		PersistenceManager pmSQL = PMF.getPersistenceManagerSQL();
+		PersistenceManager pm = PMF.getPersistenceManager();
+
+		try {
+			Item item = pmSQL.getObjectById(Item.class, itemId);
+			pmSQL.deletePersistent(item);
+
+			Query query = pm.newQuery(Like.class);
+			query.setFilter("type == typeItem && targetId == itemId");
+			query.declareParameters("int typeItem, long itemId");
+			List<Like> likes = (List<Like>) pm.newQuery(query).execute(Like.TYPE_ITEM, itemId);
+			pm.deletePersistentAll(likes);
+
+		} catch (JDOObjectNotFoundException e) {
+			try {
+				ItemHidden item = pmSQL.getObjectById(ItemHidden.class, itemId);
+				pmSQL.deletePersistent(item);
+
+				Query query = pmSQL.newQuery(Item.class);
+				query.setFilter("barcodeId == id");
+				query.declareParameters("String id");
+				List<Item> brItems = (List<Item>) pm.newQuery(query).execute(item.getBarcodeId());
+
+				for (Item brItem : brItems)
+					if (brItem.getBarcodeId() != null && !brItem.getBarcodeId().trim().isEmpty())
+						delete(brItem.getId());
+
+			} catch (JDOObjectNotFoundException e2) {
+			}
+		} finally {
+			pmSQL.close();
+			pm.close();
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	@ApiMethod(name = "items.init", path = "item_init", httpMethod = "get")
 	public ItemCollection initItems(@Nullable @Named("userId") long userId, @Nullable @Named("mark") int mark) {
@@ -48,8 +122,20 @@ public class Items {
 
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 
+		int sex = 0;
+		try {
+			UserInfo userInfo = pm.getObjectById(UserInfo.class, userId);
+			if (userInfo.getSex())
+				sex = 2;
+			else
+				sex = 1;
+		} catch (JDOObjectNotFoundException e) {
+		}
+
 		Query query = pm.newQuery(Item.class);
-		List<Item> results = (List<Item>) pm.newQuery(query).execute();
+		query.setFilter("sex == unisex || sex == gender");
+		query.declareParameters("int unisex, int gender");
+		List<Item> results = (List<Item>) pm.newQuery(query).execute(0, sex);
 
 		log.warning("item da time: " + (new Date().getTime() - startTime) + "ms");
 
@@ -100,7 +186,7 @@ public class Items {
 	private List<Item> listByIds(List<Object> ids) {
 		log.warning("list items: " + ids);
 		if (ids == null || ids.isEmpty())
-			return null;
+			return new ArrayList<Item>();
 
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		List<Item> items = null;
@@ -196,13 +282,14 @@ public class Items {
 	}
 
 	@SuppressWarnings({ "unchecked" })
-	@ApiMethod(name = "items.list.reward", path = "item_reward")
-	public ItemCollection listForReward(@Nullable @Named("userId") long userId, @Nullable @Named("mark") int mark) {
+	@ApiMethod(name = "items.list.reward", path = "item_reward", httpMethod = "get")
+	public ItemCollection listReward(@Nullable @Named("userId") long userId, @Nullable @Named("mark") int mark) {
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 
 		Query query = pm.newQuery(BranchItemMatcher.class);
 		query.setFilter("rewardable == True");
 		query.declareParameters("boolean True");
+		query.setOrdering("id desc");
 		List<BranchItemMatcher> matchers = (List<BranchItemMatcher>) pm.newQuery(query).execute(true);
 
 		List<Long> itemIds = new ArrayList<Long>();
@@ -213,17 +300,17 @@ public class Items {
 		List<Object> ids = new ArrayList<Object>();
 		for (int i = mark * 20; i < (mark + 1) * 20; i++)
 			try {
-				ids.add(itemIds.get(i));
+				ids.add(pm.newObjectIdInstance(Item.class, itemIds.get(i)));
 			} catch (IndexOutOfBoundsException e) {
 				break;
 			}
 
 		if (ids.isEmpty())
 			return null;
-		
+
 		List<Item> items = listByIds(ids);
 		Item.setRelatedVariables(items, userId);
-		
+
 		List<Item> ableItems = new ArrayList<Item>();
 		for (Item item : items)
 			if (!item.isRewarded())
@@ -232,77 +319,26 @@ public class Items {
 		return new ItemCollection(items);
 	}
 
-	@ApiMethod(name = "items.get", path = "one_item", httpMethod = "get")
-	public Item get(@Nullable @Named("userId") long userId, @Nullable @Named("itemId") long itemId) {
-		log.info("get item: " + itemId);
-
-		PersistenceManager pm = PMF.getPersistenceManagerSQL();
-		List<Item> items = new ArrayList<Item>();
-
-		try {
-			items.add(pm.getObjectById(Item.class, itemId));
-			Item.setLikeVariables(items, userId);
-		} catch (JDOObjectNotFoundException e) {
-		}
-
-		return items.get(0);
-	}
-
-	@ApiMethod(name = "items.update", path = "item", httpMethod = "put")
-	public Item update(Item item) {
-		log.info("update item: " + item.toString());
-
-		PersistenceManager pm = PMF.getPersistenceManagerSQL();
-		Item target = null;
-
-		try {
-			target = pm.getObjectById(Item.class, item.getId());
-			target.update(item);
-		} catch (JDOObjectNotFoundException e) {
-			return null;
-		} finally {
-			pm.close();
-		}
-
-		return target;
-	}
-
 	@SuppressWarnings("unchecked")
-	@ApiMethod(name = "items.delete", path = "item", httpMethod = "delete")
-	public void delete(@Nullable @Named("itemId") long itemId) {
-		PersistenceManager pmSQL = PMF.getPersistenceManagerSQL();
-		PersistenceManager pm = PMF.getPersistenceManager();
+	@ApiMethod(name = "items.list.item", path = "item_item", httpMethod = "get")
+	public ItemCollection listItem(@Nullable @Named("userId") long userId, @Nullable @Named("itemId") long itemId) {
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 
+		int type = 0;
 		try {
-			Item item = pmSQL.getObjectById(Item.class, itemId);
-			pmSQL.deletePersistent(item);
-
-			Query query = pm.newQuery(Like.class);
-			query.setFilter("type == typeItem && targetId == itemId");
-			query.declareParameters("int typeItem, long itemId");
-			List<Like> likes = (List<Like>) pm.newQuery(query).execute(Like.TYPE_ITEM, itemId);
-			pm.deletePersistentAll(likes);
-
+			Item item = pm.getObjectById(Item.class, itemId);
+			type = item.getType();
 		} catch (JDOObjectNotFoundException e) {
-			try {
-				ItemHidden item = pmSQL.getObjectById(ItemHidden.class, itemId);
-				pmSQL.deletePersistent(item);
-
-				Query query = pmSQL.newQuery(Item.class);
-				query.setFilter("barcodeId == id");
-				query.declareParameters("String id");
-				List<Item> brItems = (List<Item>) pm.newQuery(query).execute(item.getBarcodeId());
-
-				for (Item brItem : brItems)
-					if (brItem.getBarcodeId() != null && !brItem.getBarcodeId().trim().isEmpty())
-						delete(brItem.getId());
-
-			} catch (JDOObjectNotFoundException e2) {
-			}
-		} finally {
-			pmSQL.close();
-			pm.close();
 		}
+
+		Query query = pm.newQuery(Item.class);
+		query.setFilter("type == theType");
+		query.declareParameters("int theType");
+		List<Item> items = (List<Item>) pm.newQuery(query).execute(type);
+
+		Item.setLikeVariables(items, userId);
+
+		return new ItemCollection(items);
 	}
 
 	@SuppressWarnings("unchecked")
