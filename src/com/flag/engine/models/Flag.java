@@ -26,6 +26,7 @@ public class Flag {
 	private long createdAt;
 
 	@Persistent
+	@Index
 	private Long shopId;
 
 	@Persistent

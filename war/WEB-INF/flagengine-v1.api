@@ -165,6 +165,43 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
+    "flagengine.redeems.insert" : {
+      "path" : "redeem",
+      "httpMethod" : "post",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Redeems.insert",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "flagengine.redeems.list" : {
+      "path" : "redeem",
+      "httpMethod" : "get",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Redeems.list",
+      "request" : {
+        "parameters" : {
+          "mark" : {
+            "type" : "int32",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
     "flagengine.rewards.list" : {
       "path" : "reward",
       "httpMethod" : "get",
@@ -177,6 +214,10 @@
         "parameters" : {
           "userId" : {
             "type" : "int64",
+            "required" : false
+          },
+          "mark" : {
+            "type" : "int32",
             "required" : false
           }
         },
@@ -744,6 +785,32 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
+    "flagengine.shops.list" : {
+      "path" : "shop_list",
+      "httpMethod" : "get",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Shops.list",
+      "request" : {
+        "parameters" : {
+          "userId" : {
+            "type" : "int64",
+            "required" : false
+          },
+          "ids" : {
+            "repeated" : true,
+            "type" : "int64",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
     "flagengine.shops.list.provider" : {
       "path" : "shop_list_provider",
       "httpMethod" : "get",
@@ -910,21 +977,6 @@
       },
       "response" : {
         "body" : "autoTemplate(backendResponse)"
-      }
-    },
-    "flagengine.likes.delete.all" : {
-      "path" : "like_all",
-      "httpMethod" : "delete",
-      "authLevel" : "NONE",
-      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
-      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
-      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.flag.engine.apis.Likes.deleteAll",
-      "request" : {
-        "body" : "empty"
-      },
-      "response" : {
-        "body" : "empty"
       }
     },
     "flagengine.likes.insert" : {
@@ -1192,6 +1244,40 @@
           },
           "password" : {
             "type" : "string"
+          }
+        }
+      },
+      "Redeem" : {
+        "id" : "Redeem",
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "imageUrl" : {
+            "type" : "string"
+          },
+          "vendor" : {
+            "type" : "string"
+          },
+          "price" : {
+            "type" : "integer"
+          }
+        }
+      },
+      "RedeemCollection" : {
+        "id" : "RedeemCollection",
+        "type" : "object",
+        "properties" : {
+          "redeems" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "Redeem"
+            }
           }
         }
       },
@@ -1597,6 +1683,19 @@
           "$ref" : "User"
         }
       },
+      "com.flag.engine.apis.Redeems.insert" : {
+        "request" : {
+          "$ref" : "Redeem"
+        },
+        "response" : {
+          "$ref" : "Redeem"
+        }
+      },
+      "com.flag.engine.apis.Redeems.list" : {
+        "response" : {
+          "$ref" : "RedeemCollection"
+        }
+      },
       "com.flag.engine.apis.Rewards.list" : {
         "response" : {
           "$ref" : "RewardCollection"
@@ -1752,6 +1851,11 @@
           "$ref" : "ItemCollection"
         }
       },
+      "com.flag.engine.apis.Shops.list" : {
+        "response" : {
+          "$ref" : "ShopCollection"
+        }
+      },
       "com.flag.engine.apis.Shops.listProvider" : {
         "response" : {
           "$ref" : "ShopCollection"
@@ -1794,8 +1898,6 @@
         "response" : {
           "$ref" : "UploadUrl"
         }
-      },
-      "com.flag.engine.apis.Likes.deleteAll" : {
       },
       "com.flag.engine.apis.Likes.insert" : {
         "request" : {

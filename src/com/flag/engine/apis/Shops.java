@@ -64,12 +64,14 @@ public class Shops {
 		List<Long> exIds = new ArrayList<Long>();
 		List<Object> ids = new ArrayList<Object>();
 		List<Flag> flags = new ArrayList<Flag>();
-		for (Flag sortedResult : sortedResults)
+		for (int i = 0; i < sortedResults.size(); i++) {
+			Flag sortedResult = sortedResults.get(i);
 			if (!exIds.contains(sortedResult.getShopId())) {
 				exIds.add(sortedResult.getShopId());
 				ids.add(pm.newObjectIdInstance(Shop.class, sortedResult.getShopId()));
 				flags.add(sortedResult);
 			}
+		}
 
 		log.warning("shopid process time: " + (new Date().getTime() - startTime) + "ms");
 
@@ -103,8 +105,8 @@ public class Shops {
 		return shops;
 	}
 
-	@ApiMethod(name = "shop.list", path = "shop_list", httpMethod = "get")
-	private ShopCollection list(@Nullable @Named("userId") long userId, @Nullable @Named("ids") List<Long> ids) {
+	@ApiMethod(name = "shops.list", path = "shop_list", httpMethod = "get")
+	public ShopCollection list(@Nullable @Named("userId") long userId, @Nullable @Named("ids") List<Long> ids) {
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		List<Object> shopIds = new ArrayList<Object>();
 		for (Long id : ids)

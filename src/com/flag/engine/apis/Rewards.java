@@ -21,7 +21,7 @@ import com.google.api.server.spi.config.ApiMethod;
 @Api(name = "flagengine", version = "v1", clientIds = { Constants.WEB_CLIENT_ID, Constants.ANDROID_CLIENT_ID, Constants.IOS_CLIENT_ID,
 		Constants.API_EXPLORER_CLIENT_ID }, audiences = { Constants.ANDROID_AUDIENCE })
 public class Rewards {
-	private static final Logger log = Logger.getLogger(Flags.class.getName());
+	private static final Logger log = Logger.getLogger(Rewards.class.getName());
 
 	@ApiMethod(name = "rewards.insert", path = "reward", httpMethod = "post")
 	public User insert(Reward reward) {
@@ -48,7 +48,7 @@ public class Rewards {
 
 	@SuppressWarnings("unchecked")
 	@ApiMethod(name = "rewards.list", path = "reward", httpMethod = "get")
-	public RewardCollection list(@Nullable @Named("userId") long userId) {
+	public RewardCollection list(@Nullable @Named("userId") long userId, @Nullable @Named("mark") int mark) {
 		log.info("list rewards: " + userId);
 
 		PersistenceManager pm = PMF.getPersistenceManager();
@@ -57,6 +57,7 @@ public class Rewards {
 		query.setFilter("userId == theUserId");
 		query.declareParameters("long theUserId");
 		query.setOrdering("createdAt desc");
+		query.setRange(mark * 50, (mark + 1) * 50);
 		List<Reward> rewards = (List<Reward>) pm.newQuery(query).execute(userId);
 
 		return new RewardCollection(rewards);

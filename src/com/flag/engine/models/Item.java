@@ -52,7 +52,6 @@ public class Item {
 	private String description;
 
 	@Persistent
-	@Index
 	private int sex;
 
 	@Persistent
