@@ -41,11 +41,37 @@ public class Flags {
 		return flag;
 	}
 
-	@SuppressWarnings("unchecked")
-	@ApiMethod(name = "flags.list", path = "flag", httpMethod = "get")
-	public FlagCollection list(@Nullable @Named("userId") long userId, @Nullable @Named("lat") double lat, @Nullable @Named("lon") double lon) {
-		log.info("list flag: lat=" + lat + " lon=" + lon);
+	@ApiMethod(name = "flags.delete", path = "flag", httpMethod = "delete")
+	public void delete(@Named("flagId") Long flagId) {
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 
+		try {
+			Flag target = pm.getObjectById(Flag.class, flagId);
+			pm.deletePersistent(target);
+		} catch (JDOObjectNotFoundException e) {
+		} finally {
+			pm.close();
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@ApiMethod(name = "flags.list.range", path = "flag_list_range", httpMethod = "get")
+	public FlagCollection list(@Nullable @Named("lat") double lat, @Nullable @Named("lon") double lon,
+			@Nullable @Named("range") float range) {
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+
+		Query query = pm.newQuery(Flag.class);
+		query.setFilter("lon > minLon && lon < maxLon && lat > minLat && lat < maxLat");
+		query.declareParameters("double minLon, double maxLon, double minLat, double maxLat");
+		List<Flag> flags = (List<Flag>) pm.newQuery(query).executeWithArray(lon - range, lon + range, lat - range, lat + range);
+
+		return new FlagCollection(flags);
+	}
+
+	// needs to be deleted soon
+	@SuppressWarnings("unchecked")
+	@ApiMethod(name = "flags.list.near", path = "flag", httpMethod = "get")
+	public FlagCollection listNear(@Nullable @Named("userId") long userId, @Nullable @Named("lat") double lat, @Nullable @Named("lon") double lon) {
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 
 		Query query = pm.newQuery(Flag.class);
@@ -55,6 +81,45 @@ public class Flags {
 				lon + LocationUtils.NEAR_DISTANCE_DEGREE, lat - LocationUtils.NEAR_DISTANCE_DEGREE, lat + LocationUtils.NEAR_DISTANCE_DEGREE);
 
 		return new FlagCollection(flags);
+	}
+
+	@SuppressWarnings("unchecked")
+	@ApiMethod(name = "flags.list.close", path = "flag_list", httpMethod = "get")
+	public FlagCollection listClose(@Nullable @Named("userId") long userId, @Nullable @Named("lat") double lat, @Nullable @Named("lon") double lon) {
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+
+		Query query = pm.newQuery(Flag.class);
+		query.setFilter("lon > minLon && lon < maxLon && lat > minLat && lat < maxLat");
+		query.declareParameters("double minLon, double maxLon, double minLat, double maxLat");
+		List<Flag> flags = (List<Flag>) pm.newQuery(query).executeWithArray(lon - LocationUtils.CLOSE_DISTANCE_DEGREE,
+				lon + LocationUtils.CLOSE_DISTANCE_DEGREE, lat - LocationUtils.CLOSE_DISTANCE_DEGREE, lat + LocationUtils.CLOSE_DISTANCE_DEGREE);
+
+		pm.close();
+
+		return new FlagCollection(flags);
+	}
+	// needs to be deleted soon
+	
+	@SuppressWarnings("unchecked")
+	@ApiMethod(name = "flags.list.all", path = "flag_list_all", httpMethod = "get")
+	public FlagCollection listAll(@Nullable @Named("tag") long tag) {
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+
+		Query query = pm.newQuery(Flag.class);
+		query.setFilter("createdAt > tag");
+		query.declareParameters("long tag");
+		List<Flag> flags = (List<Flag>) pm.newQuery(query).execute(tag);
+		
+		// TODO deleted flags
+
+		return new FlagCollection(flags);
+	}
+	
+	@ApiMethod(name = "flags.list.byuser", path = "flag_list_byuser", httpMethod = "get")
+	public FlagCollection listByUser(@Nullable @Named("userId") long userId, @Nullable @Named("lat") double lat, @Nullable @Named("lon") double lon) {
+		// TODO
+		
+		return null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -98,7 +163,7 @@ public class Flags {
 
 	@SuppressWarnings("unchecked")
 	@ApiMethod(name = "flags.list.byreward", path = "flag_list_byreward", httpMethod = "get")
-	public FlagCollection listReward(@Nullable @Named("userId") long userId, @Nullable @Named("lat") double lat, @Nullable @Named("lon") double lon) {
+	public FlagCollection listReward(@Nullable @Named("lat") double lat, @Nullable @Named("lon") double lon) {
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 
 		Query query = pm.newQuery(Flag.class);
@@ -191,36 +256,5 @@ public class Flags {
 		List<Flag> flags = (List<Flag>) pm.newQuery(query).executeWithMap(paramMap);
 
 		return new FlagCollection(flags);
-	}
-
-	@SuppressWarnings("unchecked")
-	@ApiMethod(name = "flags.list.close", path = "flag_list", httpMethod = "get")
-	public FlagCollection listClose(@Nullable @Named("userId") long userId, @Nullable @Named("lat") double lat, @Nullable @Named("lon") double lon) {
-		log.info("list flag: lat=" + lat + " lon=" + lon);
-
-		PersistenceManager pm = PMF.getPersistenceManagerSQL();
-
-		Query query = pm.newQuery(Flag.class);
-		query.setFilter("lon > minLon && lon < maxLon && lat > minLat && lat < maxLat");
-		query.declareParameters("double minLon, double maxLon, double minLat, double maxLat");
-		List<Flag> flags = (List<Flag>) pm.newQuery(query).executeWithArray(lon - LocationUtils.CLOSE_DISTANCE_DEGREE,
-				lon + LocationUtils.CLOSE_DISTANCE_DEGREE, lat - LocationUtils.CLOSE_DISTANCE_DEGREE, lat + LocationUtils.CLOSE_DISTANCE_DEGREE);
-
-		pm.close();
-
-		return new FlagCollection(flags);
-	}
-
-	@ApiMethod(name = "flags.delete", path = "flag", httpMethod = "delete")
-	public void delete(@Named("flagId") Long flagId) {
-		PersistenceManager pm = PMF.getPersistenceManagerSQL();
-
-		try {
-			Flag target = pm.getObjectById(Flag.class, flagId);
-			pm.deletePersistent(target);
-		} catch (JDOObjectNotFoundException e) {
-		} finally {
-			pm.close();
-		}
 	}
 }

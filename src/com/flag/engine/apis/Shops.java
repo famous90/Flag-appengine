@@ -3,7 +3,9 @@ package com.flag.engine.apis;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
@@ -176,6 +178,7 @@ public class Shops {
 		return shops.get(0);
 	}
 
+	@SuppressWarnings("unchecked")
 	@ApiMethod(name = "shops.update", path = "shop", httpMethod = "put")
 	public Shop update(Shop shop) {
 		log.info("update shop: " + shop.toString());
@@ -186,6 +189,48 @@ public class Shops {
 		try {
 			target = pm.getObjectById(Shop.class, shop.getId());
 			target.update(shop);
+			
+			List<Flag> flags = null;
+			if (shop.getType() == Shop.TYPE_BR) {
+				Query query = pm.newQuery(Flag.class);
+				query.setFilter("shopId == id");
+				query.declareParameters("long id");
+				flags = (List<Flag>) pm.newQuery(query).execute(shop.getId());
+			} else if (shop.getType() == Shop.TYPE_HQ) {
+				Query query = pm.newQuery(Shop.class);
+				query.setFilter("parentId == id");
+				query.declareParameters("long id");
+				List<Shop> brShops = (List<Shop>) pm.newQuery(query).execute(shop.getId());
+				
+				StringBuilder sbFilter = new StringBuilder();
+				StringBuilder sbParams = new StringBuilder();
+				Map<String, Long> paramMap = new HashMap<String, Long>();
+				int i = 0;
+				
+				for (Shop brShop : brShops) {
+					brShop.setReward(shop.getReward());
+					
+					if (i > 0) {
+						sbFilter.append(" || ");
+						sbParams.append(", ");
+					}
+					sbFilter.append("shopId == id" + i);
+					sbParams.append("long id" + i);
+					paramMap.put("id" + i, brShop.getId());
+					
+					i++;
+				}
+				
+				query = pm.newQuery(Flag.class);
+				query.setFilter(sbFilter.toString());
+				query.declareParameters(sbParams.toString());
+				flags = (List<Flag>) pm.newQuery(query).executeWithMap(paramMap);
+			}
+			
+			if (flags != null)
+				for (Flag flag : flags)
+					flag.setReward(shop.getReward());
+
 		} catch (JDOObjectNotFoundException e) {
 			return null;
 		} finally {
