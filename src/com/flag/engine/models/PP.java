@@ -5,16 +5,16 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
+import com.google.appengine.api.datastore.Text;
+
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
-public class BeaconTag {
+public class PP {
 	@PrimaryKey
 	@Persistent
 	private Long id;
 
-	public BeaconTag(Long id) {
-		super();
-		this.id = id;
-	}
+	@Persistent
+	private Text pp;
 
 	public Long getId() {
 		return id;
@@ -22,6 +22,14 @@ public class BeaconTag {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public Text getPp() {
+		return pp;
+	}
+
+	public void setPp(Text pp) {
+		this.pp = pp;
 	}
 
 }

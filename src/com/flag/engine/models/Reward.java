@@ -9,7 +9,8 @@ import javax.jdo.annotations.PrimaryKey;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class Reward {
-	public static final long EXPIRATION_TIME = 1000 * 60 * 60 * 24;
+	public static final long EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 7;
+	
 	public static final int TYPE_SHOP = 1;
 	public static final int TYPE_ITEM = 2;
 	public static final int TYPE_REDEMPTION = 10;

@@ -249,7 +249,7 @@ public class Shop {
 
 		for (Reward reward : rewards)
 			for (Shop shop : shops)
-				if (reward.getTargetId().equals(shop.getId()) && reward.getUserId().equals(userId)
+				if ((reward.getTargetId().equals(shop.getId()) || reward.getTargetId().equals(shop.getParentId())) && reward.getUserId().equals(userId)
 						&& reward.getCreatedAt() > new Date().getTime() - Reward.EXPIRATION_TIME) {
 					shop.setRewarded(true);
 					break;

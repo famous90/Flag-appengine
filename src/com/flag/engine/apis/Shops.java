@@ -21,6 +21,7 @@ import com.flag.engine.models.Like;
 import com.flag.engine.models.PMF;
 import com.flag.engine.models.Shop;
 import com.flag.engine.models.ShopCollection;
+import com.flag.engine.models.UserShopPair;
 import com.flag.engine.utils.FlagDistanceComparator;
 import com.flag.engine.utils.LocationUtils;
 import com.google.api.server.spi.config.Api;
@@ -163,6 +164,55 @@ public class Shops {
 		return new ShopCollection(shops);
 	}
 
+	@SuppressWarnings("unchecked")
+	@ApiMethod(name = "shops.recommend.near", path = "shop_recommend_near", httpMethod = "get")
+	public Shop suggest(@Nullable @Named("userId") long userId, @Nullable @Named("ids") List<Long> ids) {
+		PersistenceManager pmSQL = PMF.getPersistenceManagerSQL();
+		PersistenceManager pm = PMF.getPersistenceManager();
+		
+		List<Object> keyIds = new ArrayList<Object>();
+		for (Long id : ids)
+			keyIds.add(pmSQL.newObjectIdInstance(Shop.class, id));
+		List<Shop> shops = listByIds(keyIds);
+		
+		Query query = pm.newQuery(UserShopPair.class);
+		StringBuilder sbFilter = new StringBuilder("userId == theUserId && (");
+		StringBuilder sbParams = new StringBuilder("long theUserId");
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("theUserId", userId);
+		
+		int i = 0;
+		for (Shop shop : shops) {
+			if (i > 0)
+				sbFilter.append(" || ");
+			
+			sbFilter.append("shopId == shopId" + i);
+			sbParams.append(", long shopId" + i);
+			paramMap.put("shopId" + i, shop.getParentId());
+			
+			i++;
+		}
+		sbFilter.append(")");
+		
+		query.setFilter(sbFilter.toString());
+		query.declareParameters(sbParams.toString());
+		List<UserShopPair> pairs = (List<UserShopPair>) pm.newQuery(query).executeWithMap(paramMap);
+		
+		long recId = 0;
+		int temp = 0;
+		for (UserShopPair pair : pairs)
+			if (pair.getPoint() > temp)
+				recId = pair.getShopId();
+		
+		Shop recShop = null;
+		if (recId != 0)
+			for (Shop shop : shops)
+				if (shop.getParentId().equals(recId))
+					recShop = shop;
+		
+		return recShop;
+	}
+
 	@ApiMethod(name = "shops.get", path = "shop", httpMethod = "get")
 	public Shop get(@Nullable @Named("userId") long userId, @Nullable @Named("id") long id) {
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
@@ -173,6 +223,7 @@ public class Shops {
 			shops.add(shop);
 			Shop.setRelatedVariables(shops, userId);
 		} catch (JDOObjectNotFoundException e) {
+			return null;
 		}
 
 		return shops.get(0);

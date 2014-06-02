@@ -3,7 +3,10 @@
 	<datastore-index kind="Notice" ancestor="false" source="manual">
 		<property name="__key__" direction="desc" />
 	</datastore-index>
-	<datastore-index kind="BeaconTag" ancestor="false" source="manual">
+	<datastore-index kind="TOU" ancestor="false" source="manual">
+		<property name="__key__" direction="desc" />
+	</datastore-index>
+	<datastore-index kind="PP" ancestor="false" source="manual">
 		<property name="__key__" direction="desc" />
 	</datastore-index>
 </datastore-indexes>

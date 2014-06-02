@@ -11,6 +11,8 @@ import com.flag.engine.constants.Constants;
 import com.flag.engine.models.FeedbackMessage;
 import com.flag.engine.models.Notice;
 import com.flag.engine.models.PMF;
+import com.flag.engine.models.PP;
+import com.flag.engine.models.TOU;
 import com.flag.engine.models.Version;
 import com.flag.engine.utils.MailUtils;
 import com.google.api.server.spi.config.Api;
@@ -48,6 +50,62 @@ public class Apps {
 			return Version.getDefault();
 		else
 			return versions.get(0);
+	}
+
+	@ApiMethod(name = "apps.tous.insert", path = "tou", httpMethod = "post")
+	public TOU insertTOU(TOU tou) {
+		PersistenceManager pm = PMF.getPersistenceManager();
+		
+		tou.setId(new Date().getTime());
+		
+		pm.makePersistent(tou);
+		pm.close();
+
+		return tou;
+	}
+
+	@SuppressWarnings("unchecked")
+	@ApiMethod(name = "apps.tous.get", path = "tou", httpMethod = "get")
+	public TOU getTOU() {
+		PersistenceManager pm = PMF.getPersistenceManager();
+
+		Query query = pm.newQuery(TOU.class);
+		query.setOrdering("id desc");
+		query.setRange(0, 1);
+		List<TOU> tous = (List<TOU>) pm.newQuery(query).execute();
+
+		if (tous.isEmpty())
+			return null;
+		else
+			return tous.get(0);
+	}
+
+	@ApiMethod(name = "apps.pps.insert", path = "pp", httpMethod = "post")
+	public PP insertPP(PP pp) {
+		PersistenceManager pm = PMF.getPersistenceManager();
+		
+		pp.setId(new Date().getTime());
+		
+		pm.makePersistent(pp);
+		pm.close();
+
+		return pp;
+	}
+
+	@SuppressWarnings("unchecked")
+	@ApiMethod(name = "apps.pps.get", path = "pp", httpMethod = "get")
+	public PP getPP() {
+		PersistenceManager pm = PMF.getPersistenceManager();
+
+		Query query = pm.newQuery(PP.class);
+		query.setOrdering("id desc");
+		query.setRange(0, 1);
+		List<PP> pps = (List<PP>) pm.newQuery(query).execute();
+
+		if (pps.isEmpty())
+			return null;
+		else
+			return pps.get(0);
 	}
 
 	@ApiMethod(name = "apps.notices.insert", path = "notice", httpMethod = "post")

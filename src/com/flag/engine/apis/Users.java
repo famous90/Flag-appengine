@@ -12,6 +12,7 @@ import com.flag.engine.models.PMF;
 import com.flag.engine.models.RetainForm;
 import com.flag.engine.models.User;
 import com.flag.engine.models.UserForm;
+import com.flag.engine.models.UserInfo;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 
@@ -25,10 +26,16 @@ public class Users {
 		log.info("guest user");
 
 		PersistenceManager pm = PMF.getPersistenceManager();
+		PersistenceManager pmSQL = PMF.getPersistenceManagerSQL();
 		
 		User user = new User();
 		pm.makePersistent(user);
+		
+		UserInfo userInfo = new UserInfo(user.getId());
+		pmSQL.makePersistent(userInfo);
+		
 		pm.close();
+		pmSQL.close();
 
 		return user;
 	}

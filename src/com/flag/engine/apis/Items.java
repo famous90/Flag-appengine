@@ -65,6 +65,8 @@ public class Items {
 		Item target = null;
 
 		try {
+			if (item.getId() == null)
+				throw new JDOObjectNotFoundException();
 			target = pm.getObjectById(Item.class, item.getId());
 			target.update(item);
 		} catch (JDOObjectNotFoundException e) {
@@ -125,10 +127,7 @@ public class Items {
 		int sex = 0;
 		try {
 			UserInfo userInfo = pm.getObjectById(UserInfo.class, userId);
-			if (userInfo.getSex())
-				sex = 2;
-			else
-				sex = 1;
+			sex = userInfo.getSex();
 		} catch (JDOObjectNotFoundException e) {
 		}
 
@@ -151,6 +150,25 @@ public class Items {
 		log.warning("rel-var da time: " + (new Date().getTime() - startTime) + "ms");
 
 		return new ItemCollection(items);
+	}
+
+	@SuppressWarnings("unchecked")
+	private List<Item> listByIds(List<Object> ids) {
+		log.warning("list items: " + ids);
+		if (ids == null || ids.isEmpty())
+			return new ArrayList<Item>();
+
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+		List<Item> items = null;
+
+		try {
+			items = (List<Item>) pm.getObjectsById(ids);
+		} catch (JDOObjectNotFoundException e) {
+			ids.remove(e.getFailedObject());
+			return listByIds(ids);
+		}
+
+		return items;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -180,25 +198,6 @@ public class Items {
 		Item.setRelatedVariables(items, userId);
 
 		return new ItemCollection(items);
-	}
-
-	@SuppressWarnings("unchecked")
-	private List<Item> listByIds(List<Object> ids) {
-		log.warning("list items: " + ids);
-		if (ids == null || ids.isEmpty())
-			return new ArrayList<Item>();
-
-		PersistenceManager pm = PMF.getPersistenceManagerSQL();
-		List<Item> items = null;
-
-		try {
-			items = (List<Item>) pm.getObjectsById(ids);
-		} catch (JDOObjectNotFoundException e) {
-			ids.remove(e.getFailedObject());
-			return listByIds(ids);
-		}
-
-		return items;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -274,7 +273,7 @@ public class Items {
 		for (Like like : likes)
 			ids.add(pmSQL.newObjectIdInstance(Item.class, like.getTargetId()));
 
-		List<Item> items = (List<Item>) pmSQL.getObjectsById(ids);
+		List<Item> items = listByIds(ids);
 
 		Item.setLikeVariables(items, userId);
 
