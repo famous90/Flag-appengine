@@ -166,7 +166,7 @@ public class Shops {
 
 	@SuppressWarnings("unchecked")
 	@ApiMethod(name = "shops.recommend.near", path = "shop_recommend_near", httpMethod = "get")
-	public Shop suggest(@Nullable @Named("userId") long userId, @Nullable @Named("ids") List<Long> ids) {
+	public Shop recommendNear(@Nullable @Named("userId") long userId, @Nullable @Named("ids") List<Long> ids) {
 		PersistenceManager pmSQL = PMF.getPersistenceManagerSQL();
 		PersistenceManager pm = PMF.getPersistenceManager();
 		
@@ -174,6 +174,9 @@ public class Shops {
 		for (Long id : ids)
 			keyIds.add(pmSQL.newObjectIdInstance(Shop.class, id));
 		List<Shop> shops = listByIds(keyIds);
+		
+		if (shops.isEmpty())
+			return null;
 		
 		Query query = pm.newQuery(UserShopPair.class);
 		StringBuilder sbFilter = new StringBuilder("userId == theUserId && (");

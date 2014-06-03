@@ -24,21 +24,6 @@
     "maxAge" : 0
   },
   "methods" : {
-    "flagengine.users.guest" : {
-      "path" : "guest_user",
-      "httpMethod" : "post",
-      "authLevel" : "NONE",
-      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
-      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
-      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.flag.engine.apis.Users.guest",
-      "request" : {
-        "body" : "empty"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
     "flagengine.users.retain" : {
       "path" : "retain_user",
       "httpMethod" : "post",
@@ -50,6 +35,21 @@
       "request" : {
         "body" : "autoTemplate(backendRequest)",
         "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "flagengine.users.guest" : {
+      "path" : "guest_user",
+      "httpMethod" : "post",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Users.guest",
+      "request" : {
+        "body" : "empty"
       },
       "response" : {
         "body" : "autoTemplate(backendResponse)"
@@ -922,7 +922,7 @@
       "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
       "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
       "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.flag.engine.apis.Shops.suggest",
+      "rosyMethod" : "com.flag.engine.apis.Shops.recommendNear",
       "request" : {
         "parameters" : {
           "userId" : {
@@ -1155,6 +1155,19 @@
   },
   "descriptor" : {
     "schemas" : {
+      "RetainForm" : {
+        "id" : "RetainForm",
+        "type" : "object",
+        "properties" : {
+          "statusCode" : {
+            "type" : "integer"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "int64"
+          }
+        }
+      },
       "User" : {
         "id" : "User",
         "type" : "object",
@@ -1174,19 +1187,6 @@
           },
           "reward" : {
             "type" : "integer"
-          }
-        }
-      },
-      "RetainForm" : {
-        "id" : "RetainForm",
-        "type" : "object",
-        "properties" : {
-          "statusCode" : {
-            "type" : "integer"
-          },
-          "id" : {
-            "type" : "string",
-            "format" : "int64"
           }
         }
       },
@@ -1743,15 +1743,15 @@
       }
     },
     "methods" : {
-      "com.flag.engine.apis.Users.guest" : {
-        "response" : {
-          "$ref" : "User"
-        }
-      },
       "com.flag.engine.apis.Users.retain" : {
         "request" : {
           "$ref" : "RetainForm"
         },
+        "response" : {
+          "$ref" : "User"
+        }
+      },
+      "com.flag.engine.apis.Users.guest" : {
         "response" : {
           "$ref" : "User"
         }
@@ -2004,7 +2004,7 @@
           "$ref" : "Shop"
         }
       },
-      "com.flag.engine.apis.Shops.suggest" : {
+      "com.flag.engine.apis.Shops.recommendNear" : {
         "response" : {
           "$ref" : "Shop"
         }
