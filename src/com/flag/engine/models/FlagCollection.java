@@ -2,7 +2,7 @@ package com.flag.engine.models;
 
 import java.util.List;
 
-public class FlagCollection {
+public class FlagCollection extends BaseModel {
 	private List<Flag> flags;
 	private List<Long> deletedIds;
 

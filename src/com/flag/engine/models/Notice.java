@@ -6,7 +6,7 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
-public class Notice {
+public class Notice extends BaseModel {
 	@PrimaryKey
 	@Persistent
 	private Long createdAt;

@@ -8,7 +8,7 @@ import javax.jdo.annotations.PrimaryKey;
 import com.google.appengine.api.datastore.Text;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
-public class TOU {
+public class TOU extends BaseModel {
 	@PrimaryKey
 	@Persistent
 	private Long id;

@@ -17,7 +17,7 @@ import javax.jdo.annotations.PrimaryKey;
 import com.flag.engine.utils.CalUtils;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION, table = "items")
-public class Item {
+public class Item extends BaseModel {
 	public static final int ITEM_SEX_NONE = 0;
 	public static final int ITEM_SEX_FEMALE = 1;
 	public static final int ITEM_SEX_MALE = 2;
@@ -250,6 +250,8 @@ public class Item {
 			thumbnailUrl = item.getThumbnailUrl();
 		if (item.getDescription() != null && !item.getDescription().isEmpty())
 			description = item.getDescription();
+		sex = item.getSex();
+		type = item.getType();
 		if (item.getBarcodeId() != null && !item.getBarcodeId().isEmpty())
 			barcodeId = item.getBarcodeId();
 		if (item.getPrice() != null && !item.getPrice().isEmpty())

@@ -7,7 +7,7 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
-public class UserShopPair {
+public class UserShopPair extends BaseModel {
 	@PrimaryKey
 	@Persistent
 	private Long userId;

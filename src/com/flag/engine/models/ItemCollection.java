@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class ItemCollection {
+public class ItemCollection extends BaseModel {
 	private List<Item> items;
 	private List<Item> hiddenItems;
 

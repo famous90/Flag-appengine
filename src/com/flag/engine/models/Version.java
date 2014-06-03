@@ -8,7 +8,7 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
-public class Version {
+public class Version extends BaseModel {
 	@PrimaryKey
 	@Persistent
 	private String version;

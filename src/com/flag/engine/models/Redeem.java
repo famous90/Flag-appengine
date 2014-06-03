@@ -7,7 +7,7 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION, table = "redeems")
-public class Redeem {
+public class Redeem extends BaseModel {
 	@Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
 	@PrimaryKey
 	private long id;

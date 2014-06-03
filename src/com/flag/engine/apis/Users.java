@@ -37,7 +37,7 @@ public class Users {
 		pm.close();
 		pmSQL.close();
 
-		return user;
+		return new User(user);
 	}
 
 	@ApiMethod(name = "users.insert", path = "new_user", httpMethod = "post")

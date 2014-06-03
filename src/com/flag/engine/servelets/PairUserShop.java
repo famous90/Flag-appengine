@@ -26,13 +26,18 @@ public class PairUserShop extends HttpServlet {
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse res) {
 		PersistenceManager pm = PMF.getPersistenceManager();
+		PersistenceManager pmSQL = PMF.getPersistenceManagerSQL();
 
 		try {
 			Query query = pm.newQuery(Like.class);
 			List<Like> likes = (List<Like>) pm.newQuery(query).execute();
 
-			query = pm.newQuery(Item.class);
-			List<Item> items = (List<Item>) pm.newQuery(query).execute();
+			query = pmSQL.newQuery(Item.class);
+			List<Item> items = (List<Item>) pmSQL.newQuery(query).execute();
+
+			Map<Long, Long> isMap = new HashMap<Long, Long>();
+			for (Item item : items)
+				isMap.put(item.getId(), item.getShopId());
 
 			Map<Long, Map<Long, Integer>> uspMap = new HashMap<Long, Map<Long, Integer>>();
 
@@ -43,24 +48,25 @@ public class PairUserShop extends HttpServlet {
 					shopId = like.getTargetId();
 					p = LIKE_SHOP_P;
 				} else if (like.getType() == Like.TYPE_ITEM) {
-					for (Item item : items)
-						if (item.getId().equals(like.getTargetId()))
-							shopId = item.getShopId();
+					Long sid = isMap.get(like.getTargetId());
+					shopId = (sid != null) ? sid : 0;
 					p = LIKE_ITEM_P;
 				}
 
-				Map<Long, Integer> spMap = uspMap.get(like.getUserId());
-				if (spMap == null)
-					spMap = new HashMap<Long, Integer>();
+				if (shopId != 0 && p != 0) {
+					Map<Long, Integer> spMap = uspMap.get(like.getUserId());
+					if (spMap == null)
+						spMap = new HashMap<Long, Integer>();
 
-				Integer point = spMap.get(shopId);
-				if (point == null)
-					point = 0;
+					Integer point = spMap.get(shopId);
+					if (point == null)
+						point = 0;
 
-				point += p;
+					point += p;
 
-				spMap.put(shopId, point);
-				uspMap.put(like.getUserId(), spMap);
+					spMap.put(shopId, point);
+					uspMap.put(like.getUserId(), spMap);
+				}
 			}
 
 			List<UserShopPair> pairs = new ArrayList<UserShopPair>();
@@ -76,6 +82,7 @@ public class PairUserShop extends HttpServlet {
 			}
 
 			pm.makePersistentAll(pairs);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

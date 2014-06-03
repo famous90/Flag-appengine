@@ -41,7 +41,7 @@ function showPreview(input, where) {
 // gapi initialize
 
 var ROOT = 'https://genuine-evening-455.appspot.com/_ah/api';
-var provider;// = {id: 5721646983806976};
+var provider;// = {id: 5101363511951360};
 
 function init() {
     gapi.client.load('flagengine', 'v1', function() {
@@ -322,6 +322,8 @@ function showItem(data, item, i) {
     data = data.replace('${item_img}', item.thumbnailUrl);
     data = data.replace('${item_name}', item.name);
     data = data.replace('${item_barcodeId}', item.barcodeId);
+    data = data.replace('${item_sex}', getItemSexString(item.sex));
+    data = data.replace('${item_type}', getItemTypeString(item.type));
     data = data.replace('${item_desc}', lineBreaks(item.description));
     data = data.replace('${item_reward}', item.reward);
     data = data.replace('${item_price}', item.price);
@@ -337,6 +339,42 @@ function showItem(data, item, i) {
     }
     
     $('#shop_contents_items').append(data);
+}
+
+function getItemSexString(sex) {
+    if (sex == 0)
+        return '성별없음';
+    else if (sex == 1)
+        return '여성';
+    else (sex == 2)
+        return '남성';
+}
+
+function getItemTypeString(type) {
+    if (type == 0)
+        return '타입없음';
+    else if (type == 100)
+        return '의류';
+    else if (type == 110)
+        return '의류-상의';
+    else if (type == 111)
+        return '의류-외투';
+    else if (type == 120)
+        return '의류-바지';
+    else if (type == 121)
+        return '의류-치마';
+    else if (type == 130)
+        return '의류-드레스';
+    else if (type == 200)
+        return '신발';
+    else if (type == 300)
+        return '가방';
+    else if (type == 400)
+        return '액세서리';
+    else if (type == 500)
+        return '전자제품';
+    else if (type == 600)
+        return '화장품';
 }
 
 function hideItem(index) {
@@ -495,6 +533,8 @@ function editModeItem(index) {
     $('#item_img_edit_' + index).attr('src', targetItem.thumbnailUrl);
     $('#item_name_edit_' + index).val(targetItem.name);
     $('#item_barcode_edit_' + index).val(targetItem.barcodeId);
+    $('#item_sex_edit_' + index).val(targetItem.sex);
+    $('#item_type_edit_' + index).val(targetItem.type);
     $('#item_desc_edit_' + index).val(targetItem.description);
     $('#item_reward_edit_' + index).val(targetItem.reward);
     $('#item_price_edit_' + index).val(targetItem.price);
@@ -528,6 +568,8 @@ function editItem(index) {
     var newReward = $('#item_reward_edit_' + index).val();
     var newPrice = $('#item_price_edit_' + index).val();
     var newOldPrice = $('#item_old_price_edit_' + index).val();
+    var newSex = $('#item_sex_edit_' + index).val();
+    var newType = $('#item_type_edit_' + index).val();
     
     if ($('#item_img_edit_file_' + index).val())
         $('#item_img_edit_form_' + index).ajaxSubmit(function(res) {
@@ -537,12 +579,15 @@ function editItem(index) {
                 name: newName,
                 barcodeId: newBarcode,
                 description: newDesc,
+                sex: newSex,
+                type: newType,
                 reward: newReward,
                 price: newPrice,
                 oldPrice: newOldPrice
-            }).execute(function(res) {
-                items[index] = res;
-                $('#item_sale_' + index).text(res.sale + '%');
+            }).execute(function(resItem) {
+                items[index] = resItem;
+                if (resItem.sale > 0)
+                    $('#item_sale_' + index).text(resItem.sale + '%');
             });
             
             $('#item_edit_' + index).css('display', 'none');
@@ -552,7 +597,9 @@ function editItem(index) {
             $('#item_name_' + index).text(newName);
             $('#item_barcode_' + index).text(newBarcode);
             $('#item_desc_' + index).text(newDesc);
-            $('#item_reward_' + index).text(newReward);
+            $('#item_sex_' + index).text(getItemSexString(newSex));
+            $('#item_type_' + index).text(getItemTypeString(newType));
+            $('#item_reward_' + index).text('reward: ' + newReward);
             $('#item_price_' + index).text(newPrice);
             
             if (newOldPrice && newOldPrice.length > 0) {
@@ -569,12 +616,15 @@ function editItem(index) {
                 name: newName,
                 barcodeId: newBarcode,
                 description: newDesc,
+                sex: newSex,
+                type: newType,
                 reward: newReward,
                 price: newPrice,
                 oldPrice: newOldPrice
-            }).execute(function(res) {
-                items[index] = res;
-                $('#item_sale_' + index).text(res.sale + '%');
+            }).execute(function(resItem) {
+                items[index] = resItem;
+                if (resItem.sale > 0)
+                    $('#item_sale_' + index).text(resItem.sale + '%');
             });
             
             $('#item_edit_' + index).css('display', 'none');
@@ -583,7 +633,9 @@ function editItem(index) {
             $('#item_name_' + index).text(newName);
             $('#item_barcode_' + index).text(newBarcode);
             $('#item_desc_' + index).text(newDesc);
-            $('#item_reward_' + index).text(newReward);
+            $('#item_sex_' + index).text(getItemSexString(newSex));
+            $('#item_type_' + index).text(getItemTypeString(newType));
+            $('#item_reward_' + index).text('reward: ' + newReward);
             $('#item_price_' + index).text(newPrice);
             
             if (newOldPrice) {

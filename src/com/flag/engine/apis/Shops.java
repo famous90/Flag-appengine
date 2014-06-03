@@ -201,8 +201,10 @@ public class Shops {
 		long recId = 0;
 		int temp = 0;
 		for (UserShopPair pair : pairs)
-			if (pair.getPoint() > temp)
+			if (pair.getPoint() > temp) {
 				recId = pair.getShopId();
+				temp = pair.getPoint();
+			}
 		
 		Shop recShop = null;
 		if (recId != 0)

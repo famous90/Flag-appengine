@@ -1,6 +1,6 @@
 package com.flag.engine.models;
 
-public class RetainForm {
+public class RetainForm extends BaseModel {
 	private long id;
 
 	public long getId() {

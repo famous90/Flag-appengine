@@ -16,7 +16,7 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION, table = "shops")
-public class Shop {
+public class Shop extends BaseModel {
 	public static final int TYPE_HQ = 1;
 	public static final int TYPE_BR = 2;
 

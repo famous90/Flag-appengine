@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cronentries>
 	<cron>
+		<url>/depair_user_shop</url>
+		<description>delete all user preferences for shops before re-calculating</description>
+		<schedule>every day 02:55</schedule>
+		<timezone>Asia/Seoul</timezone>
+	</cron>
+	<cron>
 		<url>/pair_user_shop</url>
-		<description>calculate shop preferences
-			for every users</description>
+		<description>calculate shop preferences for every users</description>
 		<schedule>every day 03:00</schedule>
 		<timezone>Asia/Seoul</timezone>
 	</cron>

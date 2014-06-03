@@ -24,6 +24,21 @@
     "maxAge" : 0
   },
   "methods" : {
+    "flagengine.users.guest" : {
+      "path" : "guest_user",
+      "httpMethod" : "post",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
+      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.flag.engine.apis.Users.guest",
+      "request" : {
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
     "flagengine.users.retain" : {
       "path" : "retain_user",
       "httpMethod" : "post",
@@ -35,21 +50,6 @@
       "request" : {
         "body" : "autoTemplate(backendRequest)",
         "bodyName" : "resource"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
-    "flagengine.users.guest" : {
-      "path" : "guest_user",
-      "httpMethod" : "post",
-      "authLevel" : "NONE",
-      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
-      "audiences" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w" ],
-      "clientIds" : [ "AIzaSyALavhz39f7fZYFRlMqF04DOIluUE1WF1w", "AIzaSyCQcUkrRmSvIpEDrswojd5NsGFgCGZV52o", "AIzaSyAIarlKrMK83IdVE6B1MdtdM6KY0_UVsoA", "292824132082.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.flag.engine.apis.Users.guest",
-      "request" : {
-        "body" : "empty"
       },
       "response" : {
         "body" : "autoTemplate(backendResponse)"
@@ -1155,20 +1155,13 @@
   },
   "descriptor" : {
     "schemas" : {
-      "RetainForm" : {
-        "id" : "RetainForm",
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "format" : "int64"
-          }
-        }
-      },
       "User" : {
         "id" : "User",
         "type" : "object",
         "properties" : {
+          "statusCode" : {
+            "type" : "integer"
+          },
           "id" : {
             "type" : "string",
             "format" : "int64"
@@ -1184,10 +1177,26 @@
           }
         }
       },
+      "RetainForm" : {
+        "id" : "RetainForm",
+        "type" : "object",
+        "properties" : {
+          "statusCode" : {
+            "type" : "integer"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "int64"
+          }
+        }
+      },
       "UserForm" : {
         "id" : "UserForm",
         "type" : "object",
         "properties" : {
+          "statusCode" : {
+            "type" : "integer"
+          },
           "id" : {
             "type" : "string",
             "format" : "int64"
@@ -1204,6 +1213,9 @@
         "id" : "Redeem",
         "type" : "object",
         "properties" : {
+          "statusCode" : {
+            "type" : "integer"
+          },
           "id" : {
             "type" : "string",
             "format" : "int64"
@@ -1226,6 +1238,9 @@
         "id" : "RedeemCollection",
         "type" : "object",
         "properties" : {
+          "statusCode" : {
+            "type" : "integer"
+          },
           "redeems" : {
             "type" : "array",
             "items" : {
@@ -1238,6 +1253,9 @@
         "id" : "RewardCollection",
         "type" : "object",
         "properties" : {
+          "statusCode" : {
+            "type" : "integer"
+          },
           "rewards" : {
             "type" : "array",
             "items" : {
@@ -1250,6 +1268,9 @@
         "id" : "Reward",
         "type" : "object",
         "properties" : {
+          "statusCode" : {
+            "type" : "integer"
+          },
           "id" : {
             "type" : "string"
           },
@@ -1280,6 +1301,9 @@
         "id" : "Notice",
         "type" : "object",
         "properties" : {
+          "statusCode" : {
+            "type" : "integer"
+          },
           "createdAt" : {
             "type" : "string",
             "format" : "int64"
@@ -1293,6 +1317,9 @@
         "id" : "TOU",
         "type" : "object",
         "properties" : {
+          "statusCode" : {
+            "type" : "integer"
+          },
           "id" : {
             "type" : "string",
             "format" : "int64"
@@ -1315,6 +1342,9 @@
         "id" : "Version",
         "type" : "object",
         "properties" : {
+          "statusCode" : {
+            "type" : "integer"
+          },
           "version" : {
             "type" : "string"
           },
@@ -1328,6 +1358,9 @@
         "id" : "PP",
         "type" : "object",
         "properties" : {
+          "statusCode" : {
+            "type" : "integer"
+          },
           "id" : {
             "type" : "string",
             "format" : "int64"
@@ -1341,6 +1374,9 @@
         "id" : "FeedbackMessage",
         "type" : "object",
         "properties" : {
+          "statusCode" : {
+            "type" : "integer"
+          },
           "id" : {
             "type" : "string",
             "format" : "int64"
@@ -1368,6 +1404,9 @@
         "id" : "FlagCollection",
         "type" : "object",
         "properties" : {
+          "statusCode" : {
+            "type" : "integer"
+          },
           "flags" : {
             "type" : "array",
             "items" : {
@@ -1387,6 +1426,9 @@
         "id" : "Flag",
         "type" : "object",
         "properties" : {
+          "statusCode" : {
+            "type" : "integer"
+          },
           "id" : {
             "type" : "string",
             "format" : "int64"
@@ -1423,6 +1465,9 @@
         "id" : "Item",
         "type" : "object",
         "properties" : {
+          "statusCode" : {
+            "type" : "integer"
+          },
           "id" : {
             "type" : "string",
             "format" : "int64"
@@ -1479,6 +1524,9 @@
         "id" : "BranchItemMatcher",
         "type" : "object",
         "properties" : {
+          "statusCode" : {
+            "type" : "integer"
+          },
           "id" : {
             "type" : "string",
             "format" : "int64"
@@ -1500,6 +1548,9 @@
         "id" : "ItemCollection",
         "type" : "object",
         "properties" : {
+          "statusCode" : {
+            "type" : "integer"
+          },
           "items" : {
             "type" : "array",
             "items" : {
@@ -1518,6 +1569,9 @@
         "id" : "ShopCollection",
         "type" : "object",
         "properties" : {
+          "statusCode" : {
+            "type" : "integer"
+          },
           "shops" : {
             "type" : "array",
             "items" : {
@@ -1536,6 +1590,9 @@
         "id" : "Shop",
         "type" : "object",
         "properties" : {
+          "statusCode" : {
+            "type" : "integer"
+          },
           "id" : {
             "type" : "string",
             "format" : "int64"
@@ -1584,6 +1641,9 @@
         "id" : "UploadUrl",
         "type" : "object",
         "properties" : {
+          "statusCode" : {
+            "type" : "integer"
+          },
           "url" : {
             "type" : "string"
           }
@@ -1593,6 +1653,9 @@
         "id" : "Like",
         "type" : "object",
         "properties" : {
+          "statusCode" : {
+            "type" : "integer"
+          },
           "id" : {
             "type" : "string"
           },
@@ -1613,6 +1676,9 @@
         "id" : "ProviderForm",
         "type" : "object",
         "properties" : {
+          "statusCode" : {
+            "type" : "integer"
+          },
           "email" : {
             "type" : "string"
           },
@@ -1625,6 +1691,9 @@
         "id" : "Provider",
         "type" : "object",
         "properties" : {
+          "statusCode" : {
+            "type" : "integer"
+          },
           "id" : {
             "type" : "string",
             "format" : "int64"
@@ -1644,6 +1713,9 @@
         "id" : "UserInfo",
         "type" : "object",
         "properties" : {
+          "statusCode" : {
+            "type" : "integer"
+          },
           "userId" : {
             "type" : "string",
             "format" : "int64"
@@ -1671,15 +1743,15 @@
       }
     },
     "methods" : {
-      "com.flag.engine.apis.Users.retain" : {
-        "request" : {
-          "$ref" : "RetainForm"
-        },
+      "com.flag.engine.apis.Users.guest" : {
         "response" : {
           "$ref" : "User"
         }
       },
-      "com.flag.engine.apis.Users.guest" : {
+      "com.flag.engine.apis.Users.retain" : {
+        "request" : {
+          "$ref" : "RetainForm"
+        },
         "response" : {
           "$ref" : "User"
         }

@@ -1,6 +1,6 @@
 package com.flag.engine.models;
 
-public class UploadUrl {
+public class UploadUrl extends BaseModel {
 	private String url;
 
 	public UploadUrl() {

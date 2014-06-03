@@ -3,8 +3,30 @@
         <input type="file" name="image" class="item_img_edit_file" id="item_img_edit_file_${index}" onchange="showPreview(this, 'item_img_edit_${index}')">
     </form>
     <img class="item_img" id="item_img_edit_${index}" src="img_src" />
-    <div class="item_name"><input id="item_name_edit_${index}" type="text" placeholder="name"/></div>
-    <div class="item_barcode"><input id="item_barcode_edit_${index}" type="text" placeholder="barcode"/></div>
+    <div class="item_name">
+        <input id="item_name_edit_${index}" type="text" placeholder="name"/>
+        <select id="item_sex_edit_${index}">
+            <option value="0">성별없음</option>
+            <option value="1">여성제품</option>
+            <option value="2">남성제품</option>
+        </select>
+    </div>
+    <div class="item_barcode">
+        <input id="item_barcode_edit_${index}" type="text" placeholder="barcode"/>
+        <select id="item_type_edit_${index}">
+            <option value="100">의류</option>
+            <option value="110">의류-상의</option>
+            <option value="111">의류-외투</option>
+            <option value="120">의류-바지</option>
+            <option value="121">의류-치마</option>
+            <option value="130">의류-드레스</option>
+            <option value="200">신발</option>
+            <option value="300">가방</option>
+            <option value="400">액세서리</option>
+            <option value="500">전자제품</option>
+            <option value="600">화장품</option>
+        </select>
+    </div>
     <div><textarea class="item_desc_edit" id="item_desc_edit_${index}">desc</textarea></div>
     <div class="item_dicount_info">
         <input class="item_old_price_edit" id="item_old_price_edit_${index}" type="text" placeholder="old price"/>

@@ -2,7 +2,7 @@ package com.flag.engine.models;
 
 import java.util.List;
 
-public class RewardCollection {
+public class RewardCollection extends BaseModel {
 	private List<Reward> rewards;
 
 	public RewardCollection() {

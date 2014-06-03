@@ -8,7 +8,7 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
-public class Like {
+public class Like extends BaseModel {
 	public static final int TYPE_SHOP = 1;
 	public static final int TYPE_ITEM = 2;
 

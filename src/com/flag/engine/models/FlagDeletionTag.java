@@ -7,7 +7,7 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
-public class FlagDeletionTag {
+public class FlagDeletionTag extends BaseModel {
 	@PrimaryKey
 	@Persistent
 	private Long id;

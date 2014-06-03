@@ -140,7 +140,7 @@ public class ItemSheet extends HttpServlet {
 			return;
 		}
 
-		if (shop.getType() > 100) {// == Shop.TYPE_HQ) {
+		if (shop.getType() == Shop.TYPE_HQ) {
 			Query query = pm.newQuery(ItemHidden.class);
 			query.setFilter("shopId == theShopId");
 			query.declareParameters("long theShopId");
@@ -180,13 +180,13 @@ public class ItemSheet extends HttpServlet {
 			pm.deletePersistentAll(deletableItems);
 			pm.makePersistentAll(newItems);
 			
-			if (shop.getType() == Shop.TYPE_BR) { // temporary
+			if (shop.getType() == Shop.TYPE_BR) {
 				List<BranchItemMatcher> matchers = new ArrayList<BranchItemMatcher>();
 				for (Item newItem : newItems)
 					matchers.add(new BranchItemMatcher(shopId, newItem.getId()));
-			} // temporary
+				pm.makePersistentAll(matchers);
+			}
 		}
-		
 		
 		pm.close();
 

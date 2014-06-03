@@ -11,7 +11,7 @@ import javax.jdo.annotations.PrimaryKey;
 import com.flag.engine.utils.CalUtils;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION, table = "items_hidden")
-public class ItemHidden {
+public class ItemHidden extends BaseModel {
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)
 	private Long id;

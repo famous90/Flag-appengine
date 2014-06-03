@@ -1,6 +1,6 @@
 package com.flag.engine.models;
 
-public class ProviderForm {
+public class ProviderForm extends BaseModel {
 	private String email;
 	private String password;
 

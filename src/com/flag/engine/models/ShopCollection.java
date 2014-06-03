@@ -2,7 +2,7 @@ package com.flag.engine.models;
 
 import java.util.List;
 
-public class ShopCollection {
+public class ShopCollection extends BaseModel {
 	private List<Shop> shops;
 	private List<Flag> flags;
 

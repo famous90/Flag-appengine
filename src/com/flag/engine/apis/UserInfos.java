@@ -31,25 +31,32 @@ public class UserInfos {
 
 	@SuppressWarnings("unchecked")
 	@ApiMethod(name = "userinfos.phone.test", path = "user_info_phone_test", httpMethod = "post")
-	public UserInfo phoneTest(UserInfo userInfo) throws TwilioRestException {
+	public UserInfo phoneTest(UserInfo userInfo) {
+		// check if there is another user using same phone number
 		PersistenceManager pm = PMF.getPersistenceManagerSQL();
 		Query query = pm.newQuery(UserInfo.class);
 		query.setFilter("phone == thePhone");
 		query.declareParameters("String thePhone");
 		List<UserInfo> userInfos = (List<UserInfo>) pm.newQuery(query).execute(userInfo.getPhone());
-		
+
+		// phone number already taken
 		if (!userInfos.isEmpty())
 			return userInfo;
-		
-		String verNumber = getVerNumberString();
-		sendVerNumber(userInfo.getPhone(), verNumber);
 
-		userInfo.setVerificationCode(verNumber + userInfo.getPhone());
-		userInfo.setPhone("");
-		update(userInfo);
-		
-		userInfo.setVerificationCode("");
-		
+		String verNumber = getVerNumberString();
+		try {
+			sendVerNumber(userInfo.getPhone(), verNumber);
+			
+			// save verification code and phone number in verCode field together
+			userInfo.setVerificationCode(verNumber + userInfo.getPhone());
+			userInfo.setPhone("");
+			update(userInfo);
+			
+			// erase verCode field before send back to the user
+			userInfo.setVerificationCode("");
+		} catch (TwilioRestException e) { // failed to send code message
+		}
+
 		return userInfo;
 	}
 

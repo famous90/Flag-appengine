@@ -25,6 +25,11 @@
 	</servlet>
 
 	<servlet>
+		<servlet-name>DepairUserShop</servlet-name>
+		<servlet-class>com.flag.engine.servelets.DepairUserShop</servlet-class>
+	</servlet>
+
+	<servlet>
 		<servlet-name>PairUserShop</servlet-name>
 		<servlet-class>com.flag.engine.servelets.PairUserShop</servlet-class>
 	</servlet>
@@ -47,6 +52,11 @@
 	<servlet-mapping>
 		<servlet-name>ItemSheet</servlet-name>
 		<url-pattern>/item_sheet</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>DepairUserShop</servlet-name>
+		<url-pattern>/depair_user_shop</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>

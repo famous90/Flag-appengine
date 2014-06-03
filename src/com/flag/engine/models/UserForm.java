@@ -1,6 +1,6 @@
 package com.flag.engine.models;
 
-public class UserForm {
+public class UserForm extends BaseModel {
 	private long id;
 	private String email;
 	private String password;
