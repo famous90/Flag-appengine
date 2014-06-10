@@ -28,11 +28,13 @@ public class Item extends BaseModel {
 	public static final int ITEM_TYPE_PANTS = 120;
 	public static final int ITEM_TYPE_SKIRT = 121;
 	public static final int ITEM_TYPE_DRESS = 130;
+	public static final int ITEM_TYPE_UNDERWEAR = 140;
 	public static final int ITEM_TYPE_SHOES = 200;
 	public static final int ITEM_TYPE_BAG = 300;
 	public static final int ITEM_TYPE_ACCESSORY = 400;
 	public static final int ITEM_TYPE_ELECTRIC = 500;
 	public static final int ITEM_TYPE_BEUTY = 600;
+	public static final int ITEM_TYPE_HEADWEAR = 700;
 
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.NATIVE)

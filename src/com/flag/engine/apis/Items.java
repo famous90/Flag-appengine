@@ -87,8 +87,14 @@ public class Items {
 		try {
 			Item item = pmSQL.getObjectById(Item.class, itemId);
 			pmSQL.deletePersistent(item);
+			
+			Query query = pmSQL.newQuery(BranchItemMatcher.class);
+			query.setFilter("itemId == id");
+			query.declareParameters("long id");
+			List<BranchItemMatcher> matchers = (List<BranchItemMatcher>) pmSQL.newQuery(query).execute(itemId);
+			pmSQL.deletePersistentAll(matchers);
 
-			Query query = pm.newQuery(Like.class);
+			query = pm.newQuery(Like.class);
 			query.setFilter("type == typeItem && targetId == itemId");
 			query.declareParameters("int typeItem, long itemId");
 			List<Like> likes = (List<Like>) pm.newQuery(query).execute(Like.TYPE_ITEM, itemId);

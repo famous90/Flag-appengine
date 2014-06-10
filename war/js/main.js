@@ -176,7 +176,7 @@ function addShop() {
             imageUrl: '',
             description: '',
             providerId: provider.id,
-            type: 1,
+            type: 2,
             reward: 0
         }).execute(function(res) {
             $('#add_shop_wait').modal('hide');
@@ -365,6 +365,8 @@ function getItemTypeString(type) {
         return '의류-치마';
     else if (type == 130)
         return '의류-드레스';
+    else if (type == 140)
+        return '의류-속옷';
     else if (type == 200)
         return '신발';
     else if (type == 300)
@@ -375,6 +377,8 @@ function getItemTypeString(type) {
         return '전자제품';
     else if (type == 600)
         return '화장품';
+    else if (type == 700)
+        return '모자';
 }
 
 function hideItem(index) {
