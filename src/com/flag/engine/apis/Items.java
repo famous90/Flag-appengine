@@ -87,7 +87,7 @@ public class Items {
 		try {
 			Item item = pmSQL.getObjectById(Item.class, itemId);
 			pmSQL.deletePersistent(item);
-			
+
 			Query query = pmSQL.newQuery(BranchItemMatcher.class);
 			query.setFilter("itemId == id");
 			query.declareParameters("long id");
@@ -175,6 +175,20 @@ public class Items {
 		}
 
 		return items;
+	}
+
+	@ApiMethod(name = "items.list.ids", path = "item_list", httpMethod = "get")
+	public ItemCollection list(@Nullable @Named("userId") long userId, @Nullable @Named("ids") List<Long> ids) {
+		PersistenceManager pm = PMF.getPersistenceManagerSQL();
+		List<Object> keyIds = new ArrayList<Object>();
+		for (Long id : ids)
+			keyIds.add(pm.newObjectIdInstance(Item.class, id));
+
+		List<Item> items = listByIds(keyIds);
+
+		Item.setLikeVariables(items, userId);
+
+		return new ItemCollection(items);
 	}
 
 	@SuppressWarnings("unchecked")
